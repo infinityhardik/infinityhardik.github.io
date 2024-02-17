@@ -13,8 +13,6 @@ header {
 }
 
 header img {
-  max-width: 61.8px; /* Set a maximum width for the logo */
-  height: auto;
   margin-right: 10px; /* Optional: Add some spacing between the logo and text */
 }
 
