@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Page</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="favicon.webp" alt="MT Logo">
+</head>
+
+<body>
+    <div>
+        <header>
+            <img src="favicon.webp" alt="MT Logo">
+            <h1>Order List</h1>
+        </header>
+        <div id="selectedProducts-Div">
+            <textarea id="selected-products" placeholder="Generated Order" rows="3" cols="50"></textarea>
+        </div>
+        <div id="order-list-buttons">
+            <button id="clearOrder" onclick="clearOrder()">Clear Order</button>
+            <button id="sendOrder" onclick="sendOrder()">Send Order</button>
+        </div>
+        <div id="search-item">
+            <input type="text" id="search-box" name="search-box" placeholder="Search products..."
+                oninput="filterProducts()" autocomplete="off">
+            <button id="clearSearch" onclick="clearSearch()">&times;</button>
+        </div>
+        <div id="product-list"></div>
+    </div>
+
+    <!-- Order Quantity Modal -->
+    <div id="order-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeOrderModal()">&times;</span>
+            <h2 id="modal-product-name"></h2>
+            <p id="modal-group-name"></p>
+            <p id="modal-prod-category"></p>
+            <p id="modal-product-type"></p>
+
+            <div id="numeric-keypad">
+                <button onclick="appendToQuantity('7')">7</button>
+                <button onclick="appendToQuantity('8')">8</button>
+                <button onclick="appendToQuantity('9')">9</button>
+                <button onclick="appendToQuantity('4')">4</button>
+                <button onclick="appendToQuantity('5')">5</button>
+                <button onclick="appendToQuantity('6')">6</button>
+                <button onclick="appendToQuantity('1')">1</button>
+                <button onclick="appendToQuantity('2')">2</button>
+                <button onclick="appendToQuantity('3')">3</button>
+                <button class="zero-btn" onclick="appendToQuantity('0')">0</button>
+                <button class="back-btn" onclick="clearLastDigit()">←</button>
+            </div>
+            <div class="order-quantity-section" id="order-quantity-section">
+                <label for="quantity"><h3>Quantity :</h3></label>
+                <input type="text" id="quantity" aria-labelledby="quantity" min="0" value="0" readonly>
+            </div>
+            <div id="order-quantity-section-buttons">
+                <button id="clearAllModal" onclick="clearAllDigits()">Clear All</button>
+                <button id="addToOrder" onclick="addToOrder()">Add to Order</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
