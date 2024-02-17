@@ -1,13 +1,19 @@
 // Function to send order (replace with your implementation)
 function sendOrder() {
-    // Implement logic to send order via WhatsApp
-    console.log('Order Sent:', selectedProducts);
+    // Sort the selected products by Group Alias name first, then by Product Name
+    selectedProducts.sort((a, b) => {
+        const groupComparison = a.product['Group Alias'].localeCompare(b.product['Group Alias']);
 
-    // Sort the selected products by product name
-    selectedProducts.sort((a, b) => a.product.localeCompare(b.product));
-    
+        if (groupComparison === 0) {
+            return a.product.Product.localeCompare(b.product.Product);
+        }
+
+        return groupComparison;
+    });
+
     // Generate the order text
-    const orderText = selectedProducts.map(item => `${item.product} - ${item.quantity}`).join('\n');
+    const orderText = selectedProducts.map(item => `${item.product['Product']} - ${item.quantity}`).join('\n');
+    // console.log(orderText);
 
     // Replace the recipient number with your target WhatsApp number
     const recipientNumber = '+916355360702';

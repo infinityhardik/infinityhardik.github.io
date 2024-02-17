@@ -4,19 +4,24 @@ let productsData;  // Variable to store the products data
 // Function to add product to order list with quantity
 function addToOrder() {
     const quantityInput = document.getElementById('quantity');
-    const product = document.getElementById('modal-product-name').textContent;
+    const productName = document.getElementById('modal-product-name').textContent;
     const quantity = parseInt(quantityInput.value, 10);
 
     if (quantity > 0) {
-        selectedProducts.push({ product, quantity });
-        updateOrderList();
+        const productDetails = getProductDetails(productName);
+
+        if (productDetails && Object.keys(productDetails).length > 0) {
+            selectedProducts.push({ product: productDetails, quantity });
+            updateOrderList();
+        } else {
+            console.error('Product details not found for:', productName);
+        }
     } else {
         // If quantity is 0, deselect the product
-        // const checkbox = document.querySelector(`#product-list div label:contains('${product}') ~ input`);
         const checkboxes = document.querySelectorAll('#product-list input[type="checkbox"]');
         const checkbox = Array.from(checkboxes).find((cb) => {
             const label = cb.nextElementSibling;
-            return label && (label.textContent || label.innerText) === product;
+            return label && (label.textContent || label.innerText) === productName;
         });
 
         if (checkbox) {
@@ -47,7 +52,7 @@ function clearOrder() {
 // Function to update the order list textarea
 function updateOrderList() {
     const selectedProductsTextarea = document.getElementById('selected-products');
-    selectedProductsTextarea.value = selectedProducts.map(item => `${item.product} - ${item.quantity}`).join('\n');
+    selectedProductsTextarea.value = selectedProducts.map(item => `${item.product.Product} - ${item.quantity}`).join('\n');
 
     // Auto-scroll to the bottom
     selectedProductsTextarea.scrollTop = selectedProductsTextarea.scrollHeight;
