@@ -1,0 +1,25 @@
+{
+  "name": "order_website",
+  "version": "1.0.0",
+  "description": "A Simple Order Website hosted on Github Pages for generating Order Text on WhatsApp.",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/infinityhardik/infinityhardik.github.io.git"
+  },
+  "keywords": [
+    "WhatsApp",
+    "Order",
+    "Website",
+    "Simple"
+  ],
+  "author": "Hardik Bhaavani, ChatGPT",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/infinityhardik/infinityhardik.github.io/issues"
+  },
+  "homepage": "https://github.com/infinityhardik/infinityhardik.github.io#readme"
+}
