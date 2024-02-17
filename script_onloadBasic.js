@@ -3,7 +3,7 @@ async function loadProducts() {
     try {
         const response = await fetch('products.json');
         productsData = await response.json();
-        const productList = productsData.products;
+        const productList = productsData.productDirectory;
         displayProducts(productList);
     } catch (error) {
         console.error('Error loading products:', error);
@@ -39,8 +39,8 @@ function displayProducts(productList) {
 
 // Function to get product details from the products.json file
 function getProductDetails(productName) {
-    if (productsData && productsData.products) {
-        const productList = productsData.products;
+    if (productsData && productsData.productDirectory) {
+        const productList = productsData.productDirectory;
         const product = productList.find(p => p.Product === productName);
         // console.log(product);
         return product || {};
