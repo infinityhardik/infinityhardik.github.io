@@ -16,20 +16,18 @@ function sendOrder() {
     let currentGroupAlias = null;
 
     selectedProducts.forEach(item => {
-        const { 'Group Alias': groupAlias, Product } = item.product;
+        const { 'Group Alias': groupAlias, Product, 'Group Name' : groupName} = item.product;
 
         if (currentGroupAlias !== groupAlias) {
             // Insert a new line for a new Group Alias
-            if (orderText !== '') {
-                orderText += '\n';
-            }
+            orderText += `\n*${groupName}* :\n`;
             currentGroupAlias = groupAlias;
         }
 
         orderText += `${Product} - ${item.quantity}\n`;
     });
 
-    console.log(orderText);
+    // console.log(orderText);
 
     // Replace the recipient number with your target WhatsApp number
     const recipientNumber = '+916355360702';
