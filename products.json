@@ -1,0 +1,2536 @@
+{
+  "productDirectory": [
+    {
+      "Product": "B/B 25 mm 6 x 3",
+      "Group Name": "25 BB",
+      "Group Alias": "2+5 mm",
+      "Prod. Category": "6 x 3",
+      "Product Type": "B/B"
+    },
+    {
+      "Product": "B/B 25 mm 6 x 4",
+      "Group Name": "25 BB",
+      "Group Alias": "2+5 mm",
+      "Prod. Category": "6 x 4",
+      "Product Type": "B/B"
+    },
+    {
+      "Product": "B/B 25 mm 7 x 3",
+      "Group Name": "25 BB",
+      "Group Alias": "2+5 mm",
+      "Prod. Category": "7 x 3",
+      "Product Type": "B/B"
+    },
+    {
+      "Product": "B/B 25 mm 7 x 4",
+      "Group Name": "25 BB",
+      "Group Alias": "2+5 mm",
+      "Prod. Category": "7 x 4",
+      "Product Type": "B/B"
+    },
+    {
+      "Product": "B/B 25 mm 8 x 3",
+      "Group Name": "25 BB",
+      "Group Alias": "2+5 mm",
+      "Prod. Category": "8 x 3",
+      "Product Type": "B/B"
+    },
+    {
+      "Product": "B/B 25 mm 8 x 4",
+      "Group Name": "25 BB",
+      "Group Alias": "2+5 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "B/B"
+    },
+    {
+      "Product": "F/D 25 mm 72 x 24",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "72 x 24",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 72 x 27",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "72 x 27",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 72 x 30",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "72 x 30",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 72 x 33",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "72 x 33",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 72 x 36",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "72 x 36",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 72 x 39",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "72 x 39",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 72 x 42",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "72 x 42",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 75 x 24",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "75 x 24",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 75 x 27",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "75 x 27",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 75 x 30",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "75 x 30",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 75 x 33",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "75 x 33",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 75 x 36",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "75 x 36",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 75 x 39",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "75 x 39",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 75 x 42",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "75 x 42",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 78 x 24",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "78 x 24",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 78 x 27",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "78 x 27",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 78 x 30",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "78 x 30",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 78 x 33",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "78 x 33",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 78 x 36",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "78 x 36",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 78 x 39",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "78 x 39",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 78 x 42",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "78 x 42",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 78 x 45",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "78 x 45",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 78 x 48",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "78 x 48",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 81 x 24",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "81 x 24",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 81 x 27",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "81 x 27",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 81 x 30",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "81 x 30",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 81 x 33",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "81 x 33",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 81 x 36",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "81 x 36",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 81 x 39",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "81 x 39",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 81 x 42",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "81 x 42",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 25 mm 81 x 45",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "81 x 45",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 72 x 24",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "72 x 24",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 72 x 27",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "72 x 27",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 72 x 30",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "72 x 30",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 72 x 33",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "72 x 33",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 72 x 36",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "72 x 36",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 72 x 39",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "72 x 39",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 72 x 42",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "72 x 42",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 75 x 24",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "75 x 24",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 75 x 27",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "75 x 27",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 75 x 30",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "75 x 30",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 75 x 33",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "75 x 33",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 75 x 36",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "75 x 36",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 75 x 39",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "75 x 39",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 75 x 42",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "75 x 42",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 78 x 24",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "78 x 24",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 78 x 27",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "78 x 27",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 78 x 30",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "78 x 30",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 78 x 33",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "78 x 33",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 78 x 36",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "78 x 36",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 78 x 39",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "78 x 39",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 78 x 42",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "78 x 42",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 78 x 45",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "78 x 45",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 78 x 48",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "78 x 48",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 81 x 24",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "81 x 24",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 81 x 27",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "81 x 27",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 81 x 30",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "81 x 30",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 81 x 33",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "81 x 33",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 81 x 36",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "81 x 36",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 81 x 39",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "81 x 39",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 81 x 42",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "81 x 42",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 81 x 45",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "81 x 45",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 81 x 48",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "81 x 48",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 84 x 24",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "84 x 24",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 84 x 27",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "84 x 27",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 84 x 30",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "84 x 30",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 84 x 33",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "84 x 33",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 84 x 36",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "84 x 36",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 84 x 39",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "84 x 39",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 84 x 42",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "84 x 42",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 84 x 45",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "84 x 45",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "F/D 30 mm 84 x 48",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "84 x 48",
+      "Product Type": "F/D"
+    },
+    {
+      "Product": "Flexi Ply 06 mm 8 x 4",
+      "Group Name": "6 mm",
+      "Group Alias": "06 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "Flexi"
+    },
+    {
+      "Product": "GT GJ 06 mm 8 x 4",
+      "Group Name": "6 mm",
+      "Group Alias": "06 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "GT GJ"
+    },
+    {
+      "Product": "GT GJ 09 mm 7 x 4",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "7 x 4",
+      "Product Type": "GT GJ"
+    },
+    {
+      "Product": "GT GJ 09 mm 8 x 4",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "GT GJ"
+    },
+    {
+      "Product": "GT GJ 12 mm 6 x 3",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "6 x 3",
+      "Product Type": "GT GJ"
+    },
+    {
+      "Product": "GT GJ 12 mm 7 x 3",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "7 x 3",
+      "Product Type": "GT GJ"
+    },
+    {
+      "Product": "GT GJ 12 mm 7 x 4",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "7 x 4",
+      "Product Type": "GT GJ"
+    },
+    {
+      "Product": "GT GJ 12 mm 8 x 4",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "GT GJ"
+    },
+    {
+      "Product": "GT GJ 18 mm 6 x 4",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "6 x 4",
+      "Product Type": "GT GJ"
+    },
+    {
+      "Product": "GT GJ 18 mm 7 x 4",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "7 x 4",
+      "Product Type": "GT GJ"
+    },
+    {
+      "Product": "GT GJ 18 mm 8 x 4",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "GT GJ"
+    },
+    {
+      "Product": "GT OK 06 mm 6 x 3",
+      "Group Name": "6 mm",
+      "Group Alias": "06 mm",
+      "Prod. Category": "6 x 3",
+      "Product Type": "GT OK"
+    },
+    {
+      "Product": "GT OK 06 mm 6 x 4",
+      "Group Name": "6 mm",
+      "Group Alias": "06 mm",
+      "Prod. Category": "6 x 4",
+      "Product Type": "GT OK"
+    },
+    {
+      "Product": "GT OK 06 mm 7 x 3",
+      "Group Name": "6 mm",
+      "Group Alias": "06 mm",
+      "Prod. Category": "7 x 3",
+      "Product Type": "GT OK"
+    },
+    {
+      "Product": "GT OK 06 mm 7 x 4",
+      "Group Name": "6 mm",
+      "Group Alias": "06 mm",
+      "Prod. Category": "7 x 4",
+      "Product Type": "GT OK"
+    },
+    {
+      "Product": "GT OK 06 mm 8 x 3",
+      "Group Name": "6 mm",
+      "Group Alias": "06 mm",
+      "Prod. Category": "8 x 3",
+      "Product Type": "GT OK"
+    },
+    {
+      "Product": "GT OK 06 mm 8 x 4",
+      "Group Name": "6 mm",
+      "Group Alias": "06 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "GT OK"
+    },
+    {
+      "Product": "GT OK 09 mm 6 x 3",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "6 x 3",
+      "Product Type": "GT OK"
+    },
+    {
+      "Product": "GT OK 09 mm 6 x 4",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "6 x 4",
+      "Product Type": "GT OK"
+    },
+    {
+      "Product": "GT OK 09 mm 7 x 3",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "7 x 3",
+      "Product Type": "GT OK"
+    },
+    {
+      "Product": "GT OK 09 mm 7 x 4",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "7 x 4",
+      "Product Type": "GT OK"
+    },
+    {
+      "Product": "GT OK 09 mm 8 x 3",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "8 x 3",
+      "Product Type": "GT OK"
+    },
+    {
+      "Product": "GT OK 09 mm 8 x 4",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "GT OK"
+    },
+    {
+      "Product": "GT OK 12 mm 6 x 3",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "6 x 3",
+      "Product Type": "GT OK"
+    },
+    {
+      "Product": "GT OK 12 mm 6 x 4",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "6 x 4",
+      "Product Type": "GT OK"
+    },
+    {
+      "Product": "GT OK 12 mm 7 x 3",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "7 x 3",
+      "Product Type": "GT OK"
+    },
+    {
+      "Product": "GT OK 12 mm 7 x 4",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "7 x 4",
+      "Product Type": "GT OK"
+    },
+    {
+      "Product": "GT OK 12 mm 8 x 3",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "8 x 3",
+      "Product Type": "GT OK"
+    },
+    {
+      "Product": "GT OK 12 mm 8 x 4",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "GT OK"
+    },
+    {
+      "Product": "GT OK 18 mm 6 x 3",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "6 x 3",
+      "Product Type": "GT OK"
+    },
+    {
+      "Product": "GT OK 18 mm 6 x 4",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "6 x 4",
+      "Product Type": "GT OK"
+    },
+    {
+      "Product": "GT OK 18 mm 7 x 3",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "7 x 3",
+      "Product Type": "GT OK"
+    },
+    {
+      "Product": "GT OK 18 mm 7 x 4",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "7 x 4",
+      "Product Type": "GT OK"
+    },
+    {
+      "Product": "GT OK 18 mm 8 x 3",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "8 x 3",
+      "Product Type": "GT OK"
+    },
+    {
+      "Product": "GT OK 18 mm 8 x 4",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "GT OK"
+    },
+    {
+      "Product": "LL GJ 06 mm 8 x 4",
+      "Group Name": "6 mm",
+      "Group Alias": "06 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "LL GJ"
+    },
+    {
+      "Product": "LL GJ 09 mm 6 x 3",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "6 x 3",
+      "Product Type": "LL GJ"
+    },
+    {
+      "Product": "LL GJ 09 mm 6 x 4",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "6 x 4",
+      "Product Type": "LL GJ"
+    },
+    {
+      "Product": "LL GJ 09 mm 7 x 4",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "7 x 4",
+      "Product Type": "LL GJ"
+    },
+    {
+      "Product": "LL GJ 09 mm 8 x 4",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "LL GJ"
+    },
+    {
+      "Product": "LL GJ 12 mm 6 x 3",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "6 x 3",
+      "Product Type": "LL GJ"
+    },
+    {
+      "Product": "LL GJ 12 mm 6 x 4",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "6 x 4",
+      "Product Type": "LL GJ"
+    },
+    {
+      "Product": "LL GJ 12 mm 7 x 3",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "7 x 3",
+      "Product Type": "LL GJ"
+    },
+    {
+      "Product": "LL GJ 12 mm 7 x 4",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "7 x 4",
+      "Product Type": "LL GJ"
+    },
+    {
+      "Product": "LL GJ 12 mm 8 x 4",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "LL GJ"
+    },
+    {
+      "Product": "LL GJ 15 mm 6 x 4",
+      "Group Name": "15 mm",
+      "Group Alias": "$15 mm",
+      "Prod. Category": "6 x 4",
+      "Product Type": "LL GJ"
+    },
+    {
+      "Product": "LL GJ 15 mm 7 x 3",
+      "Group Name": "15 mm",
+      "Group Alias": "$15 mm",
+      "Prod. Category": "7 x 3",
+      "Product Type": "LL GJ"
+    },
+    {
+      "Product": "LL GJ 15 mm 7 x 4",
+      "Group Name": "15 mm",
+      "Group Alias": "$15 mm",
+      "Prod. Category": "7 x 4",
+      "Product Type": "LL GJ"
+    },
+    {
+      "Product": "LL GJ 15 mm 8 x 4",
+      "Group Name": "15 mm",
+      "Group Alias": "$15 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "LL GJ"
+    },
+    {
+      "Product": "LL GJ 18 mm 6 x 3",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "6 x 3",
+      "Product Type": "LL GJ"
+    },
+    {
+      "Product": "LL GJ 18 mm 6 x 4",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "6 x 4",
+      "Product Type": "LL GJ"
+    },
+    {
+      "Product": "LL GJ 18 mm 7 x 3",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "7 x 3",
+      "Product Type": "LL GJ"
+    },
+    {
+      "Product": "LL GJ 18 mm 7 x 4",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "7 x 4",
+      "Product Type": "LL GJ"
+    },
+    {
+      "Product": "LL GJ 18 mm 8 x 3",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "8 x 3",
+      "Product Type": "LL GJ"
+    },
+    {
+      "Product": "LL GJ 18 mm 8 x 4",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "LL GJ"
+    },
+    {
+      "Product": "LL OK 06 mm 6 x 3",
+      "Group Name": "6 mm",
+      "Group Alias": "06 mm",
+      "Prod. Category": "6 x 3",
+      "Product Type": "LL OK"
+    },
+    {
+      "Product": "LL OK 06 mm 6 x 4",
+      "Group Name": "6 mm",
+      "Group Alias": "06 mm",
+      "Prod. Category": "6 x 4",
+      "Product Type": "LL OK"
+    },
+    {
+      "Product": "LL OK 06 mm 7 x 3",
+      "Group Name": "6 mm",
+      "Group Alias": "06 mm",
+      "Prod. Category": "7 x 3",
+      "Product Type": "LL OK"
+    },
+    {
+      "Product": "LL OK 06 mm 7 x 4",
+      "Group Name": "6 mm",
+      "Group Alias": "06 mm",
+      "Prod. Category": "7 x 4",
+      "Product Type": "LL OK"
+    },
+    {
+      "Product": "LL OK 06 mm 8 x 3",
+      "Group Name": "6 mm",
+      "Group Alias": "06 mm",
+      "Prod. Category": "8 x 3",
+      "Product Type": "LL OK"
+    },
+    {
+      "Product": "LL OK 06 mm 8 x 4",
+      "Group Name": "6 mm",
+      "Group Alias": "06 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "LL OK"
+    },
+    {
+      "Product": "LL OK 09 mm 6 x 2||",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "06 x 2||",
+      "Product Type": "LL OK"
+    },
+    {
+      "Product": "LL OK 09 mm 6 x 3",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "6 x 3",
+      "Product Type": "LL OK"
+    },
+    {
+      "Product": "LL OK 09 mm 6 x 4",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "6 x 4",
+      "Product Type": "LL OK"
+    },
+    {
+      "Product": "LL OK 09 mm 7 x 4",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "7 x 4",
+      "Product Type": "LL OK"
+    },
+    {
+      "Product": "LL OK 09 mm 8 x 4",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "LL OK"
+    },
+    {
+      "Product": "LL OK 12 mm 6 x 2||",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "06 x 2||",
+      "Product Type": "LL OK"
+    },
+    {
+      "Product": "LL OK 12 mm 6 x 3",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "6 x 3",
+      "Product Type": "LL OK"
+    },
+    {
+      "Product": "LL OK 12 mm 6 x 4",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "6 x 4",
+      "Product Type": "LL OK"
+    },
+    {
+      "Product": "LL OK 12 mm 7 x 3",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "7 x 3",
+      "Product Type": "LL OK"
+    },
+    {
+      "Product": "LL OK 12 mm 7 x 4",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "7 x 4",
+      "Product Type": "LL OK"
+    },
+    {
+      "Product": "LL OK 12 mm 8 x 3",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "8 x 3",
+      "Product Type": "LL OK"
+    },
+    {
+      "Product": "LL OK 12 mm 8 x 4",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "LL OK"
+    },
+    {
+      "Product": "LL OK 15 mm 6 x 3",
+      "Group Name": "15 mm",
+      "Group Alias": "$15 mm",
+      "Prod. Category": "6 x 3",
+      "Product Type": "LL OK"
+    },
+    {
+      "Product": "LL OK 15 mm 6 x 4",
+      "Group Name": "15 mm",
+      "Group Alias": "$15 mm",
+      "Prod. Category": "6 x 4",
+      "Product Type": "LL OK"
+    },
+    {
+      "Product": "LL OK 15 mm 8 x 4",
+      "Group Name": "15 mm",
+      "Group Alias": "$15 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "LL OK"
+    },
+    {
+      "Product": "LL OK 18 mm 6 x 3",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "6 x 3",
+      "Product Type": "LL OK"
+    },
+    {
+      "Product": "LL OK 18 mm 6 x 4",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "6 x 4",
+      "Product Type": "LL OK"
+    },
+    {
+      "Product": "LL OK 18 mm 7 x 3",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "7 x 3",
+      "Product Type": "LL OK"
+    },
+    {
+      "Product": "LL OK 18 mm 7 x 4",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "7 x 4",
+      "Product Type": "LL OK"
+    },
+    {
+      "Product": "LL OK 18 mm 8 x 4",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "LL OK"
+    },
+    {
+      "Product": "MRX 19 mm 6 x 3",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "6 x 3",
+      "Product Type": "MRX"
+    },
+    {
+      "Product": "MRX 19 mm 6 x 4",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "6 x 4",
+      "Product Type": "MRX"
+    },
+    {
+      "Product": "MRX 19 mm 7 x 3",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "7 x 3",
+      "Product Type": "MRX"
+    },
+    {
+      "Product": "MRX 19 mm 7 x 4",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "7 x 4",
+      "Product Type": "MRX"
+    },
+    {
+      "Product": "MRX 19 mm 8 x 3",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "8 x 3",
+      "Product Type": "MRX"
+    },
+    {
+      "Product": "MRX 19 mm 8 x 4",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "MRX"
+    },
+    {
+      "Product": "MRX AG 25 mm 6 x 3",
+      "Group Name": "25 BB",
+      "Group Alias": "2+5 mm",
+      "Prod. Category": "6 x 3",
+      "Product Type": "MRX AG"
+    },
+    {
+      "Product": "MRX AG 25 mm 6 x 4",
+      "Group Name": "25 BB",
+      "Group Alias": "2+5 mm",
+      "Prod. Category": "6 x 4",
+      "Product Type": "MRX AG"
+    },
+    {
+      "Product": "MRX AG 25 mm 7 x 3",
+      "Group Name": "25 BB",
+      "Group Alias": "2+5 mm",
+      "Prod. Category": "7 x 3",
+      "Product Type": "MRX AG"
+    },
+    {
+      "Product": "MRX AG 25 mm 7 x 4",
+      "Group Name": "25 BB",
+      "Group Alias": "2+5 mm",
+      "Prod. Category": "7 x 4",
+      "Product Type": "MRX AG"
+    },
+    {
+      "Product": "MRX AG 25 mm 8 x 3",
+      "Group Name": "25 BB",
+      "Group Alias": "2+5 mm",
+      "Prod. Category": "8 x 3",
+      "Product Type": "MRX AG"
+    },
+    {
+      "Product": "MRX AG 25 mm 8 x 4",
+      "Group Name": "25 BB",
+      "Group Alias": "2+5 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "MRX AG"
+    },
+    {
+      "Product": "MRX F/D 25 mm 72 x 24",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "72 x 24",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 72 x 27",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "72 x 27",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 72 x 30",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "72 x 30",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 72 x 33",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "72 x 33",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 72 x 36",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "72 x 36",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 72 x 39",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "72 x 39",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 72 x 42",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "72 x 42",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 75 x 24",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "75 x 24",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 75 x 27",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "75 x 27",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 75 x 30",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "75 x 30",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 75 x 33",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "75 x 33",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 75 x 36",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "75 x 36",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 75 x 39",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "75 x 39",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 75 x 42",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "75 x 42",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 78 x 24",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "78 x 24",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 78 x 27",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "78 x 27",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 78 x 30",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "78 x 30",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 78 x 33",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "78 x 33",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 78 x 36",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "78 x 36",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 78 x 39",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "78 x 39",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 78 x 42",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "78 x 42",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 78 x 45",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "78 x 45",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 78 x 48",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "78 x 48",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 81 x 24",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "81 x 24",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 81 x 27",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "81 x 27",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 81 x 30",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "81 x 30",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 81 x 33",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "81 x 33",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 81 x 36",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "81 x 36",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 81 x 39",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "81 x 39",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 81 x 42",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "81 x 42",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 25 mm 81 x 45",
+      "Group Name": "25 FDoor",
+      "Group Alias": "25 mm",
+      "Prod. Category": "81 x 45",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 72 x 24",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "72 x 24",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 72 x 27",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "72 x 27",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 72 x 30",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "72 x 30",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 72 x 33",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "72 x 33",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 72 x 36",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "72 x 36",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 72 x 39",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "72 x 39",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 72 x 42",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "72 x 42",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 75 x 24",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "75 x 24",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 75 x 27",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "75 x 27",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 75 x 30",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "75 x 30",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 75 x 33",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "75 x 33",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 75 x 36",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "75 x 36",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 75 x 39",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "75 x 39",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 75 x 42",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "75 x 42",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 78 x 24",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "78 x 24",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 78 x 27",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "78 x 27",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 78 x 30",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "78 x 30",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 78 x 33",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "78 x 33",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 78 x 36",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "78 x 36",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 78 x 39",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "78 x 39",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 78 x 42",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "78 x 42",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 78 x 45",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "78 x 45",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 78 x 48",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "78 x 48",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 81 x 24",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "81 x 24",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 81 x 27",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "81 x 27",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 81 x 30",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "81 x 30",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 81 x 33",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "81 x 33",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 81 x 36",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "81 x 36",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 81 x 39",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "81 x 39",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 81 x 42",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "81 x 42",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 81 x 45",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "81 x 45",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 81 x 48",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "81 x 48",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 84 x 24",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "84 x 24",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 84 x 27",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "84 x 27",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 84 x 30",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "84 x 30",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 84 x 33",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "84 x 33",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 84 x 36",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "84 x 36",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 84 x 39",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "84 x 39",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 84 x 42",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "84 x 42",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 84 x 45",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "84 x 45",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 84 x 48",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "84 x 48",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 90 x 27",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "90 x 27",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 90 x 30",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "90 x 30",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 90 x 33",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "90 x 33",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 90 x 36",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "90 x 36",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 90 x 39",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "90 x 39",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 90 x 42",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "90 x 42",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 90 x 45",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "90 x 45",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 30 mm 90 x 48",
+      "Group Name": "30 FDoor",
+      "Group Alias": "30 mm",
+      "Prod. Category": "90 x 48",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 75 x 27",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "75 x 27",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 75 x 30",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "75 x 30",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 75 x 33",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "75 x 33",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 75 x 36",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "75 x 36",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 75 x 39",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "75 x 39",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 78 x 24",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "78 x 24",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 78 x 27",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "78 x 27",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 78 x 30",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "78 x 30",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 78 x 33",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "78 x 33",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 78 x 36",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "78 x 36",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 78 x 39",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "78 x 39",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 78 x 42",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "78 x 42",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 78 x 45",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "78 x 45",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 78 x 48",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "78 x 48",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 81 x 27",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "81 x 27",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 81 x 30",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "81 x 30",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 81 x 33",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "81 x 33",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 81 x 36",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "81 x 36",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 81 x 39",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "81 x 39",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 81 x 42",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "81 x 42",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 81 x 45",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "81 x 45",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 84 x 27",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "84 x 27",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 84 x 30",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "84 x 30",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 84 x 33",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "84 x 33",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 84 x 36",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "84 x 36",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 84 x 39",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "84 x 39",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 84 x 42",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "84 x 42",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 84 x 45",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "84 x 45",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 84 x 48",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "84 x 48",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 87 x 27",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "87 x 27",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 87 x 30",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "87 x 30",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 87 x 33",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "87 x 33",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 87 x 36",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "87 x 36",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 87 x 39",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "87 x 39",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 87 x 42",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "87 x 42",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 87 x 45",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "87 x 45",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 90 x 27",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "90 x 27",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 90 x 30",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "90 x 30",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 90 x 33",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "90 x 33",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 90 x 36",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "90 x 36",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 90 x 39",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "90 x 39",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 90 x 42",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "90 x 42",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 90 x 45",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "90 x 45",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 90 x 48",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "90 x 48",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 96 x 27",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "96 x 27",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 96 x 30",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "96 x 30",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 96 x 33",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "96 x 33",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 96 x 36",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "96 x 36",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 96 x 39",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "96 x 39",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 96 x 42",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "96 x 42",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 96 x 45",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "96 x 45",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX F/D 35 mm 96 x 48",
+      "Group Name": "35 FDoor",
+      "Group Alias": "35 mm",
+      "Prod. Category": "96 x 48",
+      "Product Type": "MRX F/D"
+    },
+    {
+      "Product": "MRX Prem 06 mm 6 x 3",
+      "Group Name": "6 mm",
+      "Group Alias": "06 mm",
+      "Prod. Category": "6 x 3",
+      "Product Type": "MRX"
+    },
+    {
+      "Product": "MRX Prem 06 mm 6 x 4",
+      "Group Name": "6 mm",
+      "Group Alias": "06 mm",
+      "Prod. Category": "6 x 4",
+      "Product Type": "MRX"
+    },
+    {
+      "Product": "MRX Prem 06 mm 7 x 3",
+      "Group Name": "6 mm",
+      "Group Alias": "06 mm",
+      "Prod. Category": "7 x 3",
+      "Product Type": "MRX"
+    },
+    {
+      "Product": "MRX Prem 06 mm 7 x 4"
+    },
+    {
+      "Product": "6 mm"
+    },
+    {
+      "Product": "7 x 4"
+    },
+    {
+      "Product": "MRX"
+    },
+    {
+      "Product": "MRX Prem 06 mm 7 x 4",
+      "Group Name": "6 mm",
+      "Group Alias": "06 mm",
+      "Prod. Category": "7 x 4",
+      "Product Type": "MRX"
+    },
+    {
+      "Product": "MRX Prem 06 mm 8 x 3",
+      "Group Name": "6 mm",
+      "Group Alias": "06 mm",
+      "Prod. Category": "8 x 3",
+      "Product Type": "MRX"
+    },
+    {
+      "Product": "MRX Prem 06 mm 8 x 4",
+      "Group Name": "6 mm",
+      "Group Alias": "06 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "MRX"
+    },
+    {
+      "Product": "MRX Prem 09 mm 6 x 3",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "6 x 3",
+      "Product Type": "MRX"
+    },
+    {
+      "Product": "MRX Prem 09 mm 6 x 4",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "6 x 4",
+      "Product Type": "MRX"
+    },
+    {
+      "Product": "MRX Prem 09 mm 7 x 3",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "7 x 3",
+      "Product Type": "MRX"
+    },
+    {
+      "Product": "MRX Prem 09 mm 7 x 4",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "7 x 4",
+      "Product Type": "MRX"
+    },
+    {
+      "Product": "MRX Prem 09 mm 8 x 3",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "8 x 3",
+      "Product Type": "MRX"
+    },
+    {
+      "Product": "MRX Prem 09 mm 8 x 4",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "MRX"
+    },
+    {
+      "Product": "MRX Prem 12 mm 6 x 3",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "6 x 3",
+      "Product Type": "MRX"
+    },
+    {
+      "Product": "MRX Prem 12 mm 6 x 4",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "6 x 4",
+      "Product Type": "MRX"
+    },
+    {
+      "Product": "MRX Prem 12 mm 7 x 3",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "7 x 3",
+      "Product Type": "MRX"
+    },
+    {
+      "Product": "MRX Prem 12 mm 7 x 4",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "7 x 4",
+      "Product Type": "MRX"
+    },
+    {
+      "Product": "MRX Prem 12 mm 8 x 3",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "8 x 3",
+      "Product Type": "MRX"
+    },
+    {
+      "Product": "MRX Prem 12 mm 8 x 4",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "MRX"
+    },
+    {
+      "Product": "MRX Prem 15 mm 8 x 4",
+      "Group Name": "15 mm",
+      "Group Alias": "$15 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "MRX"
+    },
+    {
+      "Product": "MRX XL 19 mm 6 x 3",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "6 x 3",
+      "Product Type": "MRX XL"
+    },
+    {
+      "Product": "MRX XL 19 mm 6 x 4",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "6 x 4",
+      "Product Type": "MRX XL"
+    },
+    {
+      "Product": "MRX XL 19 mm 7 x 3",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "7 x 3",
+      "Product Type": "MRX XL"
+    },
+    {
+      "Product": "MRX XL 19 mm 7 x 4",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "7 x 4",
+      "Product Type": "MRX XL"
+    },
+    {
+      "Product": "MRX XL 19 mm 8 x 3",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "8 x 3",
+      "Product Type": "MRX XL"
+    },
+    {
+      "Product": "MRX XL 19 mm 8 x 4",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "MRX XL"
+    },
+    {
+      "Product": "MX WP 06 mm 7 x 4",
+      "Group Name": "6 mm",
+      "Group Alias": "06 mm",
+      "Prod. Category": "7 x 4",
+      "Product Type": "MX WP"
+    },
+    {
+      "Product": "MX WP 06 mm 8 x 4",
+      "Group Name": "6 mm",
+      "Group Alias": "06 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "MX WP"
+    },
+    {
+      "Product": "MX WP 09 mm 7 x 4",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "7 x 4",
+      "Product Type": "MX WP"
+    },
+    {
+      "Product": "MX WP 09 mm 8 x 4",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "MX WP"
+    },
+    {
+      "Product": "MX WP 12 mm 7 x 4",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "7 x 4",
+      "Product Type": "MX WP"
+    },
+    {
+      "Product": "MX WP 12 mm 8 x 4",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "MX WP"
+    },
+    {
+      "Product": "MX WP 19 mm 8 x 4",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "MX WP"
+    },
+    {
+      "Product": "ZVK 06 mm 6 x 3",
+      "Group Name": "6 mm",
+      "Group Alias": "06 mm",
+      "Prod. Category": "6 x 3",
+      "Product Type": "ZVK"
+    },
+    {
+      "Product": "ZVK 06 mm 6 x 4",
+      "Group Name": "6 mm",
+      "Group Alias": "06 mm",
+      "Prod. Category": "6 x 4",
+      "Product Type": "ZVK"
+    },
+    {
+      "Product": "ZVK 06 mm 7 x 3",
+      "Group Name": "6 mm",
+      "Group Alias": "06 mm",
+      "Prod. Category": "7 x 3",
+      "Product Type": "ZVK"
+    },
+    {
+      "Product": "ZVK 06 mm 7 x 4",
+      "Group Name": "6 mm",
+      "Group Alias": "06 mm",
+      "Prod. Category": "7 x 4",
+      "Product Type": "ZVK"
+    },
+    {
+      "Product": "ZVK 06 mm 8 x 3",
+      "Group Name": "6 mm",
+      "Group Alias": "06 mm",
+      "Prod. Category": "8 x 3",
+      "Product Type": "ZVK"
+    },
+    {
+      "Product": "ZVK 06 mm 8 x 4",
+      "Group Name": "6 mm",
+      "Group Alias": "06 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "ZVK"
+    },
+    {
+      "Product": "ZVK 09 mm 6 x 3",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "6 x 3",
+      "Product Type": "ZVK"
+    },
+    {
+      "Product": "ZVK 09 mm 6 x 4",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "6 x 4",
+      "Product Type": "ZVK"
+    },
+    {
+      "Product": "ZVK 09 mm 7 x 3",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "7 x 3",
+      "Product Type": "ZVK"
+    },
+    {
+      "Product": "ZVK 09 mm 7 x 4",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "7 x 4",
+      "Product Type": "ZVK"
+    },
+    {
+      "Product": "ZVK 09 mm 8 x 3",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "8 x 3",
+      "Product Type": "ZVK"
+    },
+    {
+      "Product": "ZVK 09 mm 8 x 4",
+      "Group Name": "9 mm",
+      "Group Alias": "+09 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "ZVK"
+    },
+    {
+      "Product": "ZVK 12 mm 6 x 3",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "6 x 3",
+      "Product Type": "ZVK"
+    },
+    {
+      "Product": "ZVK 12 mm 6 x 4",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "6 x 4",
+      "Product Type": "ZVK"
+    },
+    {
+      "Product": "ZVK 12 mm 7 x 3",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "7 x 3",
+      "Product Type": "ZVK"
+    },
+    {
+      "Product": "ZVK 12 mm 7 x 4",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "7 x 4",
+      "Product Type": "ZVK"
+    },
+    {
+      "Product": "ZVK 12 mm 8 x 3",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "8 x 3",
+      "Product Type": "ZVK"
+    },
+    {
+      "Product": "ZVK 12 mm 8 x 4",
+      "Group Name": "12 mm",
+      "Group Alias": "%12 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "ZVK"
+    },
+    {
+      "Product": "ZVK 15 mm 8 x 4",
+      "Group Name": "15 mm",
+      "Group Alias": "$15 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "ZVK"
+    },
+    {
+      "Product": "ZVK 18 mm 6 x 3",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "6 x 3",
+      "Product Type": "ZVK"
+    },
+    {
+      "Product": "ZVK 18 mm 6 x 4",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "6 x 4",
+      "Product Type": "ZVK"
+    },
+    {
+      "Product": "ZVK 18 mm 7 x 3",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "7 x 3",
+      "Product Type": "ZVK"
+    },
+    {
+      "Product": "ZVK 18 mm 7 x 4",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "7 x 4",
+      "Product Type": "ZVK"
+    },
+    {
+      "Product": "ZVK 18 mm 8 x 3",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "8 x 3",
+      "Product Type": "ZVK"
+    },
+    {
+      "Product": "ZVK 18 mm 8 x 4",
+      "Group Name": "18 mm",
+      "Group Alias": "#18 mm",
+      "Prod. Category": "8 x 4",
+      "Product Type": "ZVK"
+    }
+  ]
+}
