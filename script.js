@@ -29,7 +29,7 @@ function sendOrder() {
 
     let totalQuantity = calculateTotalQuantity();
     orderText += `\nTotal : *${totalQuantity}* Pcs.\n`;
-    console.log(orderText);
+    // console.log(orderText);
 
     // Replace the recipient number with your target WhatsApp number
     const recipientNumber = '+916355360702';
@@ -41,7 +41,7 @@ function sendOrder() {
     const waMeLink = `https://wa.me/${recipientNumber}?text=${encodedOrderText}`;
 
     // Open the link in a new tab/window
-    // window.open(waMeLink, '_blank');
+    window.open(waMeLink, '_blank');
 }
 
 // Function to calculate the total quantity
