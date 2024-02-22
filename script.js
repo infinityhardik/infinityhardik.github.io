@@ -1,5 +1,12 @@
 // Function to send order (replace with your implementation)
 function sendOrder() {
+
+    // Check if the quantity is greater than zero
+    if (parseInt(currentQuantity, 10) === 0 || selectedProducts.length === 0) {
+        console.warn('Quantity is zero or no products in the order. Please add products to the order.');
+        return;
+    }
+
     // Sort the selected products by Group Alias name first, then by Product Name
     selectedProducts.sort((a, b) => {
         const groupComparison = a.product['Group Alias'].localeCompare(b.product['Group Alias']);
@@ -16,7 +23,7 @@ function sendOrder() {
     let currentGroupAlias = null;
 
     selectedProducts.forEach(item => {
-        const { 'Group Alias': groupAlias, Product, 'Group Name' : groupName} = item.product;
+        const { 'Group Alias': groupAlias, Product, 'Group Name': groupName } = item.product;
 
         if (currentGroupAlias !== groupAlias) {
             // Insert a new line for a new Group Alias
