@@ -102,7 +102,7 @@ document.addEventListener('keydown', closeOrderModal);
 
 // Function to toggle product in the order list
 function toggleProduct(product) {
-    const index = selectedProducts.findIndex(item => item.product === product);
+    const index = selectedProducts.findIndex(item => item.product.Product === product);
     if (index === -1) {
         openOrderModal(product);
         resetQuantityToZero(); // Reset quantity to zero when a new product is selected

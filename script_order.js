@@ -52,8 +52,8 @@ function clearOrder() {
 // Function to update the order list textarea
 function updateOrderList() {
     const selectedProductsTextarea = document.getElementById('selected-products');
-    selectedProductsTextarea.value = selectedProducts.map(item => `${item.product.Product} - ${item.quantity}`).join('\n');
-
+    selectedProductsTextarea.value = selectedProducts.map(item => `${item.product.Product} - ${item.quantity}`).join('\n') + `\nTotal : ${calculateTotalQuantity()}`;
+    
     // Auto-scroll to the bottom
     selectedProductsTextarea.scrollTop = selectedProductsTextarea.scrollHeight;
 
