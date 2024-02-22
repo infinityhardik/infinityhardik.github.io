@@ -32,7 +32,6 @@ function displayProducts(productList) {
         productItem.appendChild(label);
         productItem.onclick = () => toggleProduct(product.Product);
 
-
         productListContainer.appendChild(productItem);
     });
 }
@@ -100,14 +99,20 @@ function closeOrderModal(event) {
 document.addEventListener('keydown', closeOrderModal);
 
 
-// Function to toggle product in the order list
 function toggleProduct(product) {
+    const checkbox = document.getElementById(`checkbox-${product.replace(/\s/g, '-')}`);
     const index = selectedProducts.findIndex(item => item.product.Product === product);
-    if (index === -1) {
+
+    // Toggle the checkbox state
+    checkbox.checked = !checkbox.checked;
+
+    // Check the checkbox state and open the modal only if it's checked
+    if (checkbox.checked & index === -1) {
         openOrderModal(product);
         resetQuantityToZero(); // Reset quantity to zero when a new product is selected
     } else {
-        selectedProducts.splice(index, 1);
+        // Unselecting the product, update the checkbox state
+        selectedProducts = selectedProducts.filter(item => item.product.Product !== product);
         updateOrderList();
     }
 }
