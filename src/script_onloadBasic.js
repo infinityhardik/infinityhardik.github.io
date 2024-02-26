@@ -50,7 +50,6 @@ function getProductDetails(productName) {
 // Call loadProducts() when the page loads
 window.onload = loadProducts;
 
-// Function to open order modal and set product details
 function openOrderModal(product) {
     resetQuantityToZero(); // Reset quantity to zero when the order modal is opened
     const orderModal = document.getElementById('order-modal');
@@ -61,9 +60,13 @@ function openOrderModal(product) {
 
     // Set product name and additional details in the modal
     modalProductName.textContent = product;
-    document.getElementById('modal-group-name').textContent = `Thickness = ${productDetails['Group Name']}`;
-    document.getElementById('modal-prod-category').textContent = `Size = ${productDetails['Prod. Category']}`;
-    document.getElementById('modal-product-type').textContent = `Brand Type = ${productDetails['Product Type']}`;
+    // document.getElementById('modal-group-name').textContent = `Group Name: ${productDetails['Group Name']}`;
+    // document.getElementById('modal-prod-category').textContent = `Product Category: ${productDetails['Prod. Category']}`;
+    document.getElementById('modal-product-type').textContent = `Product Type : ${productDetails['Product Type']}`;
+    document.getElementById('modal-face-type').textContent = `Face Type : ${productDetails['Face Type']}`;
+    document.getElementById('modal-core-type').textContent = `Core Type : ${productDetails['Core Type']}`;
+    document.getElementById('modal-grade').textContent = `Grade : ${productDetails['Grade']}`;
+    document.getElementById('modal-branding').textContent = `Branding : ${productDetails['Branding']}`;
 
     orderModal.style.display = 'block';
 }
