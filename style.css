@@ -151,7 +151,6 @@ button {
   border-radius: 5px; /* Add border-radius for a slightly rounded appearance if desired */
 }
 
-
 #order-modal .order-quantity-section input {
   margin: auto;
   padding: 8px;
@@ -183,6 +182,19 @@ button {
 
 .close:hover {
   color: #000;
+}
+
+.order-quantity-section {
+  display: flex;
+  align-items: center;
+}
+
+.order-quantity-section label {
+  margin-right: 10px; /* Adjust margin as needed */
+}
+
+.order-quantity-section input {
+  flex: 1;
 }
 
 #quantity {
