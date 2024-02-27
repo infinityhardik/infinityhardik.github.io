@@ -62,11 +62,11 @@ function openOrderModal(product) {
     modalProductName.textContent = product;
     // document.getElementById('modal-group-name').textContent = `Group Name: ${productDetails['Group Name']}`;
     // document.getElementById('modal-prod-category').textContent = `Product Category: ${productDetails['Prod. Category']}`;
-    document.getElementById('modal-product-type').textContent = `Product Type : ${productDetails['Product Type']}`;
-    document.getElementById('modal-face-type').textContent = `Face Type : ${productDetails['Face Type']}`;
-    document.getElementById('modal-core-type').textContent = `Core Type : ${productDetails['Core Type']}`;
-    document.getElementById('modal-grade').textContent = `Grade : ${productDetails['Grade']}`;
-    document.getElementById('modal-branding').textContent = `Branding : ${productDetails['Branding']}`;
+    document.getElementById('modal-product-type').innerHTML = `<b>Product Type :</b> ${productDetails['Product Type']}`;
+    document.getElementById('modal-face-type').innerHTML = `<b>Face Type :</b> ${productDetails['Face Type']}`;
+    document.getElementById('modal-core-type').innerHTML = `<b>Core Type :</b> ${productDetails['Core Type']}`;
+    document.getElementById('modal-grade').innerHTML = `<b>Grade :</b> ${productDetails['Grade']}`;
+    document.getElementById('modal-branding').innerHTML = `<b>Branding :</b> ${productDetails['Branding']}`;
 
     orderModal.style.display = 'block';
 }
