@@ -22,7 +22,7 @@
 <body>
     <div>
         <header>
-            <a href="https://maps.app.goo.gl/wS18SP7c8BN7YfMX6"><img src="assets/favicon.webp" width="61.8px" height="61.8px" alt="MT Logo"></a>
+            <a href="about.html"><img src="assets/favicon.webp" width="61.8px" height="61.8px" alt="MT Logo"></a>
             <h1>Order List</h1>
         </header>
         <div id="selectedProducts-Div">
@@ -45,10 +45,14 @@
         <div class="modal-content">
             <span class="close" onclick="closeOrderModal()">&times;</span>
             <h2 id="modal-product-name"></h2>
-            <p id="modal-group-name"></p>
-            <p id="modal-prod-category"></p>
+            <!-- <p id="modal-group-name"></p>
+            <p id="modal-prod-category"></p> -->
             <p id="modal-product-type"></p>
-
+            <p id="modal-face-type"></p>
+            <p id="modal-core-type"></p>
+            <p id="modal-grade"></p>
+            <p id="modal-branding"></p>
+            
             <div id="numeric-keypad">
                 <button onclick="appendToQuantity('7')">7</button>
                 <button onclick="appendToQuantity('8')">8</button>
@@ -63,7 +67,9 @@
                 <button class="back-btn" onclick="clearLastDigit()">←</button>
             </div>
             <div class="order-quantity-section" id="order-quantity-section">
-                <label for="quantity"><h3>Quantity :</h3></label>
+                <label for="quantity">
+                    <h3>Quantity :</h3>
+                </label>
                 <input type="text" id="quantity" aria-labelledby="quantity" min="0" value="0" readonly>
             </div>
             <div id="order-quantity-section-buttons">
@@ -72,6 +78,7 @@
             </div>
         </div>
     </div>
+
     <script src="dist/main.min.js"></script>
 </body>
 
