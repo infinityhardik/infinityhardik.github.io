@@ -16,6 +16,7 @@
     <meta name="revisit-after" content="1 days">
     <meta name="author" content="Mahadev Traders Plywood Block-Board & Flush-Door Wholesaler">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styleFilter.css">
     <link rel="icon" type="image/png" href="assets/favicon.webp" alt="MT Logo">
 </head>
 
@@ -29,6 +30,17 @@
             <textarea id="selected-products" placeholder="Generated Order" rows="3" cols="50" readonly></textarea>
         </div>
         <div id="order-list-buttons">
+            <button id="filterProductList" onclick="openFilterModal()">Filter</button>
+            <button onclick="clearFilters()">Clear Filters</button>
+            <!-- Filter Modal -->
+            <div id="filter-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeFilterModal()">&times;</span>
+                    <h2>Filter Options</h2>
+                    <div id="filter-options"></div>
+                    <button onclick="applyFilters()">Apply Filters</button>
+                </div>
+            </div>
             <button id="clearOrder" onclick="clearOrder()">Clear Order</button>
             <button id="sendOrder" onclick="sendOrder()">Send Order</button>
         </div>
@@ -52,7 +64,7 @@
             <p id="modal-core-type"></p>
             <p id="modal-grade"></p>
             <p id="modal-branding"></p>
-            
+
             <div id="numeric-keypad">
                 <button onclick="appendToQuantity('7')">7</button>
                 <button onclick="appendToQuantity('8')">8</button>
@@ -82,6 +94,7 @@
     <script src="src/script_onloadBasic.js"></script>
     <script src="src/script_order.js"></script>
     <script src="src/script_search.js"></script>
+    <script src="src/script_filterList.js"></script>
     <!-- <script src="dist/main.min.js"></script> -->
 </body>
 

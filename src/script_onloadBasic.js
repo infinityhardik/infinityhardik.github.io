@@ -14,6 +14,9 @@ async function loadProducts() {
 function displayProducts(productList) {
     const productListContainer = document.getElementById('product-list');
 
+    // Clear existing content
+    productListContainer.innerHTML = '';
+
     productList.forEach(product => {
         const productItem = document.createElement('div');
 
