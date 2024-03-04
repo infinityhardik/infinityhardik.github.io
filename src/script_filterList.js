@@ -31,13 +31,19 @@ function setCheckboxStates() {
 
         if (key in selectedFilters && selectedFilters[key].includes(value)) {
             checkbox.checked = true;
+            // Make the selected option bold and highlight it
+            checkbox.nextElementSibling.style.fontWeight = 'bold';
             // Populate unique values if the checkbox is checked
             populateUniqueValues(key);
         } else {
             checkbox.checked = false;
+            // Reset styles for unselected options
+            checkbox.nextElementSibling.style.fontWeight = 'normal';
+            checkbox.nextElementSibling.style.background = 'none';
         }
     });
 }
+
 
 // Function to populate filter options dynamically
 function populateFilterOptions() {
@@ -47,11 +53,14 @@ function populateFilterOptions() {
     // Get all unique keys from the JSON data
     const allKeys = getAllKeys(productsData.productDirectory);
 
+    // Create an unordered list
+    const list = document.createElement('ul');
 
-    // Create checkboxes for each key
+    // Create checkboxes and labels for each key
     allKeys.forEach(key => {
-        // Add Options for not wanting Filters
         if (key !== 'Product' && key !== 'Group Alias' && key !== 'Prod. Category') {
+            const listItem = document.createElement('li');
+
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.id = `filter-checkbox-${key}`;
@@ -61,12 +70,17 @@ function populateFilterOptions() {
             label.innerHTML = key;
             label.setAttribute('for', `filter-checkbox-${key}`);
 
-            filterOptionsContainer.appendChild(checkbox);
-            filterOptionsContainer.appendChild(label);
+            listItem.appendChild(checkbox);
+            listItem.appendChild(label);
+
+            list.appendChild(listItem);
         }
     });
 
+    // Append the unordered list to the filterOptionsContainer
+    filterOptionsContainer.appendChild(list);
 }
+
 
 // Function to get all unique keys from JSON data
 function getAllKeys(data) {

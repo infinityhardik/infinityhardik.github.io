@@ -31,13 +31,13 @@
         </div>
         <div id="order-list-buttons">
             <button id="filterProductList" onclick="openFilterModal()">Filter</button>
-            <button onclick="clearFilters()">Clear Filters</button>
+            <button id="clearFilters" onclick="clearFilters()">Clear Filters</button>
             <!-- Filter Modal -->
             <div id="filter-modal" class="modal">
                 <div class="modal-content">
                     <span class="close" onclick="closeFilterModal()">&times;</span>
                     <h2>Filter Options</h2>
-                    <div id="filter-options"></div>
+                    <div id="filter-options" class="filter-options-container"></div>
                     <button onclick="applyFilters()">Apply Filters</button>
                 </div>
             </div>

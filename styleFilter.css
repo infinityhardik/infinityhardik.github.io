@@ -1,75 +1,107 @@
 #filter-modal {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1000;
-    width: 100%; /* Adjust width as needed */
-    border-radius: 5px; /* Add border-radius for a slightly rounded appearance if desired */
-  }
-  
-  #filter-modal .modal-content {
-    background-color: #fff;
-    margin: 15% auto;
-    padding: 30px;
-    border-radius: 5px;
-    max-width: 400px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    position: relative;
-  }
-  
-  #filter-modal .close {
-    position: absolute;
-    top: 10px;
-    right: 25px;
-    font-size: 32px;
-    cursor: pointer;
-    color: #7a7a7a;
-  }
-  
-  #filter-modal .close:hover {
-    color: #000;
-  }
-  
-  #filter-options {
-    margin-top: 20px;
-  }
-  
-  #filter-options label {
-    display: block;
-    margin-bottom: 10px;
-  }
-  
-  #filter-options input[type="checkbox"] {
-    margin-right: 5px;
-  }
-  
-  #filter-modal button {
-    background-color: green;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-    font-weight: 500;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: medium;
-  }
-  
-  #filter-modal button:hover {
-    background-color: darkgreen;
-  }
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  width: 100%; /* Adjust width as needed */
+  border-radius: 5px; /* Add border-radius for a slightly rounded appearance if desired */
+}
 
-  #filter-options label {
-    display: inline-block;
-    margin-right: 10px; /* Adjust margin as needed for spacing between checkbox and label */
-    margin-bottom: 10px;
-  }
-  
-  #filter-options input[type="checkbox"] {
-    display: inline-block;
-    margin-right: 5px; /* Adjust margin as needed for spacing between checkbox and label */
-  }
-  
+#filter-modal .modal-content {
+  background-color: #fff;
+  margin: 15% auto;
+  border-radius: 20px;
+  max-width: 400px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+#filter-modal .close {
+  position: absolute;
+  top: 10px;
+  right: 25px;
+  font-size: 32px;
+  cursor: pointer;
+  color: #7a7a7a;
+}
+
+#filter-modal .close:hover {
+  color: #000;
+}
+
+#filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+.filter-group {
+  margin-right: 20px; /* Adjust margin between filter groups */
+}
+
+.filter-group label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.filter-group input[type="checkbox"] {
+  margin-right: 5px;
+}
+#filter-options label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+#filter-options input[type="checkbox"] {
+  margin-right: 5px;
+}
+
+#filter-modal button {
+  background-color: green;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+  font-weight: 500;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: medium;
+}
+
+#filter-modal button:hover {
+  background-color: darkgreen;
+}
+
+#filter-options label {
+  display: inline-block;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+#filter-options input[type="checkbox"] {
+  display: inline-block;
+  margin-right: 5px;
+}
+
+/* Add additional styling as needed */
+
+.filter-options-container {
+  max-width: 600px; /* Adjust the max-width as needed */
+  margin: 0 auto;
+}
+
+.close {
+  cursor: pointer;
+}
+
+#filterProductList, #clearFilters {
+  margin: 10px;
+  padding: 10px;
+}
+
+#filter-options > div {
+flex-wrap: wrap;
+}
