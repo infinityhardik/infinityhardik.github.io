@@ -139,8 +139,8 @@ function populateUniqueValues(selectedKey) {
             // Add an event listener to update selectedFilters on checkbox change
             valueCheckbox.addEventListener('change', () => updateSelectedFilters(selectedKey, value));
 
-            container.appendChild(valueCheckbox);
             container.appendChild(valueLabel);
+            container.appendChild(valueCheckbox);
         });
     }
 }

@@ -30,13 +30,13 @@
             <textarea id="selected-products" placeholder="Generated Order" rows="3" cols="50" readonly></textarea>
         </div>
         <div id="order-list-buttons">
-            <button id="filterProductList" onclick="openFilterModal()">Filter</button>
+            <button id="filterProductList" onclick="openFilterModal()">Filters</button>
             <button id="clearFilters" onclick="clearFilters()">Clear Filters</button>
             <!-- Filter Modal -->
             <div id="filter-modal" class="modal">
                 <div class="modal-content">
                     <span class="close" onclick="closeFilterModal()">&times;</span>
-                    <h2>Filter Options</h2>
+                    <h2>List Filter Options</h2>
                     <div id="filter-options" class="filter-options-container"></div>
                     <button onclick="applyFilters()">Apply Filters</button>
                 </div>

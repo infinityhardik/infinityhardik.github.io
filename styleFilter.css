@@ -31,11 +31,6 @@
   color: #000;
 }
 
-#filter-options {
-  display: flex;
-  flex-wrap: wrap;
-  margin-top: 20px;
-}
 .filter-group {
   margin-right: 20px; /* Adjust margin between filter groups */
 }
@@ -98,19 +93,16 @@
   margin: 0 auto;
 }
 
-.close {
-  cursor: pointer;
-}
-
 #filterProductList,
 #clearFilters {
   margin: 10px;
   padding: 10px;
 }
 
-#filter-options > div {
-  display: flexbox;
+#filter-options {
+  display: flex;
   flex-wrap: wrap;
+  margin-top: 20px;
 }
 
 #filterProductList {
