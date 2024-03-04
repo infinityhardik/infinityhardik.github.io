@@ -10,6 +10,9 @@ function openFilterModal() {
     setCheckboxStates();
 
     filterModal.style.display = 'block';
+
+    // Check if filters are active and update Clear Filters button color
+    updateClearFiltersButtonStyle();
 }
 
 
@@ -181,6 +184,9 @@ function applyFilters() {
     // Update selectedFilters when applying filters
     selectedFilters = getSelectedFilters();
 
+     // Check if filters are active and update Clear Filters button color
+     updateClearFiltersButtonStyle();
+
     // Check if no filters are selected, clear filters and display all products
     if (Object.keys(selectedFilters).length === 0) {
         clearFilters();
@@ -215,6 +221,9 @@ function clearFilters() {
 
     // Reset the product list to show all products
     displayProducts(productsData.productDirectory);
+
+    // Update Clear Filters button style
+    updateClearFiltersButtonStyle();
 }
 
 // Function to filter products based on selected filters
@@ -250,4 +259,21 @@ function getSelectedFilters() {
     });
 
     return selectedFilters;
+}
+
+// Function to update Clear Filters button style based on filter activity
+function updateClearFiltersButtonStyle() {
+    const filterButton = document.getElementById('filterProductList');
+    const clearFiltersButton = document.getElementById('clearFilters');
+    const filtersActive = Object.keys(selectedFilters).length > 0;
+
+    if (filtersActive) {
+        filterButton.style.backgroundColor = 'darkblue';
+        clearFiltersButton.style.backgroundColor = 'black';
+        clearFiltersButton.style.color = 'white';
+    } else {
+        filterButton.style.backgroundColor = ''; // Reset to default
+        clearFiltersButton.style.backgroundColor = ''; // Reset to default
+        clearFiltersButton.style.color = ''; // Reset to default
+    }
 }

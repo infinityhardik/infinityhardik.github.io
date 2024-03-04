@@ -79,11 +79,16 @@
   display: inline-block;
   margin-right: 10px;
   margin-bottom: 10px;
+  margin-left: 5px;
+  font-size: medium;
+  font-weight: 500;
 }
 
 #filter-options input[type="checkbox"] {
   display: inline-block;
   margin-right: 5px;
+  width: 15px;
+  height: 15px;
 }
 
 /* Add additional styling as needed */
@@ -97,11 +102,45 @@
   cursor: pointer;
 }
 
-#filterProductList, #clearFilters {
+#filterProductList,
+#clearFilters {
   margin: 10px;
   padding: 10px;
 }
 
 #filter-options > div {
-flex-wrap: wrap;
+  display: flexbox;
+  flex-wrap: wrap;
+}
+
+#filterProductList {
+  margin: 10px;
+  padding: 10px;
+  background-color: cornflowerblue; /* Set the background color to dark blue */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: medium;
+}
+
+#filterProductList:hover {
+  background-color: blue; /* Darken the color on hover if desired */
+}
+
+#clearFilters {
+  margin: 10px;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: medium;
+}
+
+#clearFilters:hover {
+  background-color: darkgray; /* Dark red on hover if desired */
 }
