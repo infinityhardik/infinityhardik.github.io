@@ -23,7 +23,7 @@ function displayProducts(productList) {
 
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
-        checkbox.classList.add('form-check-input', 'me-1');
+        checkbox.classList.add('form-check-input', 'me-2');
 
         // Generate a unique ID for each checkbox based on the product name
         const checkboxId = `checkbox-${product.Product.replace(/\s/g, '-')}`;
@@ -31,7 +31,7 @@ function displayProducts(productList) {
         // checkbox.classList.add('form-check-input', 'me-2');
 
         const label = document.createElement('label');
-        label.classList.add('form-check-label');
+        label.classList.add('form-check-label', 'fs-6', 'fw-semibold');
         label.innerHTML = product.Product;
         label.setAttribute('for', checkboxId); // Associate the label with the checkbox
 
