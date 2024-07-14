@@ -18,16 +18,20 @@ function displayProducts(productList) {
     productListContainer.innerHTML = '';
 
     productList.forEach(product => {
-        const productItem = document.createElement('div');
+        const productItem = document.createElement('li');
+        productItem.classList.add('align-items-center', 'list-group-item')
 
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
+        checkbox.classList.add('form-check-input', 'me-1');
 
         // Generate a unique ID for each checkbox based on the product name
         const checkboxId = `checkbox-${product.Product.replace(/\s/g, '-')}`;
         checkbox.id = checkboxId;
+        // checkbox.classList.add('form-check-input', 'me-2');
 
         const label = document.createElement('label');
+        label.classList.add('form-check-label');
         label.innerHTML = product.Product;
         label.setAttribute('for', checkboxId); // Associate the label with the checkbox
 

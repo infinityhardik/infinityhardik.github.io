@@ -28,7 +28,7 @@ function filterProducts() {
     const searchBox = document.getElementById('search-box');
     const filter = searchBox.value.toUpperCase();
     const productList = document.getElementById('product-list');
-    const productItems = productList.getElementsByTagName('div');
+    const productItems = productList.getElementsByTagName('li');
 
     for (let i = 0; i < productItems.length; i++) {
         const label = productItems[i].getElementsByTagName('label')[0];

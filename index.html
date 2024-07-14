@@ -2,100 +2,73 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Page</title>
-    <meta name="title" content="Order Page for Mahadev Traders">
-    <meta name="description"
-        content="Product Directory and Order Page for Mahadev Traders Plywood, Block-Board & Flush-Door Wholesaler, Rajkot. The Best Quality Wholesaler in Rajkot.">
-    <meta name="keywords"
-        content="Mahadev, Traders, Plywood, Block-Board, Flush-Door, Door, Wholesaler, Best, Rajkot, Laminate, Wood, Quality, Best">
-    <meta name="robots" content="index, follow">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="language" content="English">
-    <meta name="revisit-after" content="1 days">
-    <meta name="author" content="Mahadev Traders Plywood Block-Board & Flush-Door Wholesaler">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="styleFilter.css">
-    <link rel="icon" type="image/png" href="assets/favicon.webp" alt="MT Logo">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Page</title>
+  <meta name="title" content="Order Page for Mahadev Traders" />
+  <meta name="description"
+    content="Product Directory and Order Page for Mahadev Traders Plywood, Block-Board & Flush-Door Wholesaler, Rajkot. The Best Quality Wholesaler in Rajkot." />
+  <meta name="keywords"
+    content="Mahadev, Traders, Plywood, Block-Board, Flush-Door, Door, Wholesaler, Best, Rajkot, Laminate, Wood, Quality, Best" />
+  <meta name="robots" content="index, follow" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="language" content="English" />
+  <meta name="revisit-after" content="1 days" />
+  <meta name="author" content="Mahadev Traders Plywood Block-Board & Flush-Door Wholesaler" />
+  <link rel="icon" type="image/png" href="assets/favicon.webp" alt="MT Logo" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 
-<body>
-    <div>
-        <header>
-            <a href="about.html"><img src="assets/favicon.webp" width="61.8px" height="61.8px" alt="MT Logo"></a>
-            <h1>Order List</h1>
-        </header>
-        <div id="selectedProducts-Div">
-            <textarea id="selected-products" placeholder="Generated Order" rows="3" cols="50" readonly></textarea>
-        </div>
-        <div id="order-list-buttons">
-            <button id="filterProductList" onclick="openFilterModal()">Filters</button>
-            <button id="clearFilters" onclick="clearFilters()">Clear Filters</button>
-            <!-- Filter Modal -->
-            <div id="filter-modal" class="modal">
-                <div class="modal-content">
-                    <span class="close" onclick="closeFilterModal()">&times;</span>
-                    <h2>List Filter Options</h2>
-                    <div id="filter-options" class="filter-options-container"></div>
-                    <button onclick="applyFilters()">Apply Filters</button>
-                </div>
-            </div>
-            <button id="clearOrder" onclick="clearOrder()">Clear Order</button>
-            <button id="sendOrder" onclick="sendOrder()">Send Order</button>
-        </div>
-        <div id="search-item">
-            <input type="text" id="search-box" name="search-box" placeholder="Search products..."
-                oninput="filterProducts()" autocomplete="off">
-            <button id="clearSearch" onclick="clearSearch()">&times;</button>
-        </div>
-        <div id="product-list"></div>
-    </div>
+<body class="container-fluid">
+  <header class="d-flex justify-content-center align-items-center mb-3">
+    <a href="about.html">
+      <img src="assets/favicon.webp" width="61.8px" height="61.8px" alt="MT Logo" class="img-fluid m-2" />
+    </a>
+    <p class="h2 text-body-secondary m-2">Order List</p>
+  </header>
 
-    <!-- Order Quantity Modal -->
-    <div id="order-modal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeOrderModal()">&times;</span>
-            <h2 id="modal-product-name"></h2>
-            <!-- <p id="modal-group-name"></p>
-            <p id="modal-prod-category"></p> -->
-            <p id="modal-product-type"></p>
-            <p id="modal-face-type"></p>
-            <p id="modal-core-type"></p>
-            <p id="modal-grade"></p>
-            <p id="modal-branding"></p>
+  <div class="form-floating mb-3">
+    <textarea id="selected-products" class="form-control" placeholder="Generated Order" style="height: 100px"
+      disabled></textarea>
+    <label for="selected-products">Generated Order</label>
+  </div>
 
-            <div id="numeric-keypad">
-                <button onclick="appendToQuantity('7')">7</button>
-                <button onclick="appendToQuantity('8')">8</button>
-                <button onclick="appendToQuantity('9')">9</button>
-                <button onclick="appendToQuantity('4')">4</button>
-                <button onclick="appendToQuantity('5')">5</button>
-                <button onclick="appendToQuantity('6')">6</button>
-                <button onclick="appendToQuantity('1')">1</button>
-                <button onclick="appendToQuantity('2')">2</button>
-                <button onclick="appendToQuantity('3')">3</button>
-                <button class="zero-btn" onclick="appendToQuantity('0')">0</button>
-                <button class="back-btn" onclick="clearLastDigit()">←</button>
-            </div>
-            <div class="order-quantity-section" id="order-quantity-section">
-                <label for="quantity">
-                    <h3>Quantity :</h3>
-                </label>
-                <input type="text" id="quantity" aria-labelledby="quantity" min="0" value="0" readonly>
-            </div>
-            <div id="order-quantity-section-buttons">
-                <button id="clearAllModal" onclick="clearAllDigits()">Clear All</button>
-                <button id="addToOrder" onclick="addToOrder()">Add to Order</button>
-            </div>
-        </div>
+  <div class="btn-group d-flex justify-content-center" role="group" aria-label="Default button group">
+    <button id="filterProductList" class="btn btn-primary fw-semibold" onclick="openFilterModal()">
+      Filters
+    </button>
+    <button id="clearFilters" class="btn btn-secondary fw-semibold" onclick="clearFilters()">
+      Clear Filters
+    </button>
+    <button id="clearOrder" class="btn btn-danger fw-semibold" onclick="clearOrder()">
+      Clear Order
+    </button>
+    <button id="sendOrder" class="btn btn-success fw-semibold" onclick="sendOrder()">
+      Send Order
+    </button>
+  </div>
+
+  <div class="d-flex justify-content-center mt-3">
+    <div class="input-group mb-3">
+      <input type="text" id="search-box" class="form-control" placeholder="Search Products..."
+        oninput="filterProducts()" autocomplete="off" aria-label="Search Products..."
+        aria-describedby="Search Products..." />
+      <button id="clearSearch" class="btn btn-outline-warning input-group-text" onclick="clearSearch()">
+        <strong>X</strong>
+      </button>
     </div>
+  </div>
+
+  <div id="product-list" class="list-group"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
     <script src="src/script.js"></script>
-    <script src="src/script_onloadBasic.js"></script>
-    <script src="src/script_order.js"></script>
     <script src="src/script_search.js"></script>
     <script src="src/script_filterList.js"></script>
-    <!-- <script src="dist/main.min.js"></script> -->
+    <script src="src/script_onloadBasic.js"></script>
+    <script src="src/script_order.js"></script>
 </body>
 
 </html>
