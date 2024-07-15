@@ -31,7 +31,7 @@ function displayProducts(productList) {
         // checkbox.classList.add('form-check-input', 'me-2');
 
         const label = document.createElement('label');
-        label.classList.add('form-check-label', 'fs-6', 'fw-semibold');
+        label.classList.add('form-check-label', 'fs-6', 'fw-semibold', 'stretched-link');
         label.innerHTML = product.Product;
         label.setAttribute('for', checkboxId); // Associate the label with the checkbox
 

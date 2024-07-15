@@ -24,12 +24,12 @@
     <a href="about.html">
       <img src="assets/favicon.webp" width="61.8px" height="61.8px" alt="MT Logo" class="img-fluid m-2" />
     </a>
-    <p class="h2 text-body-secondary m-2">Order List</p>
+    <p class="h2 text-body m-2">Order List</p>
   </header>
 
   <div class="form-floating mb-3">
-    <textarea id="selected-products" class="form-control" placeholder="Generated Order" style="height: 100px"
-      disabled></textarea>
+    <textarea id="selected-products" class="form-control border border-dark border-2" placeholder="Generated Order"
+      style="height: 100px" disabled></textarea>
     <label for="selected-products">Generated Order</label>
   </div>
 
@@ -50,8 +50,8 @@
 
   <div class="d-flex justify-content-center mt-3">
     <div class="input-group mb-3">
-      <input type="text" id="search-box" class="form-control" placeholder="Search Products..."
-        oninput="filterProducts()" autocomplete="off" aria-label="Search Products..."
+      <input type="text" id="search-box" class="form-control border border-primary border-2"
+        placeholder="Search Products..." oninput="filterProducts()" autocomplete="off" aria-label="Search Products..."
         aria-describedby="Search Products..." />
       <button id="clearSearch" class="btn btn-outline-warning input-group-text" onclick="clearSearch()">
         <strong>X</strong>
@@ -70,52 +70,65 @@
           <button type="button" onclick="closeOrderModal()" class="btn-close" data-bs-dismiss="modal"
             aria-label="Close"></button>
         </div>
-        <div class="'modal-body">
-          <!-- <p id="modal-group-name"></p>
-          <p id="modal-prod-category"></p> -->
-          <p id="modal-product-type"></p>
-          <p id="modal-face-type"></p>
-          <p id="modal-core-type"></p>
-          <p id="modal-grade"></p>
-          <p id="modal-branding"></p>
-          
-          <div id="numeric-keypad">
-            <button onclick="appendToQuantity('7')">7</button>
-            <button onclick="appendToQuantity('8')">8</button>
-            <button onclick="appendToQuantity('9')">9</button>
-            <button onclick="appendToQuantity('4')">4</button>
-            <button onclick="appendToQuantity('5')">5</button>
-            <button onclick="appendToQuantity('6')">6</button>
-            <button onclick="appendToQuantity('1')">1</button>
-            <button onclick="appendToQuantity('2')">2</button>
-            <button onclick="appendToQuantity('3')">3</button>
-            <button class="zero-btn" onclick="appendToQuantity('0')">0</button>
-            <button class="back-btn" onclick="clearLastDigit()">←</button>
-          </div>
-        </div>
+        <div class="modal-body">
 
-        <div class="order-quantity-section" id="order-quantity-section">
-          <label for="quantity">
-            <h3>Quantity :</h3>
-          </label>
-          <input type="text" id="quantity" aria-labelledby="quantity" min="0" value="0" readonly>
-        </div>
-        <div id="order-quantity-section-buttons">
-          <button id="clearAllModal" onclick="clearAllDigits()">Clear All</button>
-          <button id="addToOrder" onclick="addToOrder()">Add to Order</button>
+          <ul class="list-group list-group-flush">
+            <!-- <p id="modal-group-name"></p>
+            <p id="modal-prod-category"></p> -->
+            <p id="modal-product-type" class="list-group-item"></p>
+            <p id="modal-face-type" class="list-group-item"></p>
+            <p id="modal-core-type" class="list-group-item"></p>
+            <p id="modal-grade" class="list-group-item"></p>
+            <p id="modal-branding" class="list-group-item"></p>
+          </ul>
+
+          <div id="numeric-keypad" class="btn-group-vertical btn-group-lg" role="group" aria-label="Numeric Keypad">
+            <div class="btn-group btn-group-lg" role="group">
+              <button onclick="appendToQuantity('7')" type="button" class="btn btn-dark">7</button>
+              <button onclick="appendToQuantity('8')" type="button" class="btn btn-dark">8</button>
+              <button onclick="appendToQuantity('9')" type="button" class="btn btn-dark">9</button>
+            </div>
+            <div class="btn-group btn-group-lg" role="group">
+              <button onclick="appendToQuantity('4')" type="button" class="btn btn-dark">4</button>
+              <button onclick="appendToQuantity('5')" type="button" class="btn btn-dark">5</button>
+              <button onclick="appendToQuantity('6')" type="button" class="btn btn-dark">6</button>
+            </div>
+            <div class="btn-group btn-group-lg" role="group">
+              <button onclick="appendToQuantity('1')" type="button" class="btn btn-dark">1</button>
+              <button onclick="appendToQuantity('2')" type="button" class="btn btn-dark">2</button>
+              <button onclick="appendToQuantity('3')" type="button" class="btn btn-dark">3</button>
+            </div>
+            <div class="btn-group btn-group-lg" role="group">
+              <button onclick="appendToQuantity('0')" type="button" class="btn btn-dark col-8">0</button>
+              <button onclick="clearLastDigit()" type="button" class="btn btn-danger col-4">←</button>
+            </div>
+          </div>
+
+
+          <div class="order-quantity-section" id="order-quantity-section">
+            <label for="quantity">
+              <h3>Quantity :</h3>
+            </label>
+            <input type="text" id="quantity" aria-labelledby="quantity" min="0" value="0" readonly>
+          </div>
+
+          <div id="order-quantity-section-buttons" class="modal-footer">
+            <button id="clearAllModal" onclick="clearAllDigits()" type="button" class="btn btn-secondary"
+              data-bs-dismiss="modal">Clear All</button>
+            <button id="addToOrder" onclick="addToOrder()" type="button" class="btn btn-primary">Add to Order</button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-    crossorigin="anonymous"></script>
-  <script src="src/script.js"></script>
-  <script src="src/script_search.js"></script>
-  <script src="src/script_filterList.js"></script>
-  <script src="src/script_onloadBasic.js"></script>
-  <script src="src/script_order.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"></script>
+    <script src="src/script.js"></script>
+    <script src="src/script_search.js"></script>
+    <script src="src/script_filterList.js"></script>
+    <script src="src/script_onloadBasic.js"></script>
+    <script src="src/script_order.js"></script>
 </body>
 
 </html>
