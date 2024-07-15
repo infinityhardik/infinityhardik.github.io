@@ -49,9 +49,9 @@ function setCheckboxStates() {
         const key = checkboxIdParts.slice(keyIndex + 1, keyIndex + 3).join(' '); // Join the key parts with spaces
         const value = checkboxIdParts.slice(keyIndex + 3).join('-'); // Join remaining parts as value
 
-        console.log('Checkbox ID:', checkbox.id);
-        console.log('Key:', key);
-        console.log('Value:', value);
+        // console.log('Checkbox ID:', checkbox.id);
+        // console.log('Key:', key);
+        // console.log('Value:', value);
 
         if (key in selectedFilters && selectedFilters[key].includes(value)) {
             checkbox.checked = true;
@@ -77,7 +77,8 @@ function populateFilterOptions() {
     // Get all unique keys from the JSON data
     const allKeys = getAllKeys(productsData.productDirectory);
 
-    console.log('All Keys:', allKeys); // Debugging: Log all keys
+    // console.log('All Keys:', allKeys); 
+    // Debugging: Log all keys
 
     // Create tabs and tab contents
     allKeys.forEach((key, index) => {
@@ -113,13 +114,15 @@ function populateUniqueValues(selectedKey) {
     const safeKey = selectedKey.replace(/ /g, '-'); // Replace spaces with hyphens
     const tabPane = document.getElementById(`list-${safeKey}`);
     tabPane.innerHTML = '';
-
-    console.log(`Populating values for: ${selectedKey}`); // Debugging: Log the key
+    
+    // Debugging: Log the key
+    // console.log(`Populating values for: ${selectedKey}`); 
 
     // Get all unique values for the selected key
     const uniqueValues = getUniqueValues(productsData.productDirectory, selectedKey);
 
-    console.log(`Unique values for ${selectedKey}:`, uniqueValues); // Debugging: Log unique values
+    // Debugging: Log unique values
+    // console.log(`Unique values for ${selectedKey}:`, uniqueValues); 
 
     if (uniqueValues.length === 0) {
         console.warn(`No unique values found for key: ${selectedKey}`); // Debugging: Log warning if no values found
@@ -233,9 +236,9 @@ function getSelectedFilters() {
             const key = checkboxIdParts.slice(keyIndex + 1, keyIndex + 3).join(' '); // Join the key parts with spaces
             const value = checkboxIdParts.slice(keyIndex + 3).join('-'); // Join remaining parts as value
 
-            console.log('Checkbox ID:', checkbox.id);
-            console.log('Key:', key);
-            console.log('Value:', value);
+            // console.log('Checkbox ID:', checkbox.id);
+            // console.log('Key:', key);
+            // console.log('Value:', value);
 
             if (!(key in selectedFilters)) {
                 selectedFilters[key] = [];
@@ -245,7 +248,7 @@ function getSelectedFilters() {
         }
     });
 
-    console.log('Selected Filters:', selectedFilters);
+    // console.log('Selected Filters:', selectedFilters);
 
     return selectedFilters;
 }
