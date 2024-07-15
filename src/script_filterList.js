@@ -215,14 +215,14 @@ function applyFilters() {
 function clearFilters() {
     // Clear selectedFilters when clearing filters
     selectedFilters = {};
-
+    
     const filterOptionsContainer = document.getElementById('filter-options');
     const checkboxes = filterOptionsContainer.querySelectorAll('input[type="checkbox"]');
-
+    
     checkboxes.forEach(checkbox => {
         checkbox.checked = false;
     });
-
+    
     // Remove dynamically created checkboxes
     filterOptionsContainer.innerHTML = '';
 
