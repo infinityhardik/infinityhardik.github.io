@@ -34,9 +34,28 @@
   </div>
 
   <div class="btn-group d-flex justify-content-center" role="group" aria-label="Default button group">
-    <button id="filterProductList" class="btn btn-primary fw-semibold" onclick="openFilterModal()">
+    <button id="filterProductList" class="btn btn-primary fw-semibold" onclick="openFilterModal()"
+      data-bs-toggle="modal" data-bs-target="#filter-modal">
       Filters
     </button>
+    <!-- Filter Modal -->
+    <div id="filter-modal" class="modal fade" tabindex="-1" aria-labelledby="FilterModal" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <p class="modal-title fs-5 fw-bold">List Filter Options</p>
+            <button type="button" onclick="closeFilterModal()" class="btn-close" data-bs-dismiss="modal"
+              aria-label="Close"></button>
+          </div>
+          <div id="filter-options" class="modal-body">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="applyFilters()">Apply
+              Filters</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <button id="clearFilters" class="btn btn-secondary fw-semibold" onclick="clearFilters()">
       Clear Filters
     </button>
@@ -109,12 +128,15 @@
             <label for="quantity" class="list-group-item flex-fill">
               <p class="h6">Quantity :</p>
             </label>
-            <input class="list-group-item flex-fill fw-bold" type="text" id="quantity" aria-labelledby="quantity" min="0" value="0" readonly>
+            <input class="list-group-item flex-fill fw-bold" type="text" id="quantity" aria-labelledby="quantity"
+              min="0" value="0" readonly>
           </div>
 
           <div id="order-quantity-section-buttons" class="modal-footer">
-            <button id="clearAllModal" onclick="clearAllDigits()" type="button" class="btn btn-secondary">Clear All</button>
-            <button id="addToOrder" onclick="addToOrder()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Add to Order</button>
+            <button id="clearAllModal" onclick="clearAllDigits()" type="button" class="btn btn-secondary">Clear
+              All</button>
+            <button id="addToOrder" onclick="addToOrder()" type="button" class="btn btn-primary"
+              data-bs-dismiss="modal">Add to Order</button>
           </div>
         </div>
       </div>

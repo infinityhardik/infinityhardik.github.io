@@ -58,19 +58,23 @@ function populateFilterOptions() {
 
     // Create an unordered list
     const list = document.createElement('ul');
+    list.setAttribute('class','list-group list-group-numbered');
 
     // Create checkboxes and labels for each key
     allKeys.forEach(key => {
         if (key !== 'Product' && key !== 'Group Alias' && key !== 'Prod. Category') {
             const listItem = document.createElement('li');
+            listItem.setAttribute('class', 'list-group-item')
 
             const checkbox = document.createElement('input');
+            checkbox.setAttribute('class', 'form-check-input me-1');
             checkbox.type = 'checkbox';
             checkbox.id = `filter-checkbox-${key}`;
             checkbox.addEventListener('change', () => populateUniqueValues(key));
 
             const label = document.createElement('label');
             label.innerHTML = key;
+            label.setAttribute('class','form-check-label stretched-link fw-semibold');
             label.setAttribute('for', `filter-checkbox-${key}`);
 
             listItem.appendChild(checkbox);
@@ -111,6 +115,7 @@ function populateUniqueValues(selectedKey) {
     if (!container) {
         container = document.createElement('div');
         container.setAttribute('data-filter-container', selectedKey);
+        container.setAttribute('class', 'd-flex flex-wrap');
         filterOptionsContainer.appendChild(container);
     }
 
@@ -126,6 +131,7 @@ function populateUniqueValues(selectedKey) {
             const valueCheckbox = document.createElement('input');
             valueCheckbox.type = 'checkbox';
             valueCheckbox.id = `filter-checkbox-${selectedKey}-${value}`;
+            valueCheckbox.setAttribute('class', 'form-check-input me-1');
 
             // Set the checkbox state based on selectedFilters
             if (selectedValues.includes(value)) {
@@ -135,12 +141,13 @@ function populateUniqueValues(selectedKey) {
             const valueLabel = document.createElement('label');
             valueLabel.innerHTML = value;
             valueLabel.setAttribute('for', `filter-checkbox-${selectedKey}-${value}`);
+            valueLabel.setAttribute('class','form-check-label flex-fill');
 
             // Add an event listener to update selectedFilters on checkbox change
             valueCheckbox.addEventListener('change', () => updateSelectedFilters(selectedKey, value));
 
-            container.appendChild(valueLabel);
             container.appendChild(valueCheckbox);
+            container.appendChild(valueLabel);
         });
     }
 }
