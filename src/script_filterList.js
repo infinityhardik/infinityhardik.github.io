@@ -1,6 +1,24 @@
 // Global variable to store selected filters
 let selectedFilters = {};
 
+// Helper functions
+function getAllKeys(data) {
+    const keys = new Set();
+    data.forEach(item => {
+        Object.keys(item).forEach(key => keys.add(key));
+    });
+    return Array.from(keys);
+}
+
+function getUniqueValues(data, key) {
+    const values = new Set();
+    data.forEach(item => {
+        if (item[key]) values.add(item[key]);
+    });
+    return Array.from(values);
+}
+
+
 // Function to open the filter modal
 function openFilterModal() {
     const filterModal = document.getElementById('filter-modal');
@@ -129,22 +147,6 @@ function populateUniqueValues(selectedKey) {
     });
 }
 
-// Helper functions
-function getAllKeys(data) {
-    const keys = new Set();
-    data.forEach(item => {
-        Object.keys(item).forEach(key => keys.add(key));
-    });
-    return Array.from(keys);
-}
-
-function getUniqueValues(data, key) {
-    const values = new Set();
-    data.forEach(item => {
-        if (item[key]) values.add(item[key]);
-    });
-    return Array.from(values);
-}
 
 // Function to update selected filters
 function updateSelectedFilters(key, value) {
