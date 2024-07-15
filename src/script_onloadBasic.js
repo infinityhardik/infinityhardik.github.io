@@ -34,6 +34,8 @@ function displayProducts(productList) {
         label.classList.add('form-check-label', 'fs-6', 'fw-semibold', 'stretched-link');
         label.innerHTML = product.Product;
         label.setAttribute('for', checkboxId); // Associate the label with the checkbox
+        label.setAttribute('data-bs-toggle',"modal");
+        label.setAttribute('data-bs-target',"#order-modal");
 
         productItem.appendChild(checkbox);
         productItem.appendChild(label);

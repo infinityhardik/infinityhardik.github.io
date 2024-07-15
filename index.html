@@ -62,29 +62,29 @@
   <div id="product-list" class="list-group"></div>
 
   <!-- Order Quantity Modal -->
-  <div id="order-modal" class="modal" tabindex="-1">
+  <div id="order-modal" class="modal fade" data-bs-backdrop="static" tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="modal-product-name"></h5>
+          <p class="modal-title fw-semibold h4" id="modal-product-name"></p>
           <button type="button" onclick="closeOrderModal()" class="btn-close" data-bs-dismiss="modal"
             aria-label="Close"></button>
         </div>
         <div class="modal-body">
 
           <ul class="list-group list-group-flush">
-            <!-- <p id="modal-group-name"></p>
-            <p id="modal-prod-category"></p> -->
-            <p id="modal-product-type" class="list-group-item"></p>
-            <p id="modal-face-type" class="list-group-item"></p>
-            <p id="modal-core-type" class="list-group-item"></p>
-            <p id="modal-grade" class="list-group-item"></p>
-            <p id="modal-branding" class="list-group-item"></p>
+            <!-- <p id="modal-group-name" class="list-group-item lh-1"></p>
+            <p id="modal-prod-category" class="list-group-item lh-1"></p> -->
+            <p id="modal-product-type" class="list-group-item lh-1"></p>
+            <p id="modal-face-type" class="list-group-item lh-1"></p>
+            <p id="modal-core-type" class="list-group-item lh-1"></p>
+            <p id="modal-grade" class="list-group-item lh-1"></p>
+            <p id="modal-branding" class="list-group-item lh-1"></p>
           </ul>
 
           <div id="numeric-keypad" class="btn-group-vertical btn-group-lg" role="group" aria-label="Numeric Keypad">
             <div class="btn-group btn-group-lg" role="group">
-              <button onclick="appendToQuantity('7')" type="button" class="btn btn-dark">7</button>
+              <button onclick="appendToQuantity('7')" type="button" class="btn btn-dark fs-3 fw-bold">7</button>
               <button onclick="appendToQuantity('8')" type="button" class="btn btn-dark">8</button>
               <button onclick="appendToQuantity('9')" type="button" class="btn btn-dark">9</button>
             </div>
@@ -105,17 +105,16 @@
           </div>
 
 
-          <div class="order-quantity-section" id="order-quantity-section">
-            <label for="quantity">
-              <h3>Quantity :</h3>
+          <div class="list-group list-group-horizontal" id="order-quantity-section">
+            <label for="quantity" class="list-group-item flex-fill">
+              <p class="h6">Quantity :</p>
             </label>
-            <input type="text" id="quantity" aria-labelledby="quantity" min="0" value="0" readonly>
+            <input class="list-group-item flex-fill fw-bold" type="text" id="quantity" aria-labelledby="quantity" min="0" value="0" readonly>
           </div>
 
           <div id="order-quantity-section-buttons" class="modal-footer">
-            <button id="clearAllModal" onclick="clearAllDigits()" type="button" class="btn btn-secondary"
-              data-bs-dismiss="modal">Clear All</button>
-            <button id="addToOrder" onclick="addToOrder()" type="button" class="btn btn-primary">Add to Order</button>
+            <button id="clearAllModal" onclick="clearAllDigits()" type="button" class="btn btn-secondary">Clear All</button>
+            <button id="addToOrder" onclick="addToOrder()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Add to Order</button>
           </div>
         </div>
       </div>
