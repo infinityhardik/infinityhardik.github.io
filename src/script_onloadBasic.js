@@ -74,8 +74,8 @@ function openOrderModal(product) {
     document.getElementById('modal-product-type').innerHTML = `<b>Product Type :</b> ${productDetails['Product Type']}`;
     document.getElementById('modal-face-type').innerHTML = `<b>Face Type :</b> ${productDetails['Face Type']}`;
     document.getElementById('modal-core-type').innerHTML = `<b>Core Type :</b> ${productDetails['Core Type']}`;
-    document.getElementById('modal-grade').innerHTML = `<b>Grade :</b> ${productDetails['Grade']}`;
-    document.getElementById('modal-branding').innerHTML = `<b>Branding :</b> ${productDetails['Branding']}`;
+    document.getElementById('modal-grade-type').innerHTML = `<b>Grade Type :</b> ${productDetails['Grade Type']}`;
+    document.getElementById('modal-brand-mark').innerHTML = `<b>Brand Mark :</b> ${productDetails['Brand Mark']}`;
 
     orderModal.style.display = 'block';
 }
