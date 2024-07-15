@@ -23,3 +23,4 @@ Steps for Generating/Updating Products.json :
 - Again Upload it to <https://codebeautify.org/jsonminifier> to Compress the JSON File
 - Add it to the Master Branch and Github Pages deployed Branch
 - Delete the commit history from Github Pages Branch by replacing **main** with the Actual Branch Name <https://stackoverflow.com/questions/13716658/how-to-delete-all-commit-history-in-github>
+  - After that push the New Branch onto Github.
