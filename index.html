@@ -47,7 +47,20 @@
             <button type="button" onclick="closeFilterModal()" class="btn-close" data-bs-dismiss="modal"
               aria-label="Close"></button>
           </div>
+          <!-- <div id="filter-options" class="modal-body"></div> -->
           <div id="filter-options" class="modal-body">
+            <div class="row">
+              <div class="col-4">
+                <div class="list-group" id="list-tab" role="tablist">
+                  <!-- Tabs will be dynamically populated here -->
+                </div>
+              </div>
+              <div class="col-8">
+                <div class="tab-content" id="nav-tabContent">
+                  <!-- Tab contents will be dynamically populated here -->
+                </div>
+              </div>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="applyFilters()">Apply
@@ -101,7 +114,8 @@
             <p id="modal-branding" class="list-group-item lh-1"></p>
           </ul>
 
-          <div id="numeric-keypad" class="btn-group-vertical btn-group-lg list-group-item" role="group" aria-label="Numeric Keypad">
+          <div id="numeric-keypad" class="btn-group-vertical btn-group-lg list-group-item" role="group"
+            aria-label="Numeric Keypad">
             <div class="btn-group btn-group-lg" role="group">
               <button onclick="appendToQuantity('7')" type="button" class="btn btn-dark fs-3 fw-bold">7</button>
               <button onclick="appendToQuantity('8')" type="button" class="btn btn-dark fs-3 fw-bold">8</button>
