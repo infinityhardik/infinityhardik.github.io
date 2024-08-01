@@ -21,6 +21,7 @@ Steps for Generating/Updating Products.json :
 - Upload Excel File to convert it into JSON on <https://codebeautify.org/excel-to-json>
 - Download JSON File
 - Again Upload it to <https://codebeautify.org/jsonminifier> to Compress the JSON File
+- Rename the JSON File to **products.json**
 - Add it to the Master Branch and Github Pages deployed Branch
 - Delete the commit history from Github Pages Branch by replacing **main** with the Actual Branch Name <https://stackoverflow.com/questions/13716658/how-to-delete-all-commit-history-in-github>
   - After that push the New Branch onto Github.
