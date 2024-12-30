@@ -17,6 +17,9 @@ function displayProducts(productList) {
     // Clear existing content
     productListContainer.innerHTML = '';
 
+    // Create a document fragment to improve performance
+    const fragment = document.createDocumentFragment();
+
     productList.forEach(product => {
         const productItem = document.createElement('li');
         productItem.classList.add('align-items-center', 'list-group-item')
@@ -28,7 +31,6 @@ function displayProducts(productList) {
         // Generate a unique ID for each checkbox based on the product name
         const checkboxId = `checkbox-${product.Product.replace(/\s/g, '-')}`;
         checkbox.id = checkboxId;
-        // checkbox.classList.add('form-check-input', 'me-2');
 
         const label = document.createElement('label');
         label.classList.add('form-check-label', 'fs-6', 'fw-semibold', 'stretched-link');
@@ -41,8 +43,11 @@ function displayProducts(productList) {
         productItem.appendChild(label);
         productItem.onclick = () => toggleProduct(product.Product);
 
-        productListContainer.appendChild(productItem);
+        fragment.appendChild(productItem);
     });
+
+    // Append the fragment to the container
+    productListContainer.appendChild(fragment);
 }
 
 // Function to get product details from the products.json file
@@ -104,7 +109,7 @@ function closeOrderModal(event) {
         });
     }
 
-    bootstrap.Modal.getInstance(orderModal).hide()
+    bootstrap.Modal.getInstance(orderModal).hide();
 }
 
 // Add an event listener to the document to capture key presses
