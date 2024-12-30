@@ -104,7 +104,7 @@ function closeOrderModal(event) {
         });
     }
 
-    orderModal.style.display = 'none';
+    bootstrap.Modal.getInstance(orderModal).hide()
 }
 
 // Add an event listener to the document to capture key presses
