@@ -17,14 +17,14 @@ searchBox.addEventListener('input', () => {
 function clearSearch() {
     const searchBox = document.getElementById('search-box');
     searchBox.value = '';
-    filterProducts();
+    searchProducts();
 
     // Scroll to the top with smooth transition using scrollIntoView
     document.body.scrollIntoView({ behavior: 'smooth' });
 }
 
 // Function to filter products based on search input
-function filterProducts() {
+function searchProducts() {
     const searchBox = document.getElementById('search-box');
     const filter = searchBox.value.toUpperCase();
     const productList = document.getElementById('product-list');
