@@ -1,7 +1,16 @@
 // Global variable to store selected filters
 let selectedFilters = {};
 
-// Helper functions
+// Function to open the filter modal
+function openFilterModal() {
+    // Populate filter options and set checkbox states based on selected filters
+    populateFilterOptions();
+
+    // Check if filters are active and update Clear Filters button color
+    updateClearFiltersButtonStyle();
+}
+
+// Helper function 1
 function getAllKeys(data) {
     const keys = new Set();
     data.forEach(item => {
@@ -10,59 +19,13 @@ function getAllKeys(data) {
     return Array.from(keys);
 }
 
+// Helper function 2
 function getUniqueValues(data, key) {
     const values = new Set();
     data.forEach(item => {
         if (item[key]) values.add(item[key]);
     });
     return Array.from(values);
-}
-
-
-// Function to open the filter modal
-function openFilterModal() {
-    const filterModal = document.getElementById('filter-modal');
-
-    // Populate filter options and set checkbox states based on selected filters
-    populateFilterOptions();
-    setCheckboxStates();
-
-    filterModal.style.display = 'block';
-
-    // Check if filters are active and update Clear Filters button color
-    updateClearFiltersButtonStyle();
-}
-
-// Function to close the filter modal
-function closeFilterModal() {
-    const filterModal = document.getElementById('filter-modal');
-    filterModal.style.display = 'none';
-}
-
-function setCheckboxStates() {
-    const filterOptionsContainer = document.getElementById('filter-options');
-    const checkboxes = filterOptionsContainer.querySelectorAll('input[type="checkbox"]');
-
-    checkboxes.forEach(checkbox => {
-        const checkboxIdParts = checkbox.id.split('-');
-        const keyIndex = checkboxIdParts.findIndex(part => part === 'checkbox'); // Find the index of 'checkbox'
-        const key = checkboxIdParts.slice(keyIndex + 1, keyIndex + 3).join(' '); // Join the key parts with spaces
-        const value = checkboxIdParts.slice(keyIndex + 3).join('-'); // Join remaining parts as value
-
-        // console.log('Checkbox ID:', checkbox.id);
-        // console.log('Key:', key);
-        // console.log('Value:', value);
-
-        if (key in selectedFilters && selectedFilters[key].includes(value)) {
-            checkbox.checked = true;
-            checkbox.nextElementSibling.style.fontWeight = 'bold';
-            populateUniqueValues(key);
-        } else {
-            checkbox.checked = false;
-            checkbox.nextElementSibling.style.fontWeight = 'normal';
-            checkbox.nextElementSibling.style.background = 'none';
-        }
-    });
 }
 
 
@@ -114,7 +77,7 @@ function populateUniqueValues(selectedKey) {
     const safeKey = selectedKey.replace(/ /g, '-'); // Replace spaces with hyphens
     const tabPane = document.getElementById(`list-${safeKey}`);
     tabPane.innerHTML = '';
-    
+
     // Debugging: Log the key
     // console.log(`Populating values for: ${selectedKey}`); 
 
@@ -137,6 +100,11 @@ function populateUniqueValues(selectedKey) {
         checkbox.setAttribute('class', 'form-check-input me-1');
         checkbox.addEventListener('change', () => updateSelectedFilters(selectedKey, value));
 
+        // Set checkbox state based on selectedFilters
+        if (selectedFilters[selectedKey] && selectedFilters[selectedKey].includes(value)) {
+            checkbox.checked = true;
+        }
+
         const label = document.createElement('label');
         label.setAttribute('class', 'form-check-label');
         label.setAttribute('for', `filter-checkbox-${safeKey}-${value}`);
@@ -148,68 +116,6 @@ function populateUniqueValues(selectedKey) {
 
         tabPane.appendChild(div);
     });
-}
-
-
-// Function to update selected filters
-function updateSelectedFilters(key, value) {
-    if (!selectedFilters[key]) {
-        selectedFilters[key] = [];
-    }
-
-    const index = selectedFilters[key].indexOf(value);
-    if (index > -1) {
-        selectedFilters[key].splice(index, 1);
-    } else {
-        selectedFilters[key].push(value);
-    }
-
-    updateClearFiltersButtonStyle();
-}
-
-// Function to apply filters
-function applyFilters() {
-    // Update selectedFilters when applying filters
-    selectedFilters = getSelectedFilters();
-
-    // Check if filters are active and update Clear Filters button color
-    updateClearFiltersButtonStyle();
-
-    // Check if no filters are selected, clear filters and display all products
-    if (Object.keys(selectedFilters).length === 0) {
-        clearFilters();
-        displayProducts(productsData.productDirectory);
-        return;
-    }
-
-    // Implement filtering logic based on selectedFilters
-    const filteredProducts = filterProductsBySelectedFilters(selectedFilters);
-
-    // Update the product list with the filtered products
-    displayProducts(filteredProducts);
-
-    // Close the filter modal after applying filters
-    closeFilterModal();
-}
-
-// Function to clear filters
-function clearFilters() {
-    // Clear selectedFilters when clearing filters
-    selectedFilters = {};
-    
-    const filterOptionsContainer = document.getElementById('filter-options');
-    const checkboxes = filterOptionsContainer.querySelectorAll('input[type="checkbox"]');
-    
-    checkboxes.forEach(checkbox => {
-        checkbox.checked = false;
-    });
-
-
-    // Reset the product list to show all products
-    displayProducts(productsData.productDirectory);
-
-    // Update Clear Filters button style
-    updateClearFiltersButtonStyle();
 }
 
 // Function to filter products based on selected filters
@@ -224,6 +130,7 @@ function filterProductsBySelectedFilters(filters) {
     });
 }
 
+// Function to get selected filters
 function getSelectedFilters() {
     const filterOptionsContainer = document.getElementById('filter-options');
     const checkboxes = filterOptionsContainer.querySelectorAll('input[type="checkbox"]');
@@ -252,6 +159,66 @@ function getSelectedFilters() {
 
     return selectedFilters;
 }
+
+// Function to update selected filters
+function updateSelectedFilters(key, value) {
+    if (!selectedFilters[key]) {
+        selectedFilters[key] = [];
+    }
+
+    const index = selectedFilters[key].indexOf(value);
+    if (index > -1) {
+        selectedFilters[key].splice(index, 1);
+    } else {
+        selectedFilters[key].push(value);
+    }
+
+    updateClearFiltersButtonStyle();
+}
+
+
+
+// Function to apply filters
+function applyFilters() {
+    // Update selectedFilters when applying filters
+    selectedFilters = getSelectedFilters();
+
+    // Check if filters are active and update Clear Filters button color
+    updateClearFiltersButtonStyle();
+
+    // Check if no filters are selected, clear filters and display all products
+    if (Object.keys(selectedFilters).length === 0) {
+        clearFilters();
+        displayProducts(productsData.productDirectory);
+        return;
+    }
+
+    // Implement filtering logic based on selectedFilters
+    const filteredProducts = filterProductsBySelectedFilters(selectedFilters);
+
+    // Update the product list with the filtered products
+    displayProducts(filteredProducts);
+}
+
+// Function to clear filters
+function clearFilters() {
+    // Clear selectedFilters when clearing filters
+    selectedFilters = {};
+
+    const filterOptionsContainer = document.getElementById('filter-options');
+    const checkboxes = filterOptionsContainer.querySelectorAll('input[type="checkbox"]');
+
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+
+    // Reset the product list to show all products
+    displayProducts(productsData.productDirectory);
+
+    // Update Clear Filters button style
+    updateClearFiltersButtonStyle();
+}
+
 
 
 // Function to update Clear Filters button style based on filter activity
