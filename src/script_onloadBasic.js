@@ -1,16 +1,23 @@
+// Call loadProducts() when the page loads
+window.onload = loadProducts();
+
 // Function to load products from JSON file
 async function loadProducts() {
     try {
         const response = await fetch('products.json');
-        productsData = await response.json();
+        let productsData = await response.json();
+
+        // One-Time Access to the productsData
         const productList = productsData.productDirectory;
+
+        // Passing the Product List Data to displayProducts function
         displayProducts(productList);
+
     } catch (error) {
         console.error('Error loading products:', error);
     }
 }
 
-// Function to display products
 function displayProducts(productList) {
     const productListContainer = document.getElementById('product-list');
 
@@ -22,26 +29,47 @@ function displayProducts(productList) {
 
     productList.forEach(product => {
         const productItem = document.createElement('li');
-        productItem.classList.add('align-items-center', 'list-group-item')
+        productItem.classList.add('list-group-item', 'list-group-item-action', 'align-items-center', 'd-flex', 'justify-content-start');
+
+        // Attach product details as data attributes
+        productItem.dataset.productName = product.Product;
+        productItem.dataset.productType = product['Product Type'];
+        productItem.dataset.productGroup = product['Group Name'];
+        productItem.dataset.productCategory = product['Prod. Category'];
+        productItem.dataset.faceType = product['Face Type'];
+        productItem.dataset.coreType = product['Core Type'];
+        productItem.dataset.gradeType = product['Grade Type'];
+        productItem.dataset.brandMark = product['Brand Mark'];
+        productItem.dataset.quantityInput = 0; // Set Default Value for Quantity Input of User
 
         const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
         checkbox.classList.add('form-check-input', 'me-2');
+        checkbox.type = 'checkbox';
 
         // Generate a unique ID for each checkbox based on the product name
         const checkboxId = `checkbox-${product.Product.replace(/\s/g, '-')}`;
         checkbox.id = checkboxId;
+        checkbox.value = checkboxId;
 
         const label = document.createElement('label');
         label.classList.add('form-check-label', 'fs-6', 'fw-semibold', 'stretched-link');
-        label.innerHTML = product.Product;
+        label.textContent = product.Product;
         label.setAttribute('for', checkboxId); // Associate the label with the checkbox
-        label.setAttribute('data-bs-toggle',"modal");
-        label.setAttribute('data-bs-target',"#order-modal");
+        label.setAttribute('data-bs-toggle', "modal");
+        label.setAttribute('data-bs-target', "#order-modal");
+
+        const badge = document.createElement('span');
+        badge.classList.add('badge', 'bg-success', 'ms-auto');
+        if(productItem.dataset.quantityInput != 0) {
+            badge.innerHTML = productItem.dataset.quantityInput
+        }
 
         productItem.appendChild(checkbox);
         productItem.appendChild(label);
-        productItem.onclick = () => toggleProduct(product.Product);
+        productItem.appendChild(badge);
+
+        // Add event listener to open modal with product data
+        productItem.onclick = () => openOrderModal(productItem);
 
         fragment.appendChild(productItem);
     });
@@ -50,39 +78,22 @@ function displayProducts(productList) {
     productListContainer.appendChild(fragment);
 }
 
-// Function to get product details from the products.json file
-function getProductDetails(productName) {
-    if (productsData && productsData.productDirectory) {
-        const productList = productsData.productDirectory;
-        const product = productList.find(p => p.Product === productName);
-        // console.log(product);
-        return product || {};
-    }
-    return {};
-}
-
-// Call loadProducts() when the page loads
-window.onload = loadProducts;
-
-function openOrderModal(product) {
+function openOrderModal(productItem) {
     resetQuantityToZero(); // Reset quantity to zero when the order modal is opened
-    const orderModal = document.getElementById('order-modal');
+
     const modalProductName = document.getElementById('modal-product-name');
 
-    // Assuming "Products" is the property containing the array of products
-    const productDetails = getProductDetails(product);
+    // Set product details in the modal
+    modalProductName.textContent = productItem.dataset.productName;
 
-    // Set product name and additional details in the modal
-    modalProductName.textContent = product;
-    // document.getElementById('modal-group-name').textContent = `Group Name: ${productDetails['Group Name']}`;
-    // document.getElementById('modal-prod-category').textContent = `Product Category: ${productDetails['Prod. Category']}`;
-    document.getElementById('modal-product-type').innerHTML = `<b>Product Type :</b> ${productDetails['Product Type']}`;
-    document.getElementById('modal-face-type').innerHTML = `<b>Face Type :</b> ${productDetails['Face Type']}`;
-    document.getElementById('modal-core-type').innerHTML = `<b>Core Type :</b> ${productDetails['Core Type']}`;
-    document.getElementById('modal-grade-type').innerHTML = `<b>Grade Type :</b> ${productDetails['Grade Type']}`;
-    document.getElementById('modal-brand-mark').innerHTML = `<b>Brand Mark :</b> ${productDetails['Brand Mark']}`;
+    // document.getElementById('modal-group-name').textContent = `<b>Group Name: </b>${productItem.dataset.productGroup}`;
+    // document.getElementById('modal-prod-category').textContent = `<b>Product Category: </b>${productItem.dataset.productCategory}`;
+    document.getElementById('modal-product-type').innerHTML = `<b>Product Type :</b> ${productItem.dataset.productType}`;
+    document.getElementById('modal-face-type').innerHTML = `<b>Face Type :</b> ${productItem.dataset.faceType}`;
+    document.getElementById('modal-core-type').innerHTML = `<b>Core Type :</b> ${productItem.dataset.coreType}`;
+    document.getElementById('modal-grade-type').innerHTML = `<b>Grade Type :</b> ${productItem.dataset.gradeType}`;
+    document.getElementById('modal-brand-mark').innerHTML = `<b>Brand Mark :</b> ${productItem.dataset.brandMark}`;
 
-    orderModal.style.display = 'block';
 }
 
 

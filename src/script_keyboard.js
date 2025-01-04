@@ -1,36 +1,49 @@
-document.addEventListener('keydown', (event) => {
-    const searchBox = document.getElementById('search-box');
-    const orderModal = document.getElementById('order-modal');
-    const quantityInput = document.getElementById('quantity');
-
-    // Open shortcuts modal
-    if ((event.key === '?' || (event.ctrlKey && event.key === '/')) && !orderModal.classList.contains('show')) {
+document.addEventListener("keydown", function (event) {
+    const searchBox = document.getElementById("search-box");
+    const filterModal = document.getElementById("filter-modal");
+  
+    // Check if any modal is open
+    const isModalOpen = filterModal.classList.contains("show");
+  
+    // Handle keyboard shortcuts only if no modal is open
+    if (!isModalOpen) {
+      // Ctrl + Shift + F: Open Filters Modal
+      if (event.ctrlKey && event.shiftKey && event.key === "F") {
+        event.preventDefault(); // Prevent adding "F" to the search box
+        const modalElement = new bootstrap.Modal(filterModal);
+        modalElement.show();
+        return; // Exit the function to avoid processing the key further
+      }
+  
+      // Ctrl + Alt + F: Clear Filters
+      if (event.ctrlKey && event.altKey && event.key === "F") {
+        event.preventDefault(); // Prevent adding "F" to the search box
+        clearFilters();
+        return; // Exit the function to avoid processing the key further
+      }
+  
+      // Ctrl + Delete: Clear Order
+      if (event.ctrlKey && event.key === "Delete") {
         event.preventDefault();
-        openShortcutsModal();
-    }
-
-    // Focus search box on alphanumeric input and Backspace
-    if (/^[a-zA-Z0-9]$/.test(event.key) || event.key === 'Backspace' && !orderModal.classList.contains('show')) {
-        searchBox.focus();
-    }
-
-    // Send order on Ctrl + Enter
-    if (event.ctrlKey && event.key === 'Enter') {
-        sendOrder();
-    }
-
-    // Clear order on Delete key
-    if (event.ctrlKey && event.key === 'Delete') {
         clearOrder();
+        return; // Exit the function to avoid processing the key further
+      }
+  
+      // Ctrl + Enter: Send Order
+      if (event.ctrlKey && event.key === "Enter") {
+        event.preventDefault();
+        sendOrder();
+        return; // Exit the function to avoid processing the key further
+      }
+  
+      // Alphanumeric Keys: Focus and Type into the Search Box
+      if (/^[a-zA-Z0-9]$/.test(event.key)) {
+        event.preventDefault(); // Prevent default typing
+        searchBox.focus();
+        searchBox.value += event.key; // Append the key to the search box
+      }
+    } else {
+      // Prevent any action if a modal is open
+      event.preventDefault();
     }
-
-    // Handle numeric input in order modal
-    if (orderModal.classList.contains('show') && /^[0-9]$/.test(event.key)) {
-        appendToQuantity(event.key);
-    }
-});
-
-function openShortcutsModal() {
-    const shortcutsModal = new bootstrap.Modal(document.getElementById('shortcuts-modal'));
-    shortcutsModal.show();
-}
+  });  
