@@ -30,6 +30,8 @@ function displayProducts(productList) {
     productList.forEach(product => {
         const productItem = document.createElement('li');
         productItem.classList.add('list-group-item', 'list-group-item-action', 'align-items-center', 'd-flex', 'justify-content-start');
+        productItem.setAttribute('data-bs-toggle', "modal");
+        productItem.setAttribute('data-bs-target', "#order-modal");
 
         // Attach product details as data attributes
         productItem.dataset.productName = product.Product;
@@ -55,8 +57,6 @@ function displayProducts(productList) {
         label.classList.add('form-check-label', 'fs-6', 'fw-semibold', 'stretched-link');
         label.textContent = product.Product;
         label.setAttribute('for', checkboxId); // Associate the label with the checkbox
-        label.setAttribute('data-bs-toggle', "modal");
-        label.setAttribute('data-bs-target', "#order-modal");
 
         const badge = document.createElement('span');
         badge.classList.add('badge', 'bg-success', 'ms-auto');
@@ -79,8 +79,6 @@ function displayProducts(productList) {
 }
 
 function openOrderModal(productItem) {
-    resetQuantityToZero(); // Reset quantity to zero when the order modal is opened
-
     const modalProductName = document.getElementById('modal-product-name');
 
     // Set product details in the modal
@@ -94,53 +92,4 @@ function openOrderModal(productItem) {
     document.getElementById('modal-grade-type').innerHTML = `<b>Grade Type :</b> ${productItem.dataset.gradeType}`;
     document.getElementById('modal-brand-mark').innerHTML = `<b>Brand Mark :</b> ${productItem.dataset.brandMark}`;
 
-}
-
-
-// Function to close order modal
-function closeOrderModal(event) {
-    const orderModal = document.getElementById('order-modal');
-    const quantityInput = document.getElementById('quantity');
-    const modalProductName = document.getElementById('modal-product-name').textContent;
-
-    // Check if the event is a key press and if the key is Escape
-    if (event && event.type === 'keydown' && event.key === 'Escape') {
-        quantityInput.value = '0';
-    }
-
-    // Check if quantity is 0, and deselect the product
-    if (parseInt(quantityInput.value, 10) === 0) {
-        const checkboxes = document.querySelectorAll('#product-list input[type="checkbox"]');
-
-        checkboxes.forEach(checkbox => {
-            const label = checkbox.nextElementSibling;
-            if (label.textContent === modalProductName) {
-                checkbox.checked = false;
-            }
-        });
-    }
-
-    bootstrap.Modal.getInstance(orderModal).hide();
-}
-
-// Add an event listener to the document to capture key presses
-document.addEventListener('keydown', closeOrderModal);
-
-
-function toggleProduct(product) {
-    const checkbox = document.getElementById(`checkbox-${product.replace(/\s/g, '-')}`);
-    const index = selectedProducts.findIndex(item => item.product.Product === product);
-
-    // Toggle the checkbox state
-    checkbox.checked = !checkbox.checked;
-
-    // Check the checkbox state and open the modal only if it's checked
-    if (checkbox.checked & index === -1) {
-        openOrderModal(product);
-        resetQuantityToZero(); // Reset quantity to zero when a new product is selected
-    } else {
-        // Unselecting the product, update the checkbox state
-        selectedProducts = selectedProducts.filter(item => item.product.Product !== product);
-        updateOrderList();
-    }
 }
