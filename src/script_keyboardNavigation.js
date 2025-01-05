@@ -45,9 +45,52 @@ document.addEventListener("keydown", function (event) {
     // Alphanumeric Keys: Focus and Type into the Search Box
     if (/^[a-zA-Z0-9]$/.test(event.key)) {
       event.preventDefault(); // Prevent default typing
+      const cursorPos = searchBox.selectionStart; // Get the cursor position before typing
       searchBox.focus();
-      searchBox.value += event.key; // Append the key to the search box
+      searchBox.value = searchBox.value.slice(0, cursorPos) + event.key + searchBox.value.slice(cursorPos); // Insert the character at the cursor position
+
+      // Set the cursor position right after the newly inserted character
+      searchBox.setSelectionRange(cursorPos + 1, cursorPos + 1); // Move cursor after the inserted character
+
+      // Trigger the input event manually to update the filter
+      const inputEvent = new Event('input', { bubbles: true });
+      searchBox.dispatchEvent(inputEvent);
     }
+
+    // Handle Backspace Key: Remove the last character from the search box
+    if (event.key === "Backspace") {
+      event.preventDefault(); // Prevent default backspace behavior
+      const cursorPos = searchBox.selectionStart; // Get the cursor position
+      if (cursorPos > 0) {
+        searchBox.focus();
+        searchBox.value = searchBox.value.slice(0, cursorPos - 1) + searchBox.value.slice(cursorPos); // Remove the character before the cursor
+
+        // Set the cursor back to the previous position
+        searchBox.setSelectionRange(cursorPos - 1, cursorPos - 1); // Move cursor one character back
+      }
+
+      // Trigger the input event manually to update the filter
+      const inputEvent = new Event('input', { bubbles: true });
+      searchBox.dispatchEvent(inputEvent);
+    }
+
+    // Handle Delete Key: Remove the character after the cursor from the search box
+    if (event.key === "Delete") {
+      event.preventDefault(); // Prevent default delete behavior
+      const cursorPos = searchBox.selectionStart; // Get the cursor position
+      if (cursorPos < searchBox.value.length) {
+        searchBox.focus();
+        searchBox.value = searchBox.value.slice(0, cursorPos) + searchBox.value.slice(cursorPos + 1); // Remove character at cursor
+      }
+
+      // Set the cursor position back to the correct place
+      searchBox.setSelectionRange(cursorPos, cursorPos); // Reset cursor to the correct position
+
+      // Trigger the input event manually to update the filter
+      const inputEvent = new Event('input', { bubbles: true });
+      searchBox.dispatchEvent(inputEvent);
+    }
+
 
     // Arrow Key Navigation Block
 
@@ -108,4 +151,4 @@ document.addEventListener("keydown", function (event) {
     // Prevent any action if a modal is open
     event.preventDefault();
   }
-});  
+});

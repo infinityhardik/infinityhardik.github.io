@@ -29,7 +29,7 @@ function displayProducts(productList) {
 
     productList.forEach(product => {
         const productItem = document.createElement('li');
-        productItem.classList.add('list-group-item', 'list-group-item-action', 'align-items-center', 'd-flex', 'justify-content-start');
+        productItem.classList.add('list-group-item', 'list-group-item-action');
         productItem.setAttribute('data-bs-toggle', "modal");
         productItem.setAttribute('data-bs-target', "#order-modal");
 
