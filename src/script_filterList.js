@@ -230,8 +230,9 @@ function updateSelectedFilters(key, value) {
 function applyFilters() {
     
     if (Object.keys(selectedFilters).length === 0) {
-        clearFilters();
         displayProducts(productsData.productDirectory);
+        updateCheckboxStates();
+        updateClearFiltersButtonStyle();
         return;
     }
 
@@ -245,7 +246,7 @@ function clearFilters() {
     selectedFilters = {};
     updateCheckboxStates();
     updateClearFiltersButtonStyle();
-    displayProducts(productsData.productDirectory);
+    applyFilters();
 }
 
 // Function to filter products

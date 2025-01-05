@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "terser src/*.js -o dist/main.min.js --mangle --compress"
+    "build": "terser src/*.js -o dist/main.min.js -m --compress --ecma 2020"
   },
   "keywords": [],
   "author": "",
