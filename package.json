@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "uglifyjs src/*.js -o dist/main.min.js -m --compress"
+    "build": "uglifyjs src/*.js -o dist/main.min.js -m --compress --mangle"
   },
   "keywords": [],
   "author": "",
