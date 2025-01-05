@@ -4,10 +4,8 @@
   "description": "",
   "main": "script.js",
   "devDependencies": {
-    "commander": "^2.13.0",
-    "source-map": "^0.6.1",
-    "uglify-es": "^3.3.9",
-    "uglify-js": "^3.17.4"
+    "terser": "^5.37.0",
+    "uglify-js": "^3.19.3"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

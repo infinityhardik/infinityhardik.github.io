@@ -8,9 +8,10 @@
   <meta name="description"
     content="Product Directory and Order Page for Mahadev Traders Plywood, Block-Board & Flush-Door Wholesaler, Rajkot. The Best Quality Wholesaler in Rajkot. Vaives.com is the Order Page for Mahadev Traders Plywood, Block-Board & Flush-Door Wholesaler, Rajkot." />
   <meta name="keywords"
-    content="Mahadev, Traders, Plywood, Block-Board, Flush-Door, Door, Wholesaler, Best, Rajkot, Laminate, Wood, Quality, Best, Vaives" />
+    content="Mahadev, Traders, Plywood, Block-Board, Flush-Door, Door, Wholesaler, Best, Rajkot, Laminate, Wood, Quality, Best, Vaives, Marlex, Zevik, Simson, Greytone, Limelite, Limelite Pro, Plywood" />
   <meta name="robots" content="index, follow" />
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="Content-Type" content="application/javascript" />
+  <meta charset="utf-8">
   <meta name="language" content="English" />
   <meta name="revisit-after" content="1 days" />
   <meta name="author" content="Mahadev Traders Plywood Block-Board & Flush-Door Wholesaler" />
@@ -19,141 +20,172 @@
     content="Order Page for Mahadev Traders Plywood, Block-Board & Flush-Door Wholesaler, Rajkot." />
   <meta property="og:url" content="https://vaives.com" />
   <meta property="og:image" content="https://www.vaives.com/assets/favicon.webp" />
+
   <link rel="manifest" href="assets/manifest.json">
   <link rel="icon" type="image/png" href="assets/favicon.webp" alt="MT Logo" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="style.css">
 </head>
 
-<body class="container-fluid">
-  <header class="d-flex justify-content-center align-items-center m-1">
-    <a href="about.html">
-      <img src="assets/favicon.webp" width="61.8px" height="61.8px" alt="MT Logo" class="img-fluid m-2" />
+<body>
+  <header class="d-flex justify-content-center align-items-center py-3">
+    <a href="https://www.about.vaives.com" target="_blank" class="d-flex align-items-center">
+      <img src="assets/favicon.webp" width="61.8px" height="61.8px" alt="MT Logo" class="img-fluid me-3" />
     </a>
-    <p class="h2 text-body m-2">Order List</p>
+    <p class="h2 text-body mb-0">Order List</p>
   </header>
 
-  <div class="form-floating mb-3">
-    <textarea id="selected-products" class="form-control border border-dark border-2" placeholder="Generated Order"
-      style="height: 100px" disabled></textarea>
-    <label for="selected-products">Generated Order</label>
-  </div>
-
-  <div class="btn-group d-flex justify-content-center" role="group" aria-label="Default button group">
-    <button id="filterProductList" class="btn btn-primary fw-semibold" onclick="openFilterModal()"
-      data-bs-toggle="modal" data-bs-target="#filter-modal">
-      Filters
-    </button>
-    <!-- Filter Modal -->
-    <div id="filter-modal" class="modal fade" tabindex="-1" aria-labelledby="FilterModal" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <p class="modal-title fs-5 fw-bold">Product List Filter Options</p>
-            <button type="button" onclick="closeFilterModal()" class="btn-close" data-bs-dismiss="modal"
-              aria-label="Close"></button>
-          </div>
-          <!-- <div id="filter-options" class="modal-body"></div> -->
-          <div id="filter-options" class="modal-body">
-            <div class="row">
-              <div class="col-4">
-                <div class="list-group" id="list-tab" role="tablist">
-                  <!-- Tabs will be dynamically populated here -->
-                </div>
-              </div>
-              <div class="col-8">
-                <div class="tab-content" id="nav-tabContent">
-                  <!-- Tab contents will be dynamically populated here -->
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="applyFilters()">Apply
-              Filters</button>
-          </div>
-        </div>
-      </div>
+  <div class="container-fluid">
+    <div class="form-group">
+      <textarea id="selected-products" class="form-control border border-dark border-2 bg-light" rows="3"
+        placeholder="Generated Order" disabled></textarea>
     </div>
-    <button id="clearFilters" class="btn btn-secondary fw-semibold" onclick="clearFilters()">
-      Clear Filters
-    </button>
-    <button id="clearOrder" class="btn btn-danger fw-semibold" onclick="clearOrder()">
-      Clear Order
-    </button>
-    <button id="sendOrder" class="btn btn-success fw-semibold" onclick="sendOrder()">
-      Send Order
-    </button>
-  </div>
 
-  <div class="d-flex justify-content-center mt-3">
-    <div class="input-group mb-3">
+    <!-- Button Group -->
+    <div class="btn-group d-flex justify-content-center my-3" role="group" aria-label="Default button group">
+      <button id="filterProductList" class="btn btn-primary fw-semibold" data-bs-toggle="modal"
+        onclick="openFilterModal()" data-bs-target="#filter-modal" title="Ctrl + Shift + F : Filters">
+        Filters
+      </button>
+
+      <button id="clearFilters" class="btn btn-secondary fw-semibold" onclick="clearFilters()"
+        title="Ctrl + Shift + O : Clear Filters">
+        Clear Filters
+      </button>
+      <button id="clearOrder" class="btn btn-danger fw-semibold" onclick="clearOrder()"
+        title="Ctrl + Delete : Clear Order">
+        Clear Order
+      </button>
+      <button id="sendOrder" class="btn btn-success fw-semibold" onclick="sendOrder()"
+        title="Ctrl + Enter : Send Order">
+        Send Order
+      </button>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="input-group" id="search-box-container">
       <input type="text" id="search-box" class="form-control border border-primary border-2"
         placeholder="Search Products..." oninput="filterProducts()" autocomplete="off" aria-label="Search Products..."
         aria-describedby="Search Products..." />
-      <button id="clearSearch" class="btn btn-outline-warning input-group-text" onclick="clearSearch()">
+      <button id="clearSearch" class="btn btn-outline-warning input-group-btn" onclick="clearSearch()">
         <strong>X</strong>
       </button>
     </div>
+
+    <!-- Product List -->
+    <form class="flex my-3">
+      <ul id="product-list" class="list-group"></ul>
+    </form>
+
   </div>
 
-  <div id="product-list" class="list-group"></div>
+
+
+  <!-- Filter Modal -->
+  <div class="modal fade" id="filter-modal" tabindex="-1" aria-labelledby="FilterModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <p class="modal-title fs-5 fw-bold">Product List Filter Options</p>
+          <button type="button" onclick="closeFilterModal()" class="btn-close" data-bs-dismiss="modal"
+            aria-label="Close"></button>
+        </div>
+
+        <div id="filter-options" class="modal-body">
+          <div class="row">
+            <div class="col-4">
+              <div class="list-group" id="list-tab" role="tablist">
+                <!-- Tabs will be dynamically populated here -->
+              </div>
+            </div>
+            <div class="col-8">
+              <div class="tab-content" id="nav-tabContent">
+                <!-- Tab contents will be dynamically populated here -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="applyFilters()">Apply
+            Filters</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Order Quantity Modal -->
-  <div id="order-modal" class="modal fade" data-bs-backdrop="static" tabindex="-1">
+  <div id="order-modal" class="modal fade" data-bs-backdrop="static" tabindex="-1" aria-labelledby="orderModalLabel"
+    role="dialog">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
           <p class="modal-title fw-semibold h4" id="modal-product-name"></p>
-          <button type="button" onclick="closeOrderModal()" class="btn-close" data-bs-dismiss="modal"
-            aria-label="Close"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
 
-          <ul class="list-group list-group-flush">
-            <!-- <p id="modal-group-name" class="list-group-item lh-1"></p>
-            <p id="modal-prod-category" class="list-group-item lh-1"></p> -->
-            <p id="modal-product-type" class="list-group-item lh-1"></p>
-            <p id="modal-face-type" class="list-group-item lh-1"></p>
-            <p id="modal-core-type" class="list-group-item lh-1"></p>
-            <p id="modal-grade-type" class="list-group-item lh-1"></p>
-            <p id="modal-brand-mark" class="list-group-item lh-1"></p>
-          </ul>
+          <div class="container mb-3">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item lh-1 bg-light border-0">
+                <span id="modal-product-type"></span>
+              </li>
+              <li class="list-group-item lh-1 bg-light border-0">
+                <span id="modal-face-type"></span>
+              </li>
+              <li class="list-group-item lh-1 bg-light border-0">
+                <span id="modal-core-type"></span>
+              </li>
+              <li class="list-group-item lh-1 bg-light border-0">
+                <span id="modal-grade-type"></span>
+              </li>
+              <li class="list-group-item lh-1 bg-light border-0">
+                <span id="modal-brand-mark"></span>
+              </li>
+            </ul>
+          </div>
 
-          <div id="numeric-keypad" class="btn-group-vertical btn-group-lg list-group-item" role="group"
-            aria-label="Numeric Keypad">
-            <div class="btn-group btn-group-lg" role="group">
-              <button onclick="appendToQuantity('7')" type="button" class="btn btn-dark fs-3 fw-bold">7</button>
-              <button onclick="appendToQuantity('8')" type="button" class="btn btn-dark fs-3 fw-bold">8</button>
-              <button onclick="appendToQuantity('9')" type="button" class="btn btn-dark fs-3 fw-bold">9</button>
-            </div>
-            <div class="btn-group btn-group-lg" role="group">
-              <button onclick="appendToQuantity('4')" type="button" class="btn btn-dark fs-3 fw-bold">4</button>
-              <button onclick="appendToQuantity('5')" type="button" class="btn btn-dark fs-3 fw-bold">5</button>
-              <button onclick="appendToQuantity('6')" type="button" class="btn btn-dark fs-3 fw-bold">6</button>
-            </div>
-            <div class="btn-group btn-group-lg" role="group">
-              <button onclick="appendToQuantity('1')" type="button" class="btn btn-dark fs-3 fw-bold">1</button>
-              <button onclick="appendToQuantity('2')" type="button" class="btn btn-dark fs-3 fw-bold">2</button>
-              <button onclick="appendToQuantity('3')" type="button" class="btn btn-dark fs-3 fw-bold">3</button>
-            </div>
-            <div class="btn-group btn-group-lg" role="group">
-              <button onclick="appendToQuantity('0')" type="button" class="btn btn-dark col-8 fs-3 fw-bold">0</button>
-              <button onclick="clearLastDigit()" type="button" class="btn btn-danger col-4 fs-3 fw-bold">←</button>
+          <div id="numeric-keypad" class="container-fluid">
+            <div class="btn-group-vertical list-group-item" role="group" aria-label="Numeric Keypad">
+              <div class="btn-group" role="group">
+                <button onclick="appendToQuantity('7')" type="button" class="btn btn-dark fs-3 fw-bold">7</button>
+                <button onclick="appendToQuantity('8')" type="button" class="btn btn-dark fs-3 fw-bold">8</button>
+                <button onclick="appendToQuantity('9')" type="button" class="btn btn-dark fs-3 fw-bold">9</button>
+              </div>
+              <div class="btn-group" role="group">
+                <button onclick="appendToQuantity('4')" type="button" class="btn btn-dark fs-3 fw-bold">4</button>
+                <button onclick="appendToQuantity('5')" type="button" class="btn btn-dark fs-3 fw-bold">5</button>
+                <button onclick="appendToQuantity('6')" type="button" class="btn btn-dark fs-3 fw-bold">6</button>
+              </div>
+              <div class="btn-group" role="group">
+                <button onclick="appendToQuantity('1')" type="button" class="btn btn-dark fs-3 fw-bold">1</button>
+                <button onclick="appendToQuantity('2')" type="button" class="btn btn-dark fs-3 fw-bold">2</button>
+                <button onclick="appendToQuantity('3')" type="button" class="btn btn-dark fs-3 fw-bold">3</button>
+              </div>
+              <div class="btn-group" role="group">
+                <button onclick="appendToQuantity('0')" type="button" class="btn btn-dark col-8 fs-3 fw-bold">0</button>
+                <button onclick="clearLastDigit()" type="button" class="btn btn-danger col-4 fs-3 fw-bold">←</button>
+              </div>
             </div>
           </div>
 
-          <div class="list-group list-group-vertical list-group-flush" id="order-quantity-section">
-            <label for="quantity" class="list-group-item flex-fill">
-              <p class="h6">Quantity :</p>
-            </label>
-            <input class="list-group-item flex-fill fw-bold fs-3" type="text" id="quantity" aria-labelledby="quantity"
-              min="0" value="0" readonly>
-          </div>
+          <form class="container-fluid mt-3">
+            <div class="input-group input-group-lg">
+              <label for="quantity" class="input-group-text fs-6">Quantity:</label>
+              <input type="number" id="quantity" min="0" value="0" class="form-control" name="quantity"
+                aria-label="Quantity" disabled>
+            </div>
+          </form>
 
+        </div>
 
-          <div id="order-quantity-section-buttons" class="modal-footer">
-            <button id="clearAllModal" onclick="clearAllDigits()" type="button" class="btn btn-secondary">Clear
+        <div class="modal-footer">
+          <div id="order-quantity-section-buttons" class="btn-group" role="group"
+            aria-label="order quantity section buttons">
+            <button id="clearAllDigits" onclick="clearAllDigits()" type="button" class="btn btn-secondary">Clear
               All</button>
             <button id="addToOrder" onclick="addToOrder()" type="button" class="btn btn-primary"
               data-bs-dismiss="modal">Add to Order</button>
@@ -161,16 +193,18 @@
         </div>
       </div>
     </div>
+  </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"></script>
-    <!-- <script src="src/script.js"></script>
-    <script src="src/script_search.js"></script>
-    <script src="src/script_filterList.js"></script>
-    <script src="src/script_onloadBasic.js"></script>
-    <script src="src/script_order.js"></script> -->
-    <script src="dist/main.min.js"></script>
+  <!-- <script src="src/script_keyboardNavigation.js"></script>
+  <script src="src/script_searchBox.js"></script>
+  <script src="src/script_filterList.js"></script>
+  <script src="src/script_onloadBasic.js"></script>
+  <script src="src/script_order.js"></script>
+  <script src="src/script_sendOrder.js"></script> -->
+  <script src="dist/main.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
 </body>
 
 </html>
