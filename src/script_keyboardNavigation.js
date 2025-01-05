@@ -146,7 +146,29 @@ document.addEventListener("keydown", function (event) {
 
     // Arrow Key Navigation Block
 
-  } else {
+  } else if (isOrderModalOpen) {
+    // Any Numeric Input should appendToQuantity the Respective Number Key by clicking it
+    if (/^[0-9]$/.test(event.key)) {
+      event.preventDefault();
+      appendToQuantity(event.key);
+    }
+    // Backspace Key should clearLastDigit()
+    else if (event.key === 'Backspace') {
+      event.preventDefault();
+      clearLastDigit();
+    }
+    // Delete Key should clearAllDigits() with a click
+    else if (event.key === 'Delete') {
+      event.preventDefault();
+      document.getElementById('clearAllDigits').click();
+    }
+    // Enter Key should simulate addToOrder() with a click
+    else if (event.key === 'Enter') {
+      event.preventDefault();
+      document.getElementById('addToOrder').click();
+    }
+  }
+  else {
     // Prevent any action if a modal is open
     event.preventDefault();
   }
