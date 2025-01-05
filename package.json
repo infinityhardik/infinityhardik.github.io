@@ -4,11 +4,12 @@
   "description": "",
   "main": "script.js",
   "devDependencies": {
-    "terser": "^5.37.0"
+    "terser": "^5.37.0",
+    "uglify-js": "^3.19.3"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "terser src/*.js -o dist/main.min.js -m --compress --ecma 2020"
+    "build": "uglifyjs src/*.js -o dist/main.min.js -m --compress"
   },
   "keywords": [],
   "author": "",
