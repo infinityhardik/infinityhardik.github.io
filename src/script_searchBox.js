@@ -21,13 +21,10 @@ searchBox.addEventListener('input', () => {
     scrollSearchBoxToTop();
 });
 
-// Function to clear the search box
+// // Function to clear the search box
 function clearSearch() {
     searchBox.value = '';
     filterProducts();
-
-    // Scroll to the top with smooth transition using scrollIntoView
-    document.body.scrollIntoView({ behavior: 'smooth' });
 }
 
 function filterProducts() {
