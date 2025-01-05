@@ -16,15 +16,14 @@ document.addEventListener("keydown", function (event) {
     // Ctrl + Shift + F: Open Filters Modal
     if (event.ctrlKey && event.shiftKey && event.key === "F") {
       event.preventDefault(); // Prevent adding "F" to the search box
-      const modalElement = new bootstrap.Modal(filterModal);
-      modalElement.show();
+      document.getElementById('filterProductList').click();
       return; // Exit the function to avoid processing the key further
     }
 
     // Ctrl + Alt + F: Clear Filters
-    if (event.ctrlKey && event.altKey && event.key === "F") {
+    if (event.ctrlKey && event.shiftKey && event.key === "O") {
       event.preventDefault(); // Prevent adding "F" to the search box
-      clearFilters();
+      document.getElementById('clearFilters').click();
       return; // Exit the function to avoid processing the key further
     }
 

@@ -1,11 +1,13 @@
 // Call loadProducts() when the page loads
 window.onload = loadProducts();
 
+let productsData;
+
 // Function to load products from JSON file
 async function loadProducts() {
     try {
         const response = await fetch('products.json');
-        let productsData = await response.json();
+        productsData = await response.json();
 
         // One-Time Access to the productsData
         const productList = productsData.productDirectory;
@@ -37,6 +39,7 @@ function displayProducts(productList) {
         productItem.dataset.productName = product.Product;
         productItem.dataset.productType = product['Product Type'];
         productItem.dataset.productGroup = product['Group Name'];
+        productItem.dataset.productGroup = product['Group Alias'];
         productItem.dataset.productCategory = product['Prod. Category'];
         productItem.dataset.faceType = product['Face Type'];
         productItem.dataset.coreType = product['Core Type'];
