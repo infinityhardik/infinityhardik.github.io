@@ -12,6 +12,12 @@ function scrollSearchBoxToTop() {
     });
 }
 
+// Function to determine if the current device is a mobile device
+function isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+           (window.innerWidth <= 768);
+}
+
 // Add an event listener to the search box to trigger the scroll when it gains focus
 searchBox.addEventListener('focus', () => {
     scrollSearchBoxToTop();
@@ -19,15 +25,26 @@ searchBox.addEventListener('focus', () => {
 
 searchBox.addEventListener('input', () => {
     scrollSearchBoxToTop();
+
+    // Reset focus index on user input
     currentFocusIndex = -1;
+
+    // Filter products based on user input
+    filterProducts();
+
+    // For desktop browsers, focus the first visible product
+    if (!isMobileDevice()) {
+        focusFirstVisibleItem();
+    }
 });
 
-// // Function to clear the search box
+// Function to clear the search box
 function clearSearch() {
     searchBox.value = '';
     filterProducts();
 }
 
+// Function to filter products based on search input
 function filterProducts() {
     const filter = searchBox.value.toUpperCase();
     const productList = document.getElementById('product-list');
@@ -83,4 +100,18 @@ function containsInOrder(str, query) {
     }
 
     return true;
+}
+
+// Function to focus the first visible product item
+function focusFirstVisibleItem() {
+    const productListContainer = document.getElementById("product-list");
+    const visibleItems = Array.from(productListContainer.children).filter(
+        item => getComputedStyle(item).display !== "none"
+    );
+
+    if (visibleItems.length > 0) {
+        currentFocusIndex = 1; // Set focus to the first visible item
+        visibleItems[0]?.classList.add("focus");
+        visibleItems[0]?.scrollIntoView({ block: "nearest" });
+    }
 }
