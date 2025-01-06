@@ -24,22 +24,67 @@ searchBox.addEventListener('focus', () => {
 });
 
 searchBox.addEventListener('input', () => {
+    // Always scroll search box to top
     scrollSearchBoxToTop();
 
     // Reset focus index on user input
     currentFocusIndex = -1;
 
-    // Filter products based on user input
-    filterProducts();
-
-    // For desktop browsers, focus the first visible product
+    // For desktop browsers, focus the first visible product immediately
     if (!isMobileDevice()) {
         focusFirstVisibleItem();
     }
-    if (searchBox.value === '') {
-        resetFocus();
-    }
 });
+
+// Debounce function to prevent rapid firing of events
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Modified search box event listener
+searchBox.addEventListener('input', debounce(() => {
+    const result = parseSearchInput(searchBox.value);
+    // console.log('Parse Result:', result);
+
+    // If the search box is empty, just reset everything
+    if (!result.searchTerm) {
+        resetFocus();
+        filterProducts();
+        return;
+    }
+
+    // Filter products based on the search term
+    const foundMatches = filterProducts();
+
+    // If we have a valid quantity and matches were found, process the order
+    if (result.isValid && result.quantity !== null && foundMatches) {
+        const firstVisibleProduct = getFirstVisibleProduct();
+        if (firstVisibleProduct) {
+            // Set this product as the opened product for ordering
+            openedProductForOrder = firstVisibleProduct;
+
+            // Set the quantity
+            document.getElementById('quantity').value = result.quantity.toString();
+
+            // Add to order
+            addToOrder();
+
+            // Clear the search box
+            searchBox.value = result.searchTerm;
+
+            // Reset the product list display
+            filterProducts();
+        }
+    }
+}, 1000));
 
 // Function to clear the search box
 function clearSearch() {
@@ -48,9 +93,54 @@ function clearSearch() {
     resetFocus();
 }
 
-// Function to filter products based on search input
+// Function to parse search input with quantity
+function parseSearchInput(input) {
+    // Find the last occurrence of '-' in case the search term contains hyphens
+    const lastHyphenIndex = input.lastIndexOf('-');
+
+    if (lastHyphenIndex !== -1) {
+        const searchTerm = input.substring(0, lastHyphenIndex).trim();
+        const quantityStr = input.substring(lastHyphenIndex + 1).trim();
+
+        // Enhanced logging for debugging
+        // console.log('Search Term:', searchTerm);
+        // console.log('Quantity String:', quantityStr);
+
+        // Parse the quantity and verify it's a valid number
+        const quantity = parseInt(quantityStr, 10);
+        // console.log('Parsed Quantity:', quantity);
+
+        // Only return quantity if it's a valid positive number and the string contains only digits
+        if (!isNaN(quantity) && quantity > 0 && /^\d+$/.test(quantityStr)) {
+            return {
+                searchTerm,
+                quantity,
+                isValid: true
+            };
+        }
+    }
+
+    // Return just the search term if no valid quantity found
+    return {
+        searchTerm: input.trim(),
+        quantity: null,
+        isValid: false
+    };
+}
+
+// Function to get first visible product
+function getFirstVisibleProduct() {
+    const productList = document.getElementById('product-list');
+    const productItems = Array.from(productList.getElementsByTagName('li'));
+    return productItems.find(item => item.style.display !== 'none');
+}
+
+// Modified filterProducts function that returns whether matches were found
 function filterProducts() {
-    const filter = searchBox.value.toUpperCase();
+    const searchInput = searchBox.value;
+    const { searchTerm } = parseSearchInput(searchInput);
+    const filter = searchTerm.toUpperCase();
+
     const productList = document.getElementById('product-list');
     const productItems = productList.getElementsByTagName('li');
     let foundMatch = false;
@@ -59,12 +149,11 @@ function filterProducts() {
     for (let i = 0; i < productItems.length; i++) {
         const productName = productItems[i].dataset.productName.toUpperCase();
 
-        // Show or hide based on Product Name match
         if (containsInOrder(productName, filter)) {
-            productItems[i].style.display = ''; // Show
+            productItems[i].style.display = '';
             foundMatch = true;
         } else {
-            productItems[i].style.display = 'none'; // Hide
+            productItems[i].style.display = 'none';
         }
     }
 
@@ -75,18 +164,20 @@ function filterProducts() {
             const coreType = productItems[i].dataset.coreType ? productItems[i].dataset.coreType.toUpperCase() : '';
             const gradeType = productItems[i].dataset.gradeType ? productItems[i].dataset.gradeType.toUpperCase() : '';
 
-            // Show or hide based on fallback attributes
             if (
                 containsInOrder(brandName, filter) ||
                 containsInOrder(coreType, filter) ||
                 containsInOrder(gradeType, filter)
             ) {
-                productItems[i].style.display = ''; // Show
+                productItems[i].style.display = '';
+                foundMatch = true;
             } else {
-                productItems[i].style.display = 'none'; // Hide
+                productItems[i].style.display = 'none';
             }
         }
     }
+
+    return foundMatch;
 }
 
 // Function to check if a string contains another string in order (case insensitive)

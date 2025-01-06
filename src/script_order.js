@@ -1,6 +1,10 @@
-// Initialize the selected products array
+// Initialize the selectedProducts Array as a Global Variable
 let selectedProducts = [];
+
+// Initialize the Quantity Input Global Variable
 const quantityInput = document.getElementById('quantity');
+
+// Initialize the selectedProductsTextarea Global Variable
 const selectedProductsTextarea = document.getElementById('selected-products');
 
 
