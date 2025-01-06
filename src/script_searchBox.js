@@ -14,8 +14,8 @@ function scrollSearchBoxToTop() {
 
 // Function to determine if the current device is a mobile device
 function isMobileDevice() {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
-           (window.innerWidth <= 768);
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+        (window.innerWidth <= 768);
 }
 
 // Add an event listener to the search box to trigger the scroll when it gains focus
@@ -36,12 +36,16 @@ searchBox.addEventListener('input', () => {
     if (!isMobileDevice()) {
         focusFirstVisibleItem();
     }
+    if (searchBox.value === '') {
+        resetFocus();
+    }
 });
 
 // Function to clear the search box
 function clearSearch() {
     searchBox.value = '';
     filterProducts();
+    resetFocus();
 }
 
 // Function to filter products based on search input
@@ -114,4 +118,12 @@ function focusFirstVisibleItem() {
         visibleItems[0]?.classList.add("focus");
         visibleItems[0]?.scrollIntoView({ block: "nearest" });
     }
+}
+
+// Function to reset focus on all items from search results
+function resetFocus() {
+    const listItems = document.querySelectorAll('.focus'); // Adjust selector as needed
+    listItems.forEach(item => {
+        item.classList.remove('focus'); // Replace 'focus' with the actual class causing this issue
+    });
 }

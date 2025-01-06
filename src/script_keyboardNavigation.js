@@ -83,6 +83,8 @@ document.addEventListener("keydown", function (event) {
         searchBox.setSelectionRange(cursorPos - 1, cursorPos - 1); // Move cursor one character back
       }
 
+      resetFocus(); // Reset focus to the search box
+
       // Trigger the input event manually to update the filter
       const inputEvent = new Event('input', { bubbles: true });
       searchBox.dispatchEvent(inputEvent);
