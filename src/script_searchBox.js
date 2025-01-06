@@ -19,6 +19,7 @@ searchBox.addEventListener('focus', () => {
 
 searchBox.addEventListener('input', () => {
     scrollSearchBoxToTop();
+    currentFocusIndex = -1;
 });
 
 // // Function to clear the search box

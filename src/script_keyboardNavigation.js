@@ -1,4 +1,5 @@
 // Track the currently focused index
+// This Index is modified on User Input in Search Box to the First Visible item in the Product List (file: src/script_searchBox.js)
 let currentFocusIndex = -1;
 
 document.addEventListener("keydown", function (event) {
@@ -14,14 +15,14 @@ document.addEventListener("keydown", function (event) {
   if (!isFilterModalOpen && !isOrderModalOpen) {
 
     // Ctrl + Shift + F: Open Filters Modal
-    if (event.ctrlKey && event.shiftKey && event.key === "F") {
+    if (event.ctrlKey && event.shiftKey && (event.key === "f" || event.key === "F")) {
       event.preventDefault(); // Prevent adding "F" to the search box
       document.getElementById('filterProductList').click();
       return; // Exit the function to avoid processing the key further
     }
 
-    // Ctrl + Alt + F: Clear Filters
-    if (event.ctrlKey && event.shiftKey && event.key === "O") {
+    // Ctrl + Shify=t + O : Clear Filters
+    if (event.ctrlKey && event.shiftKey && (event.key === "o" || event.key === "O")) {
       event.preventDefault(); // Prevent adding "F" to the search box
       document.getElementById('clearFilters').click();
       return; // Exit the function to avoid processing the key further
@@ -34,10 +35,24 @@ document.addEventListener("keydown", function (event) {
       return; // Exit the function to avoid processing the key further
     }
 
+    // Ctrl + Backspace: Clear Search Text
+    if (event.ctrlKey && event.key === "Backspace") {
+      event.preventDefault();
+      document.getElementById('clearSearch').click();
+      return; // Exit the function to avoid processing the key further
+    }
+
     // Ctrl + Enter: Send Order
     if (event.ctrlKey && event.key === "Enter") {
       event.preventDefault();
       sendOrder();
+      return; // Exit the function to avoid processing the key further
+    }
+
+    // Ctrl + C: Copy Order Text
+    if (event.ctrlKey && (event.key === "c" || event.key === "C")) {
+      event.preventDefault();
+      copyOrder();
       return; // Exit the function to avoid processing the key further
     }
 

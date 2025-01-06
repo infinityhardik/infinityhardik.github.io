@@ -1,12 +1,16 @@
-function sendOrder() {
-    // Check if the quantity is greater than zero
+// Function to check if there are products in the order
+function hasProducts(selectedProducts) {
     if (selectedProducts.length === 0) {
         console.warn('No products in the order. Please add products to the order.');
-        return;
+        return false;
     }
+    return true;
+}
 
-    // Sort the selected products by Group Alias name first, then by Prod. Category, and finally by Product Name
-    selectedProducts.sort((a, b) => {
+// Sort the selected products by Group Alias name first, then by Prod. Category, and finally by Product Name
+// Function to sort products by Group Alias, Product Category, and Product Name
+function sortProducts(selectedProducts) {
+    return selectedProducts.sort((a, b) => {
         const groupComparison = a.productGroupAlias.localeCompare(b.productGroupAlias);
 
         if (groupComparison === 0) {
@@ -21,31 +25,37 @@ function sendOrder() {
 
         return groupComparison;
     });
+}
 
-    // Generate the order text with new line for each Group Alias change
+// Function to generate the order text
+// Generate the order text with new line for each Group Alias change
+function generateOrderText(sortedProducts) {
     let orderText = '';
     let currentGroupAlias = null;
 
-    selectedProducts.forEach(item => {
-        const { productGroupAlias, productName, productGroup } = item;
-
+    sortedProducts.forEach(item => {
+        const { productGroupAlias, productName, productGroup, quantity } = item;
         if (currentGroupAlias !== productGroupAlias) {
             // Insert a new line for a new Group Alias
             orderText += `\n*${productGroup}* :\n`;
             currentGroupAlias = productGroupAlias;
         }
-
-        orderText += `${productName} - ${item.quantity}\n`;
+        orderText += `${productName} - ${quantity}\n`;
     });
 
     let totalQuantity = calculateTotalQuantity();
     orderText += `\nTotal : *${totalQuantity}* Pcs.\n`;
-    // console.log(orderText);
+    return orderText;
+}
 
-    // Replace the recipient number with your target WhatsApp number
-    const recipientNumber = '+916355360702';
+// Function to send the order via WhatsApp
+function sendOrder() {
+    if (!hasProducts(selectedProducts)) return;
 
-    // Encode the order text for URL
+    const sortedProducts = sortProducts(selectedProducts);
+    const orderText = generateOrderText(sortedProducts);
+
+    const recipientNumber = '+916355360702'; // Replace with your target WhatsApp number
     const encodedOrderText = encodeURIComponent(orderText);
 
     // Create the wa.me link
@@ -53,4 +63,14 @@ function sendOrder() {
 
     // Open the link in a new tab/window
     window.open(waMeLink, '_blank');
+}
+
+// Function to copy the order text to the clipboard
+function copyOrder() {
+    if (!hasProducts(selectedProducts)) return;
+
+    const sortedProducts = sortProducts(selectedProducts);
+    const orderText = generateOrderText(sortedProducts);
+
+    navigator.clipboard.writeText(orderText);
 }

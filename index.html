@@ -68,8 +68,9 @@
     <div class="input-group" id="search-box-container">
       <input type="text" id="search-box" class="form-control border border-primary border-2"
         placeholder="Search Products..." oninput="filterProducts()" autocomplete="off" aria-label="Search Products..."
-        aria-describedby="Search Products..." />
-      <button id="clearSearch" class="btn btn-outline-warning input-group-btn" onclick="clearSearch()">
+        aria-describedby="Search Products..." title="Start Typing to Search Products" />
+      <button id="clearSearch" class="btn btn-outline-warning input-group-btn" onclick="clearSearch()"
+        title="Ctrl + Backspace : Clear Search">
         <strong>X</strong>
       </button>
     </div>
@@ -90,8 +91,7 @@
 
         <div class="modal-header">
           <p class="modal-title fs-5 fw-bold">Product List Filter Options</p>
-          <button type="button" onclick="closeFilterModal()" class="btn-close" data-bs-dismiss="modal"
-            aria-label="Close"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
         <div id="filter-options" class="modal-body">
@@ -124,7 +124,8 @@
       <div class="modal-content">
         <div class="modal-header">
           <p class="modal-title fw-semibold h4" id="modal-product-name"></p>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="addToOrder()"
+            aria-label="Close"></button>
         </div>
         <div class="modal-body">
 
@@ -195,13 +196,13 @@
     </div>
   </div>
 
-  <!-- <script src="src/script_keyboardNavigation.js"></script>
+  <script src="src/script_keyboardNavigation.js"></script>
   <script src="src/script_searchBox.js"></script>
   <script src="src/script_filterList.js"></script>
   <script src="src/script_onloadBasic.js"></script>
   <script src="src/script_order.js"></script>
-  <script src="src/script_sendOrder.js"></script> -->
-  <script src="dist/main.min.js"></script>
+  <script src="src/script_sendOrder.js"></script>
+  <!-- <script src="dist/main.min.js"></script> -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
