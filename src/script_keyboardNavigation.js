@@ -6,13 +6,15 @@ document.addEventListener("keydown", function (event) {
   const searchBox = document.getElementById("search-box");
   const filterModal = document.getElementById("filter-modal");
   const orderModal = document.getElementById("order-modal");
+  const helpModal = document.getElementById("help-modal");
 
   // Check if any modal is open
   const isFilterModalOpen = filterModal.classList.contains("show");
   const isOrderModalOpen = orderModal.classList.contains("show");
+  const isHelpModalOpen = helpModal.classList.contains("show");
 
   // Handle keyboard shortcuts only if no modal is open
-  if (!isFilterModalOpen && !isOrderModalOpen) {
+  if (!isFilterModalOpen && !isOrderModalOpen && !isHelpModalOpen) {
 
     // Ctrl + Shift + F: Open Filters Modal
     if (event.ctrlKey && event.shiftKey && (event.key === "f" || event.key === "F")) {
@@ -53,6 +55,13 @@ document.addEventListener("keydown", function (event) {
     if (event.ctrlKey && (event.key === "c" || event.key === "C")) {
       event.preventDefault();
       copyOrder();
+      return; // Exit the function to avoid processing the key further
+    }
+
+    // Ctrl + / or ? : Help Text
+    if (event.ctrlKey && (event.key === "/" || event.key === "?")) {
+      event.preventDefault();
+      document.getElementById('helpButton').click();
       return; // Exit the function to avoid processing the key further
     }
 
