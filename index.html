@@ -75,7 +75,8 @@
       <input type="search" id="search-box" class="form-control border border-primary border-2"
         placeholder="Search Products..." oninput="filterProducts()" autocomplete="off" spellcheck="false"
         data-form-type="other" autocapitalize="off" autocorrect="off" aria-label="Search Products..."
-        aria-describedby="Search Products..." title="Start Typing to Search and Add Products" />
+        aria-describedby="Search Products..."
+        title="Start Typing to Search and Add Products / Quantity. Example : 1884-10 will add the First Item with 10 Qty." />
       <!-- Clear Search Button -->
       <button id="clearSearch" class="btn btn-outline-warning input-group-btn ms-3" onclick="clearSearch()"
         title="Ctrl + Backspace : Clear Search">
@@ -248,20 +249,20 @@
                     <span class="fw-medium">Examples</span> will help you understand better :
                     <br>
                     <br>
-                    <p><strong class="fst-italic fw-medium text-body-secondary">1 : </strong>To Search for <strong
+                    <p><span class="fst-italic fw-medium text-body-secondary">1 : </span>To Search for <strong
                         class="fw-semibold">MRX F/D 30mm 90 x 36</strong>, type <strong
                         class="font-monospace fw-semibold">9036</strong> in search box to get to this product faster.
                       Other Search Options can be :
                       <span class="font-monospace fw-semibold">309036, M309036, MX309036, MRX309036, MRX30mm9036</span>
                     </p>
-                    <p><strong class="fst-italic fw-medium text-body-secondary">2 : </strong>To Search for <strong
+                    <p><span class="fst-italic fw-medium text-body-secondary">2 : </span>To Search for <strong
                         class="fw-semibold">ZVK XL 18 mm 8 x 4</strong>, type <strong
                         class="font-monospace fw-semibold">1884</strong> in search box to get to this product faster.
                       Other Search Options can be :
                       <span class="font-monospace fw-semibold">1884, Z1884, ZV1884, ZVK1884, ZVKXL1884, XL1884,
                         ZXL184</span>
                     </p>
-                    <p><strong class="fst-italic fw-medium text-body-secondary">3 : </strong>To Filter List for <strong
+                    <p><span class="fst-italic fw-medium text-body-secondary">3 : </span>To Filter List for <strong
                         class="fw-semibold">GT GJ Products</strong>, type <strong
                         class="font-monospace fw-semibold">GTGJ</strong> in search box to Filter the Product List with
                       GT GJ Products. Other Search Options can be :
@@ -279,6 +280,20 @@
                       Item to the List.</p>
                     <p>Press <strong class="fw-medium">Delete</strong> to Clear the Order Quantity for the selected
                       Product Item to the List. The Selected Item Quantity becomes Zero.</p>
+                    <p class="fw-semibold">PRO Tip for Instant Quantity Input : </p>
+                    <p>Use the Search Bar to directly Input Product Quantity. The
+                      First Item in the Product List will get added with Quantity Number which is followed by Hyphen
+                      "<span class="font-monospace fw-bold">-</span>"
+                      <br>
+                      <span class="fst-italic fw-medium text-body-secondary">1 : </span><span
+                        class="font-monospace fw-semibold">GTGJ1884-10</span> will add the First Visible
+                      Item with <span class="font-monospace fw-semibold">10 Qty</span>.
+                      <br>
+                      <span class="fst-italic fw-medium text-body-secondary">2 : </span><span
+                        class="font-monospace fw-semibold">M359648-5</span> will add the First Visible
+                      Item which would be <span class="font-monospace fw-semibold">MRX F/D 35 mm 96 x 48</span> with
+                      <span class="font-monospace fw-semibold">5 Qty</span>.
+                    </p>
                   </div>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-start">
@@ -335,25 +350,24 @@
                   <div class="ms-2 me-auto">
                     <div class="fw-bold">ટાઈપ કરવાનું શરૂ કરો :</div>
                     પ્રોડક્ટ લિસ્ટને ફિલ્ટર કરવા માટે પ્રોડક્ટનું નામ ટાઈપ કરવાનું શરૂ કરો. શોધ કેસ-સેન્સિટિવ નથી એટલે
-                    કે
-                    "MRX", "Mrx", "mrX" કે "mrx" બધા <strong class="fw-semibold">"MRX"</strong> માટે શોધશે.
+                    કે "MRX", "Mrx", "mrX" કે "mrx" બધા <strong class="fw-semibold">"MRX"</strong> માટે શોધશે.
                     <br>
                     <span class="fw-medium">ઉદાહરણો</span> તમને વધુ સારી રીતે સમજવામાં મદદ કરશે:
                     <br>
                     <br>
-                    <p><strong class="fst-italic fw-medium text-body-secondary">૧ : </strong><strong
-                        class="fw-semibold">MRX F/D 30mm 90 x 36</strong> માટે શોધવા, <strong
-                        class="font-monospace fw-semibold">9036</strong> ટાઈપ કરો. અન્ય શોધ વિકલ્પો:
+                    <p><span class="fst-italic fw-medium text-body-secondary">૧ : </span><strong class="fw-semibold">MRX
+                        F/D 30mm 90 x 36</strong> માટે શોધવા, <strong class="font-monospace fw-semibold">9036</strong>
+                      ટાઈપ કરો. અન્ય શોધ વિકલ્પો:
                       <span class="font-monospace fw-semibold">309036, M309036, MX309036, MRX309036, MRX30mm9036</span>
                     </p>
-                    <p><strong class="fst-italic fw-medium text-body-secondary">૨ : </strong><strong
-                        class="fw-semibold">ZVK XL 18 mm 8 x 4</strong> માટે શોધવા, <strong
-                        class="font-monospace fw-semibold">1884</strong> ટાઈપ કરો. અન્ય શોધ વિકલ્પો:
+                    <p><span class="fst-italic fw-medium text-body-secondary">૨ : </span><strong class="fw-semibold">ZVK
+                        XL 18 mm 8 x 4</strong> માટે શોધવા, <strong class="font-monospace fw-semibold">1884</strong>
+                      ટાઈપ કરો. અન્ય શોધ વિકલ્પો:
                       <span class="font-monospace fw-semibold">1884, Z1884, ZV1884, ZVK1884, ZVKXL1884, XL1884,
                         ZXL184</span>
                     </p>
-                    <p><strong class="fst-italic fw-medium text-body-secondary">૩ : </strong><strong
-                        class="fw-semibold">GT GJ પ્રોડક્ટ્સ</strong> માટે લિસ્ટ ફિલ્ટર કરવા, <strong
+                    <p><span class="fst-italic fw-medium text-body-secondary">૩ : </span><strong class="fw-semibold">GT
+                        GJ પ્રોડક્ટ્સ</strong> માટે લિસ્ટ ફિલ્ટર કરવા, <strong
                         class="font-monospace fw-semibold">GTGJ</strong> ટાઈપ કરો. અન્ય શોધ વિકલ્પો:
                       <span class="font-monospace fw-semibold">GT, GJ, GTGJ, GTG, GTJ, GGJ</span>
                     </p>
@@ -367,6 +381,20 @@
                     <br>
                     <p>પસંદ કરેલી પ્રોડક્ટ માટે ઓર્ડર જથ્થો ઉમેરવા <strong class="fw-medium">Enter</strong> દબાવો.</p>
                     <p>પસંદ કરેલી પ્રોડક્ટનો જથ્થો શૂન્ય કરવા <strong class="fw-medium">Delete</strong> દબાવો.</p>
+                    <p class="fw-semibold">તાત્કાલિક જથ્થા ઇનપુટ માટે પ્રો ટિપ:</p>
+                    <p>પ્રોડક્ટ જથ્થો સીધો ઇનપુટ કરવા માટે સર્ચ બારનો ઉપયોગ કરો.
+                      પ્રોડક્ટ લિસ્ટમાં પ્રથમ આઇટમ જથ્થા નંબર સાથે ઉમેરાશે જે હાઇફન "<span
+                        class="font-monospace fw-bold">-</span>" દ્વારા અનુસરવામાં આવે છે.
+                      <br>
+                      <span class="fst-italic fw-medium text-body-secondary">1 : </span><span
+                        class="font-monospace fw-semibold">GTGJ1884-10</span> પ્રથમ દેખાતા આઇટમને <span
+                        class="font-monospace fw-semibold">10 Qty</span> સાથે ઉમેરશે.
+                      <br>
+                      <span class="fst-italic fw-medium text-body-secondary">2 : </span><span
+                        class="font-monospace fw-semibold">M359648-5</span> પ્રથમ દેખાતા આઇટમને ઉમેરશે જે <span
+                        class="font-monospace fw-semibold">MRX F/D 35 mm 96 x 48</span> હશે <span
+                        class="font-monospace fw-semibold">5 Qty</span> સાથે.
+                    </p>
                   </div>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-start">
@@ -429,19 +457,19 @@
                     <span class="fw-medium">उदाहरण</span> आपको बेहतर समझने में मदद करेंगे:
                     <br>
                     <br>
-                    <p><strong class="fst-italic fw-medium text-body-secondary">१ : </strong><strong
-                        class="fw-semibold">MRX F/D 30mm 90 x 36</strong> के लिए खोजने हेतु, <strong
+                    <p><span class="fst-italic fw-medium text-body-secondary">१ : </span><strong class="fw-semibold">MRX
+                        F/D 30mm 90 x 36</strong> के लिए खोजने हेतु, <strong
                         class="font-monospace fw-semibold">9036</strong> टाइप करें। अन्य खोज विकल्प:
                       <span class="font-monospace fw-semibold">309036, M309036, MX309036, MRX309036, MRX30mm9036</span>
                     </p>
-                    <p><strong class="fst-italic fw-medium text-body-secondary">२ : </strong><strong
-                        class="fw-semibold">ZVK XL 18 mm 8 x 4</strong> के लिए खोजने हेतु, <strong
+                    <p><span class="fst-italic fw-medium text-body-secondary">२ : </span><strong class="fw-semibold">ZVK
+                        XL 18 mm 8 x 4</strong> के लिए खोजने हेतु, <strong
                         class="font-monospace fw-semibold">1884</strong> टाइप करें। अन्य खोज विकल्प:
                       <span class="font-monospace fw-semibold">1884, Z1884, ZV1884, ZVK1884, ZVKXL1884, XL1884,
                         ZXL184</span>
                     </p>
-                    <p><strong class="fst-italic fw-medium text-body-secondary">३ : </strong><strong
-                        class="fw-semibold">GT GJ प्रोडक्ट्स</strong> के लिए लिस्ट फ़िल्टर करने हेतु, <strong
+                    <p><span class="fst-italic fw-medium text-body-secondary">३ : </span><strong class="fw-semibold">GT
+                        GJ प्रोडक्ट्स</strong> के लिए लिस्ट फ़िल्टर करने हेतु, <strong
                         class="font-monospace fw-semibold">GTGJ</strong> टाइप करें। अन्य खोज विकल्प:
                       <span class="font-monospace fw-semibold">GT, GJ, GTGJ, GTG, GTJ, GGJ</span>
                     </p>
@@ -456,6 +484,20 @@
                     <p>चयनित प्रोडक्ट के लिए ऑर्डर मात्रा जोड़ने के लिए <strong class="fw-medium">Enter</strong> दबाएं।
                     </p>
                     <p>चयनित प्रोडक्ट की मात्रा को शून्य करने के लिए <strong class="fw-medium">Delete</strong> दबाएं।
+                    </p>
+                    <p class="fw-semibold">तत्काल मात्रा इनपुट के लिए प्रो टिप:</p>
+                    <p>प्रोडक्ट मात्रा को सीधे इनपुट करने के लिए सर्च बार का उपयोग करें।
+                      प्रोडक्ट सूची में पहला आइटम मात्रा संख्या के साथ जोड़ा जाएगा जो हाइफ़न "<span
+                        class="font-monospace fw-bold">-</span>" द्वारा अनुसरण किया जाता है।
+                      <br>
+                      <span class="fst-italic fw-medium text-body-secondary">1 : </span><span
+                        class="font-monospace fw-semibold">GTGJ1884-10</span> पहले दिखाई देने वाले आइटम को <span
+                        class="font-monospace fw-semibold">10 Qty</span> के साथ जोड़ देगा।
+                      <br>
+                      <span class="fst-italic fw-medium text-body-secondary">2 : </span><span
+                        class="font-monospace fw-semibold">M359648-5</span> पहले दिखाई देने वाले आइटम को जोड़ देगा जो
+                      <span class="font-monospace fw-semibold">MRX F/D 35 mm 96 x 48</span> होगा <span
+                        class="font-monospace fw-semibold">5 Qty</span> के साथ।
                     </p>
                   </div>
                 </li>
@@ -515,13 +557,13 @@
     </div>
   </div>
 
-  <script src="src/script_keyboardNavigation.js"></script>
+  <!-- <script src="src/script_keyboardNavigation.js"></script>
   <script src="src/script_searchBox.js"></script>
   <script src="src/script_filterList.js"></script>
   <script src="src/script_onloadBasic.js"></script>
   <script src="src/script_order.js"></script>
-  <script src="src/script_sendOrder.js"></script>
-  <!-- <script src="dist/main.min.js"></script> -->
+  <script src="src/script_sendOrder.js"></script> -->
+  <script src="dist/main.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>

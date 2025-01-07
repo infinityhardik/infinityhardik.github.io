@@ -100,7 +100,7 @@ function parseSearchInput(input) {
     const lastHyphenIndex = input.lastIndexOf('-');
 
     if (lastHyphenIndex !== -1) {
-        const searchTerm = input.substring(0, lastHyphenIndex).trim();
+        const searchTerm = input.substring(0, lastHyphenIndex).trim().replace(/-/g, '');
         const quantityStr = input.substring(lastHyphenIndex + 1).trim();
 
         // Enhanced logging for debugging
@@ -123,7 +123,7 @@ function parseSearchInput(input) {
 
     // Return just the search term if no valid quantity found
     return {
-        searchTerm: input.trim(),
+        searchTerm: input.trim().replace(/-/g, ''),
         quantity: null,
         isValid: false
     };
