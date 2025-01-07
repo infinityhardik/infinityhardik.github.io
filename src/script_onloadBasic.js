@@ -42,7 +42,7 @@ function displayProducts(productList) {
         productItem.dataset.productGroup = product['Group Name'];
         productItem.dataset.productGroupAlias = product['Group Alias'];
         productItem.dataset.productCategory = product['Prod. Category'];
-        productItem.dataset.faceType = product['Face Type'];
+        productItem.dataset.faceType = product['Face Type'] || '';
         productItem.dataset.coreType = product['Core Type'];
         productItem.dataset.gradeType = product['Grade Type'];
         productItem.dataset.brandMark = product['Brand Mark'];

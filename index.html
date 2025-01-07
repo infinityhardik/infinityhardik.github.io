@@ -72,9 +72,10 @@
         <strong>?</strong>
       </button>
       <!-- Search Box -->
-      <input type="text" id="search-box" class="form-control border border-primary border-2"
-        placeholder="Search Products..." oninput="filterProducts()" autocomplete="off" aria-label="Search Products..."
-        aria-describedby="Search Products..." title="Start Typing to Search Products" />
+      <input type="search" id="search-box" class="form-control border border-primary border-2"
+        placeholder="Search Products..." oninput="filterProducts()" autocomplete="off" spellcheck="false"
+        data-form-type="other" autocapitalize="off" autocorrect="off" aria-label="Search Products..."
+        aria-describedby="Search Products..." title="Start Typing to Search and Add Products" />
       <!-- Clear Search Button -->
       <button id="clearSearch" class="btn btn-outline-warning input-group-btn ms-3" onclick="clearSearch()"
         title="Ctrl + Backspace : Clear Search">

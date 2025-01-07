@@ -84,7 +84,8 @@ searchBox.addEventListener('input', debounce(() => {
             filterProducts();
         }
     }
-}, 1000));
+}, 1000)); 
+// Update Debounce time in milliseconds for the search box event listener in order to support more digits input
 
 // Function to clear the search box
 function clearSearch() {
