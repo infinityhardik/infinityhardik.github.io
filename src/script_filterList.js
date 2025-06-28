@@ -2,6 +2,12 @@
 let selectedFilters = {};
 
 // Helper functions
+
+/**
+ * Retrieves all unique keys (property names) from an array of objects.
+ * @param {Array<Object>} data - The array of objects to inspect.
+ * @returns {Array<string>} An array of unique keys.
+ */
 function getAllKeys(data) {
     const keys = new Set();
     data.forEach(item => {
@@ -10,268 +16,226 @@ function getAllKeys(data) {
     return Array.from(keys);
 }
 
+/**
+ * Retrieves all unique values for a specified key from an array of objects.
+ * @param {Array<Object>} data - The array of objects to inspect.
+ * @param {string} key - The key whose unique values are to be retrieved.
+ * @returns {Array<string>} An array of unique values for the specified key.
+ */
 function getUniqueValues(data, key) {
     const values = new Set();
     data.forEach(item => {
-        if (item[key]) values.add(item[key]);
+        if (item[key]) values.add(String(item[key])); // Ensure values are stored as strings
     });
-    return Array.from(values);
+    return Array.from(values).sort(); // Sort values alphabetically
 }
 
-// Function to open the filter modal with debug logging
+/**
+ * Opens the filter modal and ensures filter options are populated and checkbox states are updated.
+ */
 function openFilterModal() {
-    
-    // Check if filter options need to be populated
-    const hasExistingOptions = document.querySelector('#list-tab').children.length > 0;
-    
-    if (!hasExistingOptions) {
+    // Check if filter options need to be populated (e.g., first time opening the modal)
+    const hasExistingOptions = document.querySelector('#list-tab button'); // Check if any tab buttons exist
+    if (!hasExistingOptions && productsData.productDirectory.length > 0) {
         populateFilterOptions();
     }
-    
-    updateCheckboxStates();
-    
-    updateClearFiltersButtonStyle();
-}
-
-// Function to update checkbox states with debug logging
-function updateCheckboxStates() {
-    const tabContent = document.getElementById('nav-tabContent');
-    
-    Array.from(tabContent.children).forEach(tabPane => {
-        const key = tabPane.id.replace('list-', '').replace(/-/g, ' ');
-        
-        const checkboxes = tabPane.querySelectorAll('input[type="checkbox"]');
-        
-        checkboxes.forEach(checkbox => {
-            const checkboxId = checkbox.id;
-            // Extract the value correctly from the checkbox ID
-            const value = checkbox.dataset.filterValue || checkboxId.split('filter-checkbox-')[1].split('-').slice(1).join('-');
-            const shouldBeChecked = selectedFilters[key] && selectedFilters[key].includes(value);
-            
-            checkbox.checked = shouldBeChecked;
-            
-            const label = checkbox.nextElementSibling;
-            if (shouldBeChecked) {
-                label.style.fontWeight = 'bold';
-            } else {
-                label.style.fontWeight = 'normal';
-                label.style.background = 'none';
-            }
-        });
-    });
+    updateFilterCheckboxStates(); // Always update checkbox states when modal opens
 }
 
 
-// Function to populate tab values with debug logging
-function populateTabValues(key, tabPane) {
-    
-    if (!tabPane) {
-        console.error('Tab pane is null for key:', key);
-        return;
-    }
-
-    const safeKey = key.replace(/ /g, '-');
-    const uniqueValues = getUniqueValues(productsData.productDirectory, key);
-    
-    // Clear existing content
-    tabPane.innerHTML = '';
-    
-    uniqueValues.forEach((value, index) => {
-        const checkboxDiv = document.createElement('div');
-        checkboxDiv.className = 'form-check';
-        
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.className = 'form-check-input me-1';
-        const safeValue = value.replace(/ /g, '-');
-        const checkboxId = `filter-checkbox-${safeKey}-${safeValue}`;
-        checkbox.id = checkboxId;
-
-        // Store key and value directly on the checkbox
-        checkbox.dataset.filterKey = key;
-        checkbox.dataset.filterValue = value;
-        
-        // Check if this value is currently selected
-        const isChecked = selectedFilters[key] && selectedFilters[key].includes(value);
-        checkbox.checked = isChecked;
-        
-        checkbox.addEventListener('change', function(e) {
-            const filterKey = this.dataset.filterKey;
-            const filterValue = this.dataset.filterValue;
-            updateSelectedFilters(filterKey, filterValue);
-        });
-        
-        const label = document.createElement('label');
-        label.className = 'form-check-label';
-        label.setAttribute('for', checkboxId);
-        label.textContent = value;
-        
-        if (isChecked) {
-            label.style.fontWeight = 'bold';
-        }
-        
-        checkboxDiv.appendChild(checkbox);
-        checkboxDiv.appendChild(label);
-        tabPane.appendChild(checkboxDiv);
-    });
-    
-}
-
-// Function to populate filter options with debug logging
+/**
+ * Populates the filter options in the modal based on product data.
+ */
 function populateFilterOptions() {
-    const tabList = document.getElementById('list-tab');
-    const tabContent = document.getElementById('nav-tabContent');
-    
-    tabList.innerHTML = '';
-    tabContent.innerHTML = '';
+    const listTab = document.getElementById('list-tab');
+    const navTabContent = document.getElementById('nav-tabContent');
 
-    const allKeys = getAllKeys(productsData.productDirectory);
+    listTab.innerHTML = ''; // Clear existing tabs
+    navTabContent.innerHTML = ''; // Clear existing tab content
 
-    allKeys.forEach((key, index) => {
-        if (key !== 'Product' && key !== 'Group Alias' && key !== 'Prod. Category') {
-            const safeKey = key.replace(/ /g, '-');
-            
-            // Create tab item
-            const tabItem = document.createElement('a');
-            tabItem.classList.add('list-group-item', 'list-group-item-action');
-            if (index === 0) tabItem.classList.add('active');
-            tabItem.id = `list-${safeKey}-list`;
-            tabItem.setAttribute('data-bs-toggle', 'list');
-            tabItem.href = `#list-${safeKey}`;
-            tabItem.role = 'tab';
-            tabItem.setAttribute('aria-controls', `list-${safeKey}`);
-            tabItem.textContent = key;
-            
-            // Add click handler with debugging
-            tabItem.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-        
-                
-                // Remove active classes
-                tabList.querySelectorAll('.active').forEach(el => {
-                    el.classList.remove('active');
-                });
-                
-                tabContent.querySelectorAll('.active, .show').forEach(el => {
-                    el.classList.remove('active', 'show');
-                });
-                
-                // Add active class
-                this.classList.add('active');
-                
-                // Show content
-                const targetPaneId = this.getAttribute('href');
-                const targetPane = document.querySelector(targetPaneId);
-                
-                if (targetPane) {
-                    targetPane.classList.add('active', 'show');
-                    populateTabValues(key, targetPane);
-                } else {
-                    console.error('Target pane not found:', targetPaneId);
-                }
-            });
-            
-            tabList.appendChild(tabItem);
+    // Define the keys we want to create filters for and their display names
+    const filterKeys = {
+        'Product Type': 'Product Type',
+        'Group Name': 'Group Name',
+        'Prod. Category': 'Product Category',
+        'Face Type': 'Face Type',
+        'Core Type': 'Core Type',
+        'Grade Type': 'Grade Type',
+        'Brand Mark': 'Brand Mark'
+    };
 
-            // Create content pane
+    let firstTab = true; // To mark the first tab as active
+
+    for (const key in filterKeys) {
+        const displayName = filterKeys[key];
+        const uniqueValues = getUniqueValues(productsData.productDirectory, key);
+
+        if (uniqueValues.length > 0) {
+            // Create tab button
+            const buttonId = `list-${key.replace(/\s/g, '-')}-list`; // e.g., list-Product-Type-list
+            const tabPaneId = `${key.replace(/\s/g, '-')}-tab-pane`; // e.g., Product-Type-tab-pane
+
+            const button = document.createElement('button');
+            button.classList.add('list-group-item', 'list-group-item-action');
+            if (firstTab) {
+                button.classList.add('active');
+                button.setAttribute('aria-current', 'true');
+            }
+            button.id = buttonId;
+            button.dataset.bsToggle = 'list';
+            button.href = `#${tabPaneId}`;
+            button.role = 'tab';
+            button.setAttribute('aria-controls', tabPaneId);
+            button.textContent = displayName;
+            listTab.appendChild(button);
+
+            // Create tab pane content
             const tabPane = document.createElement('div');
             tabPane.classList.add('tab-pane', 'fade');
-            if (index === 0) {
+            if (firstTab) {
                 tabPane.classList.add('show', 'active');
             }
-            tabPane.id = `list-${safeKey}`;
+            tabPane.id = tabPaneId;
             tabPane.role = 'tabpanel';
-            tabPane.setAttribute('aria-labelledby', `list-${safeKey}-list`);
-            
-            tabContent.appendChild(tabPane);
-            
-            // Populate initial tab
-            if (index === 0) {
-                setTimeout(() => populateTabValues(key, tabPane), 0);
-            }
+            tabPane.setAttribute('aria-labelledby', buttonId);
+
+            uniqueValues.forEach(value => {
+                const formCheck = document.createElement('div');
+                formCheck.classList.add('form-check');
+
+                const input = document.createElement('input');
+                input.classList.add('form-check-input', 'filter-checkbox');
+                input.type = 'checkbox';
+                input.value = value;
+                input.id = `filter-${key.replace(/\s/g, '-')}-${value.replace(/\s/g, '-')}`;
+                input.dataset.filterKey = key; // Store the original key name
+
+                const label = document.createElement('label');
+                label.classList.add('form-check-label');
+                label.htmlFor = input.id;
+                label.textContent = value;
+
+                formCheck.appendChild(input);
+                formCheck.appendChild(label);
+                tabPane.appendChild(formCheck);
+
+                // Add event listener to update selectedFilters on change
+                input.addEventListener('change', (event) => {
+                    const filterKey = event.target.dataset.filterKey;
+                    const filterValue = event.target.value;
+
+                    if (event.target.checked) {
+                        if (!selectedFilters[filterKey]) {
+                            selectedFilters[filterKey] = [];
+                        }
+                        if (!selectedFilters[filterKey].includes(filterValue)) {
+                            selectedFilters[filterKey].push(filterValue);
+                        }
+                    } else {
+                        if (selectedFilters[filterKey]) {
+                            selectedFilters[filterKey] = selectedFilters[filterKey].filter(val => val !== filterValue);
+                            if (selectedFilters[filterKey].length === 0) {
+                                delete selectedFilters[filterKey]; // Remove key if no values selected
+                            }
+                        }
+                    }
+                    updateClearFiltersButtonStyle(); // Update button style immediately
+                });
+            });
+            navTabContent.appendChild(tabPane);
+            firstTab = false; // Only the first one should be active initially
         }
-    });
-    
+    }
+    updateClearFiltersButtonStyle(); // Initial update of button style after populating
 }
 
-// Function to update selected filters with debug logging
-function updateSelectedFilters(key, value) {
-    
-    if (!selectedFilters[key]) {
-        selectedFilters[key] = [];
-    }
 
-    const index = selectedFilters[key].indexOf(value);
-    if (index > -1) {
-        selectedFilters[key].splice(index, 1);
-        if (selectedFilters[key].length === 0) {
-            delete selectedFilters[key];
-        }
-    } else {
-        selectedFilters[key].push(value);
-    }
-
-    
-    // Force a re-render of all checkbox states
-    const tabContent = document.getElementById('nav-tabContent');
-    Array.from(tabContent.children).forEach(tabPane => {
-        const paneKey = tabPane.id.replace('list-', '').replace(/-/g, ' ');
-        if (tabPane.classList.contains('active')) {
-            populateTabValues(paneKey, tabPane);
-        }
+/**
+ * Updates the checked state of filter checkboxes based on `selectedFilters`.
+ */
+function updateFilterCheckboxStates() {
+    document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
+        const filterKey = checkbox.dataset.filterKey;
+        const filterValue = checkbox.value;
+        checkbox.checked = selectedFilters[filterKey] && selectedFilters[filterKey].includes(filterValue);
     });
-    
-    updateClearFiltersButtonStyle();
 }
 
-// Function to apply filters with debug logging
+/**
+ * Applies the selected filters to the product list and displays only matching products.
+ */
 function applyFilters() {
-    
-    if (Object.keys(selectedFilters).length === 0) {
-        displayProducts(productsData.productDirectory);
-        updateCheckboxStates();
-        updateClearFiltersButtonStyle();
-        return;
+    let filteredProducts = productsData.productDirectory;
+
+    // Iterate over each filter category (key) in selectedFilters
+    for (const key in selectedFilters) {
+        if (selectedFilters.hasOwnProperty(key) && selectedFilters[key].length > 0) {
+            const filterValues = selectedFilters[key]; // Array of selected values for this category
+
+            // Filter the products: Keep only products whose 'key' property value is
+            // included in the 'filterValues' array for the current category.
+            filteredProducts = filteredProducts.filter(product =>
+                filterValues.includes(String(product[key]))
+            );
+        }
     }
-
-    const filteredProducts = filterProductsBySelectedFilters(selectedFilters);
-    
-    displayProducts(filteredProducts);
+    displayProducts(filteredProducts); // Display the filtered results
+    resetFocus(); // Reset focus after filtering
 }
 
-// Function to clear filters with debug logging
+
+/**
+ * Clears all active filters, displays all products, and updates button styles.
+ */
 function clearFilters() {
-    selectedFilters = {};
-    updateCheckboxStates();
-    updateClearFiltersButtonStyle();
-    applyFilters();
+    selectedFilters = {}; // Reset global selected filters object
+
+    // Uncheck all filter checkboxes in the modal
+    document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+
+    displayProducts(productsData.productDirectory); // Display all original products
+    updateClearFiltersButtonStyle(); // Reset button style
+    resetFocus(); // Reset focus after clearing filters
+    displayFeedbackMessage('Filters cleared. Showing all products.', 'success');
 }
 
-// Function to filter products
+
+/**
+ * Filters products based on selected filters.
+ * @param {Object} filters - An object where keys are product properties (e.g., 'Product Type')
+ * and values are arrays of selected filter values (e.g., ['Plywood', 'Block-Board']).
+ * @returns {Array<Object>} An array of product objects that match all selected filters.
+ */
 function filterProductsBySelectedFilters(filters) {
     return productsData.productDirectory.filter(product => {
         for (const key in filters) {
-            if (!filters[key].includes(String(product[key]))) {
-                return false;
+            // Check if the product's value for this key is included in the selected filter values for that key
+            if (filters.hasOwnProperty(key) && !filters[key].includes(String(product[key]))) {
+                return false; // If any filter doesn't match, exclude the product
             }
         }
-        return true;
+        return true; // If all filters match, include the product
     });
 }
 
-// Function to update button styles
+/**
+ * Updates the visual style of the "Filter" and "Clear Filters" buttons
+ * based on whether any filters are currently active.
+ */
 function updateClearFiltersButtonStyle() {
     const filterButton = document.getElementById('filterProductList');
     const clearFiltersButton = document.getElementById('clearFilters');
+    // Check if there are any active filters
     const filtersActive = Object.keys(selectedFilters).length > 0;
 
     if (filtersActive) {
-        filterButton.style.backgroundColor = 'darkblue';
+        filterButton.style.backgroundColor = 'darkblue'; // Indicate active filters
         clearFiltersButton.style.backgroundColor = 'black';
         clearFiltersButton.style.color = 'white';
     } else {
+        // Reset to default Bootstrap styles or custom neutral styles
         filterButton.style.backgroundColor = '';
         clearFiltersButton.style.backgroundColor = '';
         clearFiltersButton.style.color = '';
