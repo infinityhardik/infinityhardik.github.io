@@ -126,7 +126,6 @@ function displayProducts(productList) {
         productNameSpan.textContent = product.Product;
         productNameSpan.setAttribute('title', 'Click to view details'); // Add tooltip
 
-
         // Quantity controls container
         const quantityControlsDiv = document.createElement('div');
         quantityControlsDiv.classList.add('quantity-controls');
@@ -137,7 +136,6 @@ function displayProducts(productList) {
         decrementButton.classList.add('btn', 'btn-outline-danger', 'btn-sm');
         decrementButton.textContent = '-';
         addHoldListeners(decrementButton, () => updateProductQuantityInOrder(product.Product, -1));
-
 
         // Quantity display input
         const quantityDisplayInput = document.createElement('input');
@@ -166,6 +164,20 @@ function displayProducts(productList) {
         // Append elements to the product item
         productItem.appendChild(productInfoDiv); // The clickable part for modal
         productItem.appendChild(quantityControlsDiv); // The quantity controls
+
+        // Make the entire productItem clickable, except for controls
+        productItem.addEventListener('click', function(event) {
+            // If the click is on a button, input, or checkbox, do nothing
+            if (
+                event.target.closest('.quantity-controls') ||
+                event.target.classList.contains('product-checkbox') ||
+                event.target.tagName === 'BUTTON' ||
+                event.target.tagName === 'INPUT'
+            ) {
+                return;
+            }
+            openOrderModal(productItem);
+        });
 
         fragment.appendChild(productItem);
     });
