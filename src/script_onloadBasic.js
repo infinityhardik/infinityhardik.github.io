@@ -1,5 +1,8 @@
 // Call loadProducts() when the page loads
-window.onload = loadProducts;
+window.onload = () => {
+    loadProducts();
+    applySavedTheme(); // Apply saved theme preference on load
+};
 
 let productsData = { productDirectory: [] }; // Initialize with an empty array to prevent errors
 let openedProductForOrder = null; // Stores the product data for the currently opened order modal
@@ -39,11 +42,14 @@ function displayProducts(productList) {
     const productListContainer = document.getElementById('product-list');
 
     // Optimization: Only update if the list has changed in length or order
-    if (
-        productListContainer.childElementCount === productList.length &&
-        Array.from(productListContainer.children).every((li, idx) => li.dataset.productName === productList[idx].Product)
-    ) {
-        // No change, skip DOM update
+    // This check can be simplified if filterProductsAndDisplay always sends a new, distinct list.
+    // However, it's good for preventing unnecessary DOM manipulation if the data itself hasn't changed.
+    const currentProductNames = Array.from(productListContainer.children).map(li => li.dataset.productName);
+    const newProductNames = productList.map(p => p.Product);
+
+    if (currentProductNames.length === newProductNames.length &&
+        currentProductNames.every((name, idx) => name === newProductNames[idx])) {
+        // No significant change in product order or count, skip full DOM update
         return;
     }
 
@@ -284,3 +290,49 @@ function toggleOrderPopup() {
         selectedProductsTextarea.scrollTop = selectedProductsTextarea.scrollHeight;
     }
 }
+
+/**
+ * Toggles dark mode on or off and saves the preference to localStorage.
+ */
+function toggleDarkMode() {
+    const body = document.body;
+    body.classList.toggle('dark-mode');
+
+    // Save preference to localStorage
+    if (body.classList.contains('dark-mode')) {
+        localStorage.setItem('theme', 'dark');
+    } else {
+        localStorage.setItem('theme', 'light');
+    }
+    updateDarkModeToggleIcon();
+}
+
+/**
+ * Applies the saved theme preference from localStorage on page load.
+ */
+function applySavedTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+    } else {
+        document.body.classList.remove('dark-mode'); // Ensure light mode is default if no preference or 'light'
+    }
+    updateDarkModeToggleIcon();
+}
+
+/**
+ * Updates the icon of the dark mode toggle button based on the current theme.
+ */
+function updateDarkModeToggleIcon() {
+    const toggleButton = document.getElementById('darkModeToggle');
+    if (toggleButton) {
+        if (document.body.classList.contains('dark-mode')) {
+            toggleButton.innerHTML = '🌞'; // Sun icon for dark mode (click to go to light)
+            toggleButton.setAttribute('title', 'Switch to Light Mode');
+        } else {
+            toggleButton.innerHTML = '🌙'; // Moon icon for light mode (click to go to dark)
+            toggleButton.setAttribute('title', 'Switch to Dark Mode');
+        }
+    }
+}
+

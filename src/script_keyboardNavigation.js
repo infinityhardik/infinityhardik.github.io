@@ -44,7 +44,7 @@ document.addEventListener("keydown", function (event) {
         // Ctrl + Backspace: Clear Search Text
         if (event.ctrlKey && event.key === "Backspace") {
             event.preventDefault();
-            document.getElementById('clearSearch').click(); // Simulate click on the Clear Search button
+            clearSearch(); // Properly clear search and filter list
             return;
         }
 
@@ -111,11 +111,13 @@ document.addEventListener("keydown", function (event) {
             event.preventDefault(); // Prevent page scrolling
 
             if (visibleItems.length === 0) {
-                // No visible items to navigate
                 currentFocusIndex = -1;
                 searchBox.focus(); // Ensure search box is focused if list is empty
                 return;
             }
+
+            // Remove keyboard-focus from all items before updating
+            visibleItems.forEach(item => item.classList.remove("keyboard-focus"));
 
             if (event.key === "ArrowDown") {
                 if (currentFocusIndex === -1 || currentFocusIndex >= visibleItems.length) {
@@ -125,12 +127,12 @@ document.addEventListener("keydown", function (event) {
                 } else {
                     // Move to the next visible item
                     if (visibleItems[currentFocusIndex - 1]) {
-                        visibleItems[currentFocusIndex - 1].classList.remove("focus");
+                        visibleItems[currentFocusIndex - 1].classList.remove("focus", "keyboard-focus");
                     }
                     currentFocusIndex++;
                 }
                 if (visibleItems[currentFocusIndex - 1]) {
-                    visibleItems[currentFocusIndex - 1].classList.add("focus");
+                    visibleItems[currentFocusIndex - 1].classList.add("focus", "keyboard-focus");
                     visibleItems[currentFocusIndex - 1].scrollIntoView({ block: "nearest", behavior: "smooth" });
                 }
             }
@@ -139,20 +141,20 @@ document.addEventListener("keydown", function (event) {
                 if (currentFocusIndex <= 1) {
                     // From the first item, move back to search box
                     if (visibleItems[0]) {
-                        visibleItems[0].classList.remove("focus");
+                        visibleItems[0].classList.remove("focus", "keyboard-focus");
                     }
                     searchBox.focus();
                     currentFocusIndex = -1;
                 } else {
                     // Move to the previous visible item
                     if (visibleItems[currentFocusIndex - 1]) {
-                        visibleItems[currentFocusIndex - 1].classList.remove("focus");
+                        visibleItems[currentFocusIndex - 1].classList.remove("focus", "keyboard-focus");
                     }
                     currentFocusIndex--;
                 }
                 if (currentFocusIndex > 0) {
                     if (visibleItems[currentFocusIndex - 1]) {
-                        visibleItems[currentFocusIndex - 1].classList.add("focus");
+                        visibleItems[currentFocusIndex - 1].classList.add("focus", "keyboard-focus");
                         visibleItems[currentFocusIndex - 1].scrollIntoView({ block: "nearest", behavior: "smooth" });
                     }
                 }
@@ -219,3 +221,50 @@ document.addEventListener("keydown", function (event) {
     // No 'else' block for `event.preventDefault()` if a modal is open.
     // This allows default behavior within modals unless explicitly handled.
 });
+
+// Function to focus the first visible product item in the list after filtering or clearing
+function focusFirstVisibleItem() {
+    const productListContainer = document.getElementById("product-list");
+    const visibleItems = Array.from(productListContainer.children);
+    resetFocus(); // Always clear any previous focus
+    if (visibleItems.length > 0) {
+        currentFocusIndex = 1;
+        visibleItems[0].classList.add("focus");
+        // Do NOT add keyboard-focus here (only for arrow keys)
+        visibleItems[0].scrollIntoView({ block: "nearest", behavior: "smooth" });
+    } else {
+        currentFocusIndex = -1;
+    }
+}
+
+// Ensure pointer never stays on a hidden item after navigation
+function validatePointerAfterListChange() {
+    const productListContainer = document.getElementById("product-list");
+    const visibleItems = Array.from(productListContainer.children);
+    if (currentFocusIndex > visibleItems.length) {
+        resetFocus();
+        if (visibleItems.length > 0) {
+            currentFocusIndex = 1;
+            visibleItems[0].classList.add("focus");
+            visibleItems[0].scrollIntoView({ block: "nearest", behavior: "smooth" });
+        }
+    }
+}
+
+// Listen for DOM changes to product list to validate pointer
+const productListContainer = document.getElementById("product-list");
+if (productListContainer) {
+    const observer = new MutationObserver(() => {
+        validatePointerAfterListChange();
+    });
+    observer.observe(productListContainer, { childList: true });
+}
+
+// In resetFocus, also remove keyboard-focus
+function resetFocus() {
+    const focusedItems = document.querySelectorAll('.list-group-item.focus, .list-group-item.keyboard-focus');
+    focusedItems.forEach(item => {
+        item.classList.remove('focus', 'keyboard-focus');
+    });
+    currentFocusIndex = -1;
+}
