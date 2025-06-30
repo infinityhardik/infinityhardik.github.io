@@ -411,3 +411,107 @@ button:active {
     height: 60vh; /* More height on mobile */
   }
 }
+
+/* Modern Search Bar Styling */
+.modern-search-bar {
+  background: linear-gradient(90deg, #f8fafc 60%, #e3e8f0 100%);
+  border-radius: 1.5rem;
+  box-shadow: 0 2px 12px rgba(106, 17, 203, 0.07);
+  padding: 0.25rem 0.5rem;
+  align-items: center;
+  border: none;
+}
+
+.modern-search-bar .search-icon {
+  background: transparent;
+  border: none;
+  padding: 0 0.5rem 0 0.75rem;
+  display: flex;
+  align-items: center;
+}
+
+.modern-search-bar .modern-clear-btn {
+  border-radius: 50%;
+  padding: 0.4rem 0.6rem;
+  background: linear-gradient(135deg, #fffbe7 60%, #f8fafc 100%);
+  border: none;
+  box-shadow: 0 2px 8px rgba(255, 193, 7, 0.08);
+  display: flex;
+  align-items: center;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.modern-search-bar .modern-clear-btn:hover {
+  background: linear-gradient(135deg, #ffe082 60%, #fffbe7 100%);
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.15);
+}
+
+.modern-search-bar .modern-help-btn {
+  border-radius: 50%;
+  padding: 0.4rem 0.6rem;
+  background: linear-gradient(135deg, #e0f7fa 60%, #f8fafc 100%);
+  border: none;
+  box-shadow: 0 2px 8px rgba(23, 162, 184, 0.08);
+  display: flex;
+  align-items: center;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.modern-search-bar .modern-help-btn:hover {
+  background: linear-gradient(135deg, #b2ebf2 60%, #e0f7fa 100%);
+  box-shadow: 0 4px 12px rgba(23, 162, 184, 0.15);
+}
+
+.modern-search-input {
+  background: transparent;
+  border: none;
+  border-radius: 1.5rem;
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: #343a40;
+  box-shadow: none;
+  outline: none;
+  transition: box-shadow 0.2s, background 0.2s;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.modern-search-input:focus {
+  background: #f3f0ff;
+  box-shadow: 0 0 0 3px #b39ddb44;
+  color: #222;
+}
+
+/* Remove default clear (X) button in input[type=search] for Chrome, Edge, Safari */
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  display: none;
+}
+
+/* Remove clear (X) button for Firefox */
+input[type="search"]::-ms-clear {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* Remove clear (X) button for IE */
+input[type="search"]::-ms-reveal {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .modern-search-bar {
+    border-radius: 1rem;
+    padding: 0.15rem 0.25rem;
+  }
+
+  .modern-search-input {
+    font-size: 1rem;
+  }
+}
