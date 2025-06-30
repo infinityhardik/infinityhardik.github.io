@@ -40,162 +40,145 @@ async function loadProducts() {
  */
 function displayProducts(productList) {
     const productListContainer = document.getElementById('product-list');
-
-    // Optimization: Only update if the list has changed in length or order
-    // This check can be simplified if filterProductsAndDisplay always sends a new, distinct list.
-    // However, it's good for preventing unnecessary DOM manipulation if the data itself hasn't changed.
-    const currentProductNames = Array.from(productListContainer.children).map(li => li.dataset.productName);
+    const existingItems = Array.from(productListContainer.children);
     const newProductNames = productList.map(p => p.Product);
-
-    if (currentProductNames.length === newProductNames.length &&
-        currentProductNames.every((name, idx) => name === newProductNames[idx])) {
-        // No significant change in product order or count, skip full DOM update
-        return;
-    }
-
-    // Clear existing content to refresh the list
-    productListContainer.innerHTML = '';
-
-    // Create a document fragment to improve performance when appending multiple elements
-    const fragment = document.createDocumentFragment();
-
-    productList.forEach(product => {
-        // Create the list item for the product
-        const productItem = document.createElement('li');
-        productItem.classList.add('list-group-item', 'list-group-item-action', 'product-item');
-        // Attach all product details as data attributes for easy access
-        productItem.dataset.productName = product.Product;
-        productItem.dataset.productType = product['Product Type'];
-        productItem.dataset.productGroup = product['Group Name'];
-        productItem.dataset.productGroupAlias = product['Group Alias'];
-        productItem.dataset.productCategory = product['Prod. Category'];
-        productItem.dataset.faceType = product['Face Type'] || '';
-        productItem.dataset.coreType = product['Core Type'];
-        productItem.dataset.gradeType = product['Grade Type'];
-        productItem.dataset.brandMark = product['Brand Mark'];
-
-        // Create the checkbox for selection
-        const checkbox = document.createElement('input');
-        checkbox.classList.add('form-check-input', 'product-checkbox');
-        checkbox.type = 'checkbox';
-        // Generate a unique ID for each checkbox based on the product name
-        const checkboxId = `checkbox-${product.Product.replace(/\s/g, '-')}`;
-        checkbox.id = checkboxId;
-        checkbox.title = `Select ${product.Product}`; // Add title for accessibility
-
-        // Create a label for the checkbox for accessibility
-        const checkboxLabel = document.createElement('label');
-        checkboxLabel.setAttribute('for', checkboxId);
-        checkboxLabel.classList.add('visually-hidden'); // Hide label visually but keep for screen readers
-        checkboxLabel.textContent = `Select ${product.Product}`;
-
-        // Check if the product is already in the order and update checkbox state
-        const existingProduct = selectedProducts.find(p => p.productName === product.Product);
-        if (existingProduct) {
-            checkbox.checked = true;
-            // Add class for visual feedback if already in order
-            productItem.classList.add('added-to-order');
-        } else {
-            checkbox.checked = false;
+    const existingMap = new Map();
+    existingItems.forEach(li => {
+        if (li.dataset.productName) {
+            existingMap.set(li.dataset.productName, li);
         }
-
-        // Add event listener for checkbox change
-        checkbox.addEventListener('change', (event) => {
-            // Prevent modal from opening when clicking checkbox directly
-            event.stopPropagation();
-            const currentQuantity = existingProduct ? existingProduct.quantity : 0;
-            // If checked, add with quantity 1 if not already there, else remove
-            if (checkbox.checked) {
-                // If product is checked and has 0 quantity, set to 1
-                if (currentQuantity === 0) {
-                    updateProductQuantityInOrder(product.Product, 1);
-                } else {
-                    // If already checked and has quantity, no change needed on quantity, just ensure it's in selectedProducts
-                    updateProductQuantityInOrder(product.Product, 0); // This just ensures it's in the list
-                }
-            } else {
-                updateProductQuantityInOrder(product.Product, -currentQuantity); // Remove by setting quantity to 0
-            }
-        });
-
-        // Product information container (clickable to open modal)
-        const productInfoDiv = document.createElement('div');
-        productInfoDiv.classList.add('product-info');
-        // Add click listener to the product info div to open the modal
-        productInfoDiv.onclick = (event) => {
-            event.stopPropagation(); // Prevent duplicate clicks if parent also has a listener
-            openOrderModal(productItem);
-        };
-
-        // Product name label
-        const productNameSpan = document.createElement('span');
-        productNameSpan.classList.add('product-name');
-        productNameSpan.textContent = product.Product;
-        productNameSpan.setAttribute('title', 'Click to view details'); // Add tooltip
-
-        // Quantity controls container
-        const quantityControlsDiv = document.createElement('div');
-        quantityControlsDiv.classList.add('quantity-controls');
-
-        // Decrement button
-        const decrementButton = document.createElement('button');
-        decrementButton.type = 'button';
-        decrementButton.classList.add('btn', 'btn-outline-danger', 'btn-sm');
-        decrementButton.textContent = '-';
-        addHoldListeners(decrementButton, () => updateProductQuantityInOrder(product.Product, -1));
-
-        // Quantity display input
-        const quantityDisplayInput = document.createElement('input');
-        quantityDisplayInput.type = 'number';
-        quantityDisplayInput.classList.add('quantity-display', 'form-control-sm');
-        quantityDisplayInput.value = existingProduct ? existingProduct.quantity : 0;
-        quantityDisplayInput.readOnly = true; // Make it read-only
-        quantityDisplayInput.dataset.productName = product.Product; // Store product name for easy lookup
-        // Add unique id and name for accessibility and autofill
-        quantityDisplayInput.id = `quantity-${product.Product.replace(/\s/g, '-')}`;
-        quantityDisplayInput.name = `quantity-${product.Product.replace(/\s/g, '-')}`;
-
-        // Increment button
-        const incrementButton = document.createElement('button');
-        incrementButton.type = 'button';
-        incrementButton.classList.add('btn', 'btn-outline-success', 'btn-sm');
-        incrementButton.textContent = '+';
-        addHoldListeners(incrementButton, () => updateProductQuantityInOrder(product.Product, 1));
-
-        // Assemble quantity controls
-        quantityControlsDiv.appendChild(decrementButton);
-        quantityControlsDiv.appendChild(quantityDisplayInput);
-        quantityControlsDiv.appendChild(incrementButton);
-
-        // Assemble product info div
-        productInfoDiv.appendChild(checkbox);
-        productInfoDiv.appendChild(checkboxLabel); // Add the label for accessibility
-        productInfoDiv.appendChild(productNameSpan);
-        productInfoDiv.setAttribute('aria-labelledby', `${checkboxId} ${productNameSpan.id}`); // Accessible name
-
-        // Append elements to the product item
-        productItem.appendChild(productInfoDiv); // The clickable part for modal
-        productItem.appendChild(quantityControlsDiv); // The quantity controls
-
-        // Make the entire productItem clickable, except for controls
-        productItem.addEventListener('click', function (event) {
-            // If the click is on a button, input, or checkbox, do nothing
-            if (
-                event.target.closest('.quantity-controls') ||
-                event.target.classList.contains('product-checkbox') ||
-                event.target.tagName === 'BUTTON' ||
-                event.target.tagName === 'INPUT'
-            ) {
-                return;
-            }
-            openOrderModal(productItem);
-        });
-
-        fragment.appendChild(productItem);
     });
 
-    // Append the fragment to the container
-    productListContainer.appendChild(fragment);
+    // Track which items are still needed
+    const used = new Set();
+
+    // Efficiently update or insert items in order
+    productList.forEach((product, idx) => {
+        const productName = product.Product;
+        let item = existingMap.get(productName);
+        if (item) {
+            // If already in correct position, just update state
+            if (productListContainer.children[idx] !== item) {
+                productListContainer.insertBefore(item, productListContainer.children[idx] || null);
+            }
+            // Update checkbox and quantity if needed
+            const checkbox = item.querySelector('.product-checkbox');
+            const existingProduct = selectedProducts.find(p => p.productName === productName);
+            if (checkbox) {
+                checkbox.checked = !!existingProduct;
+            }
+            if (existingProduct) {
+                item.classList.add('added-to-order');
+            } else {
+                item.classList.remove('added-to-order');
+            }
+            const quantityDisplay = item.querySelector('.quantity-display');
+            if (quantityDisplay) {
+                quantityDisplay.value = existingProduct ? existingProduct.quantity : 0;
+            }
+            used.add(productName);
+        } else {
+            // Create new item (copy from original implementation)
+            const productItem = document.createElement('li');
+            productItem.classList.add('list-group-item', 'list-group-item-action', 'product-item');
+            productItem.dataset.productName = product.Product;
+            productItem.dataset.productType = product['Product Type'];
+            productItem.dataset.productGroup = product['Group Name'];
+            productItem.dataset.productGroupAlias = product['Group Alias'];
+            productItem.dataset.productCategory = product['Prod. Category'];
+            productItem.dataset.faceType = product['Face Type'] || '';
+            productItem.dataset.coreType = product['Core Type'];
+            productItem.dataset.gradeType = product['Grade Type'];
+            productItem.dataset.brandMark = product['Brand Mark'];
+
+            const checkbox = document.createElement('input');
+            checkbox.classList.add('form-check-input', 'product-checkbox');
+            checkbox.type = 'checkbox';
+            const checkboxId = `checkbox-${product.Product.replace(/\s/g, '-')}`;
+            checkbox.id = checkboxId;
+            checkbox.title = `Select ${product.Product}`;
+            const checkboxLabel = document.createElement('label');
+            checkboxLabel.setAttribute('for', checkboxId);
+            checkboxLabel.classList.add('visually-hidden');
+            checkboxLabel.textContent = `Select ${product.Product}`;
+            const existingProduct = selectedProducts.find(p => p.productName === product.Product);
+            checkbox.checked = !!existingProduct;
+            if (existingProduct) {
+                productItem.classList.add('added-to-order');
+            }
+            checkbox.addEventListener('change', (event) => {
+                event.stopPropagation();
+                const currentQuantity = existingProduct ? existingProduct.quantity : 0;
+                if (checkbox.checked) {
+                    if (currentQuantity === 0) {
+                        updateProductQuantityInOrder(product.Product, 1);
+                    } else {
+                        updateProductQuantityInOrder(product.Product, 0);
+                    }
+                } else {
+                    updateProductQuantityInOrder(product.Product, -currentQuantity);
+                }
+            });
+            const productInfoDiv = document.createElement('div');
+            productInfoDiv.classList.add('product-info');
+            productInfoDiv.onclick = (event) => {
+                event.stopPropagation();
+                openOrderModal(productItem);
+            };
+            const productNameSpan = document.createElement('span');
+            productNameSpan.classList.add('product-name');
+            productNameSpan.textContent = product.Product;
+            productNameSpan.setAttribute('title', 'Click to view details');
+            const quantityControlsDiv = document.createElement('div');
+            quantityControlsDiv.classList.add('quantity-controls');
+            const decrementButton = document.createElement('button');
+            decrementButton.type = 'button';
+            decrementButton.classList.add('btn', 'btn-outline-danger', 'btn-sm');
+            decrementButton.textContent = '-';
+            addHoldListeners(decrementButton, () => updateProductQuantityInOrder(product.Product, -1));
+            const quantityDisplayInput = document.createElement('input');
+            quantityDisplayInput.type = 'number';
+            quantityDisplayInput.classList.add('quantity-display', 'form-control-sm');
+            quantityDisplayInput.value = existingProduct ? existingProduct.quantity : 0;
+            quantityDisplayInput.readOnly = true;
+            quantityDisplayInput.dataset.productName = product.Product;
+            quantityDisplayInput.id = `quantity-${product.Product.replace(/\s/g, '-')}`;
+            quantityDisplayInput.name = `quantity-${product.Product.replace(/\s/g, '-')}`;
+            const incrementButton = document.createElement('button');
+            incrementButton.type = 'button';
+            incrementButton.classList.add('btn', 'btn-outline-success', 'btn-sm');
+            incrementButton.textContent = '+';
+            addHoldListeners(incrementButton, () => updateProductQuantityInOrder(product.Product, 1));
+            quantityControlsDiv.appendChild(decrementButton);
+            quantityControlsDiv.appendChild(quantityDisplayInput);
+            quantityControlsDiv.appendChild(incrementButton);
+            productInfoDiv.appendChild(checkbox);
+            productInfoDiv.appendChild(checkboxLabel);
+            productInfoDiv.appendChild(productNameSpan);
+            productInfoDiv.setAttribute('aria-labelledby', `${checkboxId} ${productNameSpan.id}`);
+            productItem.appendChild(productInfoDiv);
+            productItem.appendChild(quantityControlsDiv);
+            productItem.addEventListener('click', function (event) {
+                if (
+                    event.target.closest('.quantity-controls') ||
+                    event.target.classList.contains('product-checkbox') ||
+                    event.target.tagName === 'BUTTON' ||
+                    event.target.tagName === 'INPUT'
+                ) {
+                    return;
+                }
+                openOrderModal(productItem);
+            });
+            productListContainer.insertBefore(productItem, productListContainer.children[idx] || null);
+            used.add(productName);
+        }
+    });
+    // Remove any extra items not in the new list
+    existingItems.forEach(li => {
+        if (!used.has(li.dataset.productName)) {
+            productListContainer.removeChild(li);
+        }
+    });
 }
 
 /**

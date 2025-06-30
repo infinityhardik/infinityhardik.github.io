@@ -143,6 +143,7 @@ button:active {
 }
 
 .product-item .product-name {
+  font-size: 1.05rem;
   font-weight: 600;
   margin-left: 0.5rem; /* Space between checkbox and name */
   cursor: pointer; /* Indicate clickable product name for modal */
