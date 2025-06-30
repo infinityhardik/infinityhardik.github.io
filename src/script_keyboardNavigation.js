@@ -1,6 +1,6 @@
 // Track the currently focused index for keyboard navigation in the product list.
 // -1: Search box is focused or no item is focused.
-// 1+: Corresponds to the index of the visible product item (1-based).
+// 0+: Corresponds to the index of the visible product item (0-based).
 let currentFocusIndex = -1;
 
 document.addEventListener("keydown", function (event) {
@@ -107,6 +107,26 @@ document.addEventListener("keydown", function (event) {
         // This is simplified as `displayProducts` now only renders visible items.
         const visibleItems = Array.from(productListContainer.children);
 
+        // --- Quantity Change Shortcuts ---
+        // Ctrl + Arrow Up or Ctrl + Arrow Right: Increase quantity
+        if ((event.ctrlKey && (event.key === "ArrowUp" || event.key === "ArrowRight")) && currentFocusIndex >= 0 && currentFocusIndex < visibleItems.length) {
+            event.preventDefault();
+            const productName = visibleItems[currentFocusIndex].dataset.productName;
+            if (productName) {
+                updateProductQuantityInOrder(productName, 1);
+            }
+            return;
+        }
+        // Ctrl + Arrow Down or Ctrl + Arrow Left: Decrease quantity
+        if ((event.ctrlKey && (event.key === "ArrowDown" || event.key === "ArrowLeft")) && currentFocusIndex >= 0 && currentFocusIndex < visibleItems.length) {
+            event.preventDefault();
+            const productName = visibleItems[currentFocusIndex].dataset.productName;
+            if (productName) {
+                updateProductQuantityInOrder(productName, -1);
+            }
+            return;
+        }
+
         if (event.key === "ArrowDown" || event.key === "ArrowUp") {
             event.preventDefault(); // Prevent page scrolling
 
@@ -116,29 +136,32 @@ document.addEventListener("keydown", function (event) {
                 return;
             }
 
-            // Remove keyboard-focus from all items before updating
-            visibleItems.forEach(item => item.classList.remove("keyboard-focus"));
+            // Remove keyboard-focus and focus from all items before updating
+            visibleItems.forEach(item => item.classList.remove("focus", "keyboard-focus"));
+
+            // Always clamp currentFocusIndex to -1 after search/filter
+            if (document.activeElement === searchBox) {
+                currentFocusIndex = -1;
+            }
 
             if (event.key === "ArrowDown") {
-                if (currentFocusIndex === -1 || currentFocusIndex >= visibleItems.length) {
-                    // From search box or end of list, move to the first visible item
-                    currentFocusIndex = 1;
+                if (currentFocusIndex === -1) {
+                    // From search box, move to the first visible item
+                    currentFocusIndex = 0;
                     searchBox.blur(); // Unfocus search box
-                } else {
+                } else if (currentFocusIndex < visibleItems.length - 1) {
                     // Move to the next visible item
-                    if (visibleItems[currentFocusIndex - 1]) {
-                        visibleItems[currentFocusIndex - 1].classList.remove("focus", "keyboard-focus");
-                    }
                     currentFocusIndex++;
                 }
-                if (visibleItems[currentFocusIndex - 1]) {
-                    visibleItems[currentFocusIndex - 1].classList.add("focus", "keyboard-focus");
-                    visibleItems[currentFocusIndex - 1].scrollIntoView({ block: "nearest", behavior: "smooth" });
+                // Always highlight the current focused item if in range
+                if (currentFocusIndex >= 0 && currentFocusIndex < visibleItems.length) {
+                    visibleItems[currentFocusIndex].classList.add("focus", "keyboard-focus");
+                    visibleItems[currentFocusIndex].scrollIntoView({ block: "nearest", behavior: "smooth" });
                 }
             }
 
             if (event.key === "ArrowUp") {
-                if (currentFocusIndex <= 1) {
+                if (currentFocusIndex <= 0) {
                     // From the first item, move back to search box
                     if (visibleItems[0]) {
                         visibleItems[0].classList.remove("focus", "keyboard-focus");
@@ -147,15 +170,10 @@ document.addEventListener("keydown", function (event) {
                     currentFocusIndex = -1;
                 } else {
                     // Move to the previous visible item
-                    if (visibleItems[currentFocusIndex - 1]) {
-                        visibleItems[currentFocusIndex - 1].classList.remove("focus", "keyboard-focus");
-                    }
                     currentFocusIndex--;
-                }
-                if (currentFocusIndex > 0) {
-                    if (visibleItems[currentFocusIndex - 1]) {
-                        visibleItems[currentFocusIndex - 1].classList.add("focus", "keyboard-focus");
-                        visibleItems[currentFocusIndex - 1].scrollIntoView({ block: "nearest", behavior: "smooth" });
+                    if (currentFocusIndex >= 0 && visibleItems[currentFocusIndex]) {
+                        visibleItems[currentFocusIndex].classList.add("focus", "keyboard-focus");
+                        visibleItems[currentFocusIndex].scrollIntoView({ block: "nearest", behavior: "smooth" });
                     }
                 }
             }
@@ -163,10 +181,10 @@ document.addEventListener("keydown", function (event) {
 
         // Simulate click with Enter key on the currently focused list item.
         if (event.key === "Enter") {
-            if (currentFocusIndex > 0 && currentFocusIndex <= visibleItems.length) {
+            if (currentFocusIndex >= 0 && currentFocusIndex < visibleItems.length) {
                 event.preventDefault();
                 // Simulate click on the product info div, not the entire li
-                const productInfoDiv = visibleItems[currentFocusIndex - 1].querySelector('.product-info');
+                const productInfoDiv = visibleItems[currentFocusIndex].querySelector('.product-info');
                 if (productInfoDiv) {
                     productInfoDiv.click();
                 }
@@ -228,7 +246,7 @@ function focusFirstVisibleItem() {
     const visibleItems = Array.from(productListContainer.children);
     resetFocus(); // Always clear any previous focus
     if (visibleItems.length > 0) {
-        currentFocusIndex = 1;
+        currentFocusIndex = 0;
         visibleItems[0].classList.add("focus");
         // Do NOT add keyboard-focus here (only for arrow keys)
         visibleItems[0].scrollIntoView({ block: "nearest", behavior: "smooth" });
@@ -241,10 +259,10 @@ function focusFirstVisibleItem() {
 function validatePointerAfterListChange() {
     const productListContainer = document.getElementById("product-list");
     const visibleItems = Array.from(productListContainer.children);
-    if (currentFocusIndex > visibleItems.length) {
+    if (currentFocusIndex >= visibleItems.length) {
         resetFocus();
         if (visibleItems.length > 0) {
-            currentFocusIndex = 1;
+            currentFocusIndex = 0;
             visibleItems[0].classList.add("focus");
             visibleItems[0].scrollIntoView({ block: "nearest", behavior: "smooth" });
         }
@@ -267,4 +285,17 @@ function resetFocus() {
         item.classList.remove('focus', 'keyboard-focus');
     });
     currentFocusIndex = -1;
+}
+
+// Ensure focus is reset after filtering/searching
+const searchBoxInput = document.getElementById("search-box");
+if (searchBoxInput) {
+    searchBoxInput.addEventListener("input", function() {
+        resetFocus();
+        // Remove all focus and keyboard-focus classes from product list items
+        const productListContainer = document.getElementById("product-list");
+        if (productListContainer) {
+            Array.from(productListContainer.children).forEach(item => item.classList.remove("focus", "keyboard-focus"));
+        }
+    });
 }
