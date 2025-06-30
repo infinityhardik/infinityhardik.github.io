@@ -62,26 +62,108 @@
     </div>
 
     <!-- Search Bar -->
-    <div class="input-group mb-3" id="search-box-container">
-      <!-- Help Button - Moved to the left -->
-      <button id="helpButton" class="btn btn-outline-info input-group-btn me-2" data-bs-toggle="modal"
-        data-bs-target="#help-modal" title="Ctrl + / or ? : Help Text & How to Search">
-        <strong>?</strong>
-      </button>
-      <!-- Search Box -->
+    <div class="input-group mb-3 modern-search-bar" id="search-box-container">
+      <!-- Search Icon Button -->
+      <span class="input-group-text search-icon" id="search-icon" title="Search">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" stroke="#6a11cb" stroke-width="2"/><path d="M20 20L17 17" stroke="#6a11cb" stroke-width="2" stroke-linecap="round"/></svg>
+      </span>
       <label for="search-box" class="visually-hidden">Search Products</label>
-      <input type="search" id="search-box" class="form-control border border-primary border-2"
+      <input type="search" id="search-box" class="form-control border-0 modern-search-input"
         placeholder="Search Products..." autocomplete="off" spellcheck="false" data-form-type="other"
         autocapitalize="off" autocorrect="off" aria-label="Search Products..." aria-describedby="Search Products..."
         title="Start Typing to Search and Add Products / Quantity. Example : 1884-10 will add the First Item with 10 Qty." />
-      <!-- Clear Search Button - Removed -->
+      <!-- Help Button -->
+      <button id="helpButton" class="btn btn-outline-info input-group-btn ms-2 modern-help-btn" data-bs-toggle="modal"
+        data-bs-target="#help-modal" title="Help & Shortcuts">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="#17a2b8" stroke-width="2"/><text x="12" y="16" text-anchor="middle" font-size="14" fill="#17a2b8" font-family="Arial, Helvetica, sans-serif">?</text></svg>
+      </button>
     </div>
+    <style>
+      /* Modern Search Bar Styling */
+      .modern-search-bar {
+        background: linear-gradient(90deg, #f8fafc 60%, #e3e8f0 100%);
+        border-radius: 1.5rem;
+        box-shadow: 0 2px 12px rgba(106,17,203,0.07);
+        padding: 0.25rem 0.5rem;
+        align-items: center;
+        border: none;
+      }
+      .modern-search-bar .search-icon {
+        background: transparent;
+        border: none;
+        padding: 0 0.5rem 0 0.75rem;
+        display: flex;
+        align-items: center;
+      }
+      .modern-search-bar .modern-help-btn {
+        border-radius: 50%;
+        padding: 0.4rem 0.6rem;
+        background: linear-gradient(135deg, #e0f7fa 60%, #f8fafc 100%);
+        border: none;
+        box-shadow: 0 2px 8px rgba(23,162,184,0.08);
+        display: flex;
+        align-items: center;
+        transition: background 0.2s, box-shadow 0.2s;
+      }
+      .modern-search-bar .modern-help-btn:hover {
+        background: linear-gradient(135deg, #b2ebf2 60%, #e0f7fa 100%);
+        box-shadow: 0 4px 12px rgba(23,162,184,0.15);
+      }
+      .modern-search-input {
+        background: transparent;
+        border: none;
+        border-radius: 1.5rem;
+        font-size: 1.15rem;
+        font-weight: 500;
+        color: #343a40;
+        box-shadow: none;
+        outline: none;
+        transition: box-shadow 0.2s, background 0.2s;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+      }
+      .modern-search-input:focus {
+        background: #f3f0ff;
+        box-shadow: 0 0 0 3px #b39ddb44;
+        color: #222;
+      }
+      /* Remove default clear (X) button in input[type=search] for Chrome, Edge, Safari */
+      input[type="search"]::-webkit-search-decoration,
+      input[type="search"]::-webkit-search-cancel-button,
+      input[type="search"]::-webkit-search-results-button,
+      input[type="search"]::-webkit-search-results-decoration {
+        display: none;
+      }
+      /* Remove clear (X) button for Firefox */
+      input[type="search"]::-ms-clear {
+        display: none;
+        width: 0;
+        height: 0;
+      }
+      /* Remove clear (X) button for IE */
+      input[type="search"]::-ms-reveal {
+        display: none;
+        width: 0;
+        height: 0;
+      }
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .modern-search-bar {
+          border-radius: 1rem;
+          padding: 0.15rem 0.25rem;
+        }
+        .modern-search-input {
+          font-size: 1rem;
+        }
+      }
+    </style>
+  </div>
 
 
-    <!-- Product List -->
-    <form class="flex my-3">
-      <ul id="product-list" class="list-group"></ul>
-    </form>
+  <!-- Product List -->
+  <form class="flex my-3">
+    <ul id="product-list" class="list-group"></ul>
+  </form>
 
   </div>
 
@@ -524,7 +606,7 @@
                 <li class="list-group-item d-flex justify-content-between align-items-start">
                   <div class="ms-2 me-auto">
                     <div class="fw-bold">Ctrl + Delete :</div>
-                    पूरा ऑर्डर खाली करें।
+                    पूरा ऑर्डर खाली करें。
                   </div>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-start">
@@ -570,7 +652,7 @@
               <br>
               <p><strong>टिप : </strong>खोज के लिए विशिष्ट प्रकार के परिणाम सूचीबद्ध करने के लिए फ़िल्टर विकल्पों का
                 उपयोग करें।
-                <br><strong>उदाहरण : </strong>प्लाईवुड, ब्लॉक-बोर्ड या फ्लश-डोअर जैसे प्रोडक्ट प्रकार के आधार पर खोज के
+                <br><strong>उदाहरण : </strong>प्लाईवुड, ब्लॉक-बोर्ड या फ्लश-डोअर जैसे પ્રોડક્ટ પ્રકારના આધારે શોધ के
                 लिए फ़िल्टर विकल्पों का उपयोग किया जा सकता है।
               </p>
             </div>
