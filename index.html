@@ -69,10 +69,10 @@
         <strong>?</strong>
       </button>
       <!-- Search Box -->
+      <label for="search-box" class="visually-hidden">Search Products</label>
       <input type="search" id="search-box" class="form-control border border-primary border-2"
-        placeholder="Search Products..." autocomplete="off" spellcheck="false"
-        data-form-type="other" autocapitalize="off" autocorrect="off" aria-label="Search Products..."
-        aria-describedby="Search Products..."
+        placeholder="Search Products..." autocomplete="off" spellcheck="false" data-form-type="other"
+        autocapitalize="off" autocorrect="off" aria-label="Search Products..." aria-describedby="Search Products..."
         title="Start Typing to Search and Add Products / Quantity. Example : 1884-10 will add the First Item with 10 Qty." />
       <!-- Clear Search Button - Removed -->
     </div>
@@ -96,7 +96,7 @@
       <h5>Your Order</h5>
       <button type="button" class="btn-close" aria-label="Close" onclick="toggleOrderPopup()"></button>
     </div>
-    <textarea id="selected-products" class="form-control" rows="10"
+    <textarea id="selected-products" name="selected-products" class="form-control" rows="10"
       placeholder="Your order will appear here..." disabled></textarea>
     <div class="popup-footer">
       <button class="btn btn-secondary" onclick="copyOrder()">Copy Order</button>
@@ -447,7 +447,8 @@
               </ol>
               <br>
               <p><strong>ટિપ : </strong>શોધ માટે ચોક્કસ પ્રકારના પરિણામો લિસ્ટ કરવા માટે ફિલ્ટર વિકલ્પોનો ઉપયોગ કરો.
-                <br><strong>ઉદાહરણ : </strong>ફિલ્ટર વિકલ્પોનો ઉપયોગ કરીને શોધને પ્લાયવુડ, બ્લોક-બોર્ડ અથવા ફ્લશ-ડોર જેવા પ્રોડક્ટ પ્રકારના આધારે ફિલ્ટર કરી શકાય છે.
+                <br><strong>ઉદાહરણ : </strong>ફિલ્ટર વિકલ્પોનો ઉપયોગ કરીને શોધને પ્લાયવુડ, બ્લોક-બોર્ડ અથવા ફ્લશ-ડોર
+                જેવા પ્રોડક્ટ પ્રકારના આધારે ફિલ્ટર કરી શકાય છે.
               </p>
             </div>
 

@@ -144,6 +144,9 @@ function displayProducts(productList) {
         quantityDisplayInput.value = existingProduct ? existingProduct.quantity : 0;
         quantityDisplayInput.readOnly = true; // Make it read-only
         quantityDisplayInput.dataset.productName = product.Product; // Store product name for easy lookup
+        // Add unique id and name for accessibility and autofill
+        quantityDisplayInput.id = `quantity-${product.Product.replace(/\s/g, '-')}`;
+        quantityDisplayInput.name = `quantity-${product.Product.replace(/\s/g, '-')}`;
 
         // Increment button
         const incrementButton = document.createElement('button');
@@ -166,7 +169,7 @@ function displayProducts(productList) {
         productItem.appendChild(quantityControlsDiv); // The quantity controls
 
         // Make the entire productItem clickable, except for controls
-        productItem.addEventListener('click', function(event) {
+        productItem.addEventListener('click', function (event) {
             // If the click is on a button, input, or checkbox, do nothing
             if (
                 event.target.closest('.quantity-controls') ||

@@ -230,7 +230,7 @@ function resetFocus() {
 // Ensure pointer is always reset and focused after filtering or clearing
 // Patch filterProductsAndDisplay to always call focusFirstVisibleItem
 const originalFilterProductsAndDisplay = filterProductsAndDisplay;
-filterProductsAndDisplay = function(filterTerm = '') {
+filterProductsAndDisplay = function (filterTerm = '') {
     originalFilterProductsAndDisplay(filterTerm);
     if (!isMobileDevice()) {
         focusFirstVisibleItem();
@@ -239,7 +239,7 @@ filterProductsAndDisplay = function(filterTerm = '') {
 
 // Patch clearSearch to always focus first item
 const originalClearSearch = clearSearch;
-clearSearch = function() {
+clearSearch = function () {
     originalClearSearch();
     if (!isMobileDevice()) {
         focusFirstVisibleItem();
@@ -249,7 +249,7 @@ clearSearch = function() {
 // Patch clearFilters if it exists
 if (typeof clearFilters === 'function') {
     const originalClearFilters = clearFilters;
-    clearFilters = function() {
+    clearFilters = function () {
         originalClearFilters();
         if (!isMobileDevice()) {
             focusFirstVisibleItem();

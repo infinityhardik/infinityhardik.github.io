@@ -290,7 +290,7 @@ function resetFocus() {
 // Ensure focus is reset after filtering/searching
 const searchBoxInput = document.getElementById("search-box");
 if (searchBoxInput) {
-    searchBoxInput.addEventListener("input", function() {
+    searchBoxInput.addEventListener("input", function () {
         resetFocus();
         // Remove all focus and keyboard-focus classes from product list items
         const productListContainer = document.getElementById("product-list");
