@@ -94,9 +94,7 @@ function containsInOrder(str, query) {
 
 /**
  * Filters the main product directory based on a search term and updates the display.
- * It searches by product name, brand mark, core type, grade type, or product type.
- * This function now filters the `productsData.productDirectory` array directly
- * and then calls `displayProducts` to update the DOM efficiently.
+ * Prioritizes matches by Product Name, then falls back to Brand Mark, Core Type, Grade Type, or Product Type if no matches found.
  * @param {string} filterTerm - The term to filter products by.
  */
 function filterProductsAndDisplay(filterTerm = '') {
@@ -107,21 +105,27 @@ function filterProductsAndDisplay(filterTerm = '') {
         // If no filter term, display all products
         filteredProductData = productsData.productDirectory;
     } else {
-        // Filter the actual data array, instead of iterating over DOM elements
+        // First, try to match by Product Name only
         filteredProductData = productsData.productDirectory.filter(product => {
-            // Create a single concatenated string for each product to search within
-            // This reduces repeated property accesses and string creations in the loop
-            const searchableText = [
-                (product.Product || ''),
-                (product['Brand Mark'] || ''),
-                (product['Core Type'] || ''),
-                (product['Grade Type'] || ''),
-                (product['Product Type'] || '')
-            ].join(' ').toUpperCase(); // Join with space for better keyword matching
-
-            // Use the optimized containsInOrder for checking if the filter term exists
-            return containsInOrder(searchableText, normalizedFilter);
+            const productName = (product.Product || '').toUpperCase();
+            return containsInOrder(productName, normalizedFilter);
         });
+
+        // If no matches by Product Name, try fallback attributes
+        if (filteredProductData.length === 0) {
+            filteredProductData = productsData.productDirectory.filter(product => {
+                const brandMark = (product['Brand Mark'] || '').toUpperCase();
+                const coreType = (product['Core Type'] || '').toUpperCase();
+                const gradeType = (product['Grade Type'] || '').toUpperCase();
+                const productType = (product['Product Type'] || '').toUpperCase();
+                return (
+                    containsInOrder(brandMark, normalizedFilter) ||
+                    containsInOrder(coreType, normalizedFilter) ||
+                    containsInOrder(gradeType, normalizedFilter) ||
+                    containsInOrder(productType, normalizedFilter)
+                );
+            });
+        }
     }
 
     // Now, update the UI with the filtered data
