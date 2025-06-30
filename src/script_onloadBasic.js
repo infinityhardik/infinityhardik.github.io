@@ -81,6 +81,13 @@ function displayProducts(productList) {
         // Generate a unique ID for each checkbox based on the product name
         const checkboxId = `checkbox-${product.Product.replace(/\s/g, '-')}`;
         checkbox.id = checkboxId;
+        checkbox.title = `Select ${product.Product}`; // Add title for accessibility
+
+        // Create a label for the checkbox for accessibility
+        const checkboxLabel = document.createElement('label');
+        checkboxLabel.setAttribute('for', checkboxId);
+        checkboxLabel.classList.add('visually-hidden'); // Hide label visually but keep for screen readers
+        checkboxLabel.textContent = `Select ${product.Product}`;
 
         // Check if the product is already in the order and update checkbox state
         const existingProduct = selectedProducts.find(p => p.productName === product.Product);
@@ -162,7 +169,9 @@ function displayProducts(productList) {
 
         // Assemble product info div
         productInfoDiv.appendChild(checkbox);
+        productInfoDiv.appendChild(checkboxLabel); // Add the label for accessibility
         productInfoDiv.appendChild(productNameSpan);
+        productInfoDiv.setAttribute('aria-labelledby', `${checkboxId} ${productNameSpan.id}`); // Accessible name
 
         // Append elements to the product item
         productItem.appendChild(productInfoDiv); // The clickable part for modal
