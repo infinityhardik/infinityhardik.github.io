@@ -14,26 +14,13 @@ function scrollSearchBoxToTop() {
 
 // Function to determine if the current device is a mobile device
 function isMobileDevice() {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+    return /Android|webOS|iPhone|iPad|IPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
         (window.innerWidth <= 768);
 }
 
 // Add an event listener to the search box to trigger the scroll when it gains focus
 searchBox.addEventListener('focus', () => {
     scrollSearchBoxToTop();
-});
-
-searchBox.addEventListener('input', () => {
-    // Always scroll search box to top
-    scrollSearchBoxToTop();
-
-    // Reset focus index on user input
-    currentFocusIndex = -1;
-
-    // For desktop browsers, focus the first visible product immediately
-    if (!isMobileDevice()) {
-        focusFirstVisibleItem();
-    }
 });
 
 // Debounce function to prevent rapid firing of events
@@ -49,173 +36,227 @@ function debounce(func, wait) {
     };
 }
 
-// Modified search box event listener
-searchBox.addEventListener('input', debounce(() => {
-    const result = parseSearchInput(searchBox.value);
-    // console.log('Parse Result:', result);
-
-    // If the search box is empty, just reset everything
-    if (!result.searchTerm) {
-        resetFocus();
-        filterProducts();
-        return;
-    }
-
-    // Filter products based on the search term
-    const foundMatches = filterProducts();
-
-    // If we have a valid quantity and matches were found, process the order
-    if (result.isValid && result.quantity !== null && foundMatches) {
-        const firstVisibleProduct = getFirstVisibleProduct();
-        if (firstVisibleProduct) {
-            // Set this product as the opened product for ordering
-            openedProductForOrder = firstVisibleProduct;
-
-            // Set the quantity
-            document.getElementById('quantity').value = result.quantity.toString();
-
-            // Add to order
-            addToOrder();
-
-            // Clear the search box
-            searchBox.value = result.searchTerm;
-
-            // Reset the product list display
-            filterProducts();
-        }
-    }
-}, 1000)); 
-// Update Debounce time in milliseconds for the search box event listener in order to support more digits input
-
-// Function to clear the search box
-function clearSearch() {
-    searchBox.value = '';
-    filterProducts();
-    resetFocus();
-}
-
-// Function to parse search input with quantity
+/**
+ * Parses the search input to extract a search term and an optional quantity.
+ * Expected format: "searchTerm-quantity" (e.g., "MRX9036-10")
+ * @param {string} input - The full string from the search box.
+ * @returns {{searchTerm: string, quantity: number|null, isValid: boolean}} An object containing the parsed search term, quantity, and a validity flag.
+ */
 function parseSearchInput(input) {
-    // Find the last occurrence of '-' in case the search term contains hyphens
     const lastHyphenIndex = input.lastIndexOf('-');
 
-    if (lastHyphenIndex !== -1) {
-        const searchTerm = input.substring(0, lastHyphenIndex).trim().replace(/-/g, '');
+    if (lastHyphenIndex !== -1 && lastHyphenIndex < input.length - 1) {
+        const potentialSearchTerm = input.substring(0, lastHyphenIndex).trim();
         const quantityStr = input.substring(lastHyphenIndex + 1).trim();
 
-        // Enhanced logging for debugging
-        // console.log('Search Term:', searchTerm);
-        // console.log('Quantity String:', quantityStr);
-
-        // Parse the quantity and verify it's a valid number
+        // Check if the part after hyphen is a valid positive integer
+        // Use a more robust regex for quantity validation to ensure only digits
         const quantity = parseInt(quantityStr, 10);
-        // console.log('Parsed Quantity:', quantity);
-
-        // Only return quantity if it's a valid positive number and the string contains only digits
-        if (!isNaN(quantity) && quantity > 0 && /^\d+$/.test(quantityStr)) {
+        if (!isNaN(quantity) && quantity >= 0 && /^\d+$/.test(quantityStr)) {
             return {
-                searchTerm,
-                quantity,
+                searchTerm: potentialSearchTerm.replace(/-/g, ''), // Clean hyphens from search term for better matching
+                quantity: quantity,
                 isValid: true
             };
         }
     }
 
-    // Return just the search term if no valid quantity found
+    // If no valid quantity found, return just the cleaned search term
     return {
-        searchTerm: input.trim().replace(/-/g, ''),
+        searchTerm: input.trim().replace(/-/g, ''), // Always clean search term
         quantity: null,
         isValid: false
     };
 }
 
-// Function to get first visible product
-function getFirstVisibleProduct() {
-    const productList = document.getElementById('product-list');
-    const productItems = Array.from(productList.getElementsByTagName('li'));
-    return productItems.find(item => item.style.display !== 'none');
+/**
+ * Optimized function to check if a string contains another string's characters in the same order (case insensitive).
+ * This uses a more efficient character-by-character comparison without creating new strings for each comparison.
+ * @param {string} str - The string to search within.
+ * @param {string} query - The string to search for.
+ * @returns {boolean} True if the query characters are found in order within the string, false otherwise.
+ */
+function containsInOrder(str, query) {
+    const lowerStr = str.toLowerCase();
+    const lowerQuery = query.toLowerCase();
+
+    let strIdx = 0;
+    let queryIdx = 0;
+
+    while (strIdx < lowerStr.length && queryIdx < lowerQuery.length) {
+        if (lowerStr[strIdx] === lowerQuery[queryIdx]) {
+            queryIdx++;
+        }
+        strIdx++;
+    }
+    return queryIdx === lowerQuery.length;
 }
 
-// Modified filterProducts function that returns whether matches were found
-function filterProducts() {
-    const searchInput = searchBox.value;
-    const { searchTerm } = parseSearchInput(searchInput);
-    const filter = searchTerm.toUpperCase();
+/**
+ * Filters the main product directory based on a search term and updates the display.
+ * Prioritizes matches by Product Name, then falls back to Brand Mark, Core Type, Grade Type, or Product Type if no matches found.
+ * @param {string} filterTerm - The term to filter products by.
+ */
+function filterProductsAndDisplay(filterTerm = '') {
+    const normalizedFilter = filterTerm.trim().toUpperCase();
+    let filteredProductData = [];
 
-    const productList = document.getElementById('product-list');
-    const productItems = productList.getElementsByTagName('li');
-    let foundMatch = false;
+    if (!normalizedFilter) {
+        // If no filter term, display all products
+        filteredProductData = productsData.productDirectory;
+    } else {
+        // First, try to match by Product Name only
+        filteredProductData = productsData.productDirectory.filter(product => {
+            const productName = (product.Product || '').toUpperCase();
+            return containsInOrder(productName, normalizedFilter);
+        });
 
-    // First, attempt filtering by Product Name
-    for (let i = 0; i < productItems.length; i++) {
-        const productName = productItems[i].dataset.productName.toUpperCase();
-
-        if (containsInOrder(productName, filter)) {
-            productItems[i].style.display = '';
-            foundMatch = true;
-        } else {
-            productItems[i].style.display = 'none';
+        // If no matches by Product Name, try fallback attributes
+        if (filteredProductData.length === 0) {
+            filteredProductData = productsData.productDirectory.filter(product => {
+                const brandMark = (product['Brand Mark'] || '').toUpperCase();
+                const coreType = (product['Core Type'] || '').toUpperCase();
+                const gradeType = (product['Grade Type'] || '').toUpperCase();
+                const productType = (product['Product Type'] || '').toUpperCase();
+                return (
+                    containsInOrder(brandMark, normalizedFilter) ||
+                    containsInOrder(coreType, normalizedFilter) ||
+                    containsInOrder(gradeType, normalizedFilter) ||
+                    containsInOrder(productType, normalizedFilter)
+                );
+            });
         }
     }
 
-    // If no matches found by Product Name, filter by fallback attributes
-    if (!foundMatch) {
-        for (let i = 0; i < productItems.length; i++) {
-            const brandName = productItems[i].dataset.brandMark ? productItems[i].dataset.brandMark.toUpperCase() : '';
-            const coreType = productItems[i].dataset.coreType ? productItems[i].dataset.coreType.toUpperCase() : '';
-            const gradeType = productItems[i].dataset.gradeType ? productItems[i].dataset.gradeType.toUpperCase() : '';
+    // Now, update the UI with the filtered data
+    displayProducts(filteredProductData);
 
-            if (
-                containsInOrder(brandName, filter) ||
-                containsInOrder(coreType, filter) ||
-                containsInOrder(gradeType, filter)
-            ) {
-                productItems[i].style.display = '';
-                foundMatch = true;
-            } else {
-                productItems[i].style.display = 'none';
+    // After filtering and displaying, reset focus to ensure proper navigation behavior
+    resetFocus();
+
+    // Ensure search box scrolls to top on every filter
+    scrollSearchBoxToTop();
+}
+
+
+// Remove the previous static debounce event listener
+// searchBox.addEventListener('input', debounce(...));
+
+// Dynamic debounce based on presence of hyphen in search term
+let lastDebouncedHandler = null;
+let lastDebounceDelay = null;
+
+function dynamicDebounceHandler() {
+    const searchInput = searchBox.value;
+    const debounceDelay = searchInput.includes('-') ? 1000 : 0;
+
+    // If debounce delay changes, re-attach the event listener
+    if (lastDebouncedHandler) {
+        searchBox.removeEventListener('input', lastDebouncedHandler);
+    }
+    const handler = debounce(() => {
+        const { searchTerm, quantity, isValid } = parseSearchInput(searchBox.value);
+        filterProductsAndDisplay(searchTerm);
+        if (isValid && quantity !== null) {
+            const firstVisibleProductElement = getFirstVisibleProductElement();
+            if (firstVisibleProductElement) {
+                const productName = firstVisibleProductElement.dataset.productName;
+                addToOrder(productName, quantity);
+                searchBox.value = searchTerm;
             }
         }
-    }
-
-    return foundMatch;
-}
-
-// Function to check if a string contains another string in order (case insensitive)
-function containsInOrder(str, query) {
-    str = str.toUpperCase();
-    query = query.toUpperCase();
-
-    let index = 0;
-    for (let i = 0; i < query.length; i++) {
-        index = str.indexOf(query[i], index);
-        if (index === -1) {
-            return false;
+        if (!isMobileDevice()) {
+            focusFirstVisibleItem();
         }
-        index++;
-    }
-
-    return true;
+    }, debounceDelay);
+    searchBox.addEventListener('input', handler);
+    lastDebouncedHandler = handler;
+    lastDebounceDelay = debounceDelay;
 }
 
-// Function to focus the first visible product item
+// Attach a watcher to the input for dynamic debounce
+searchBox.addEventListener('input', function debounceWatcher() {
+    const searchInput = searchBox.value;
+    const debounceDelay = searchInput.includes('-') ? 1000 : 0;
+    if (debounceDelay !== lastDebounceDelay) {
+        dynamicDebounceHandler();
+    }
+});
+// Initialize the correct debounce handler on load
+window.addEventListener('DOMContentLoaded', dynamicDebounceHandler);
+
+// Function to clear the search box and reset the product list
+function clearSearch() {
+    searchBox.value = '';
+    filterProductsAndDisplay(''); // Show all products by passing an empty filter term
+    resetFocus();
+}
+
+/**
+ * Gets the first currently visible product list item element.
+ * @returns {HTMLElement|null} The first visible product list item, or null if none are visible.
+ */
+function getFirstVisibleProductElement() {
+    const productList = document.getElementById('product-list');
+    if (!productList) return null;
+
+    // After `displayProducts` is called, `productList.children` will only contain the visible items.
+    // So, we just need to check the first child.
+    if (productList.children.length > 0) {
+        return productList.children[0];
+    }
+    return null;
+}
+
+// Function to focus the first visible product item in the list after filtering or clearing
 function focusFirstVisibleItem() {
     const productListContainer = document.getElementById("product-list");
-    const visibleItems = Array.from(productListContainer.children).filter(
-        item => getComputedStyle(item).display !== "none"
-    );
-
+    const visibleItems = Array.from(productListContainer.children);
+    resetFocus(); // Always clear any previous focus
     if (visibleItems.length > 0) {
-        currentFocusIndex = 1; // Set focus to the first visible item
-        visibleItems[0]?.classList.add("focus");
-        visibleItems[0]?.scrollIntoView({ block: "nearest" });
+        currentFocusIndex = 1;
+        visibleItems[0].classList.add("focus");
+        visibleItems[0].scrollIntoView({ block: "nearest", behavior: "smooth" });
+    } else {
+        currentFocusIndex = -1;
     }
 }
 
-// Function to reset focus on all items from search results
+// Function to remove focus from all items and reset pointer
 function resetFocus() {
-    const listItems = document.querySelectorAll('.focus'); // Adjust selector as needed
-    listItems.forEach(item => {
-        item.classList.remove('focus'); // Replace 'focus' with the actual class causing this issue
+    const focusedItems = document.querySelectorAll('.list-group-item.focus');
+    focusedItems.forEach(item => {
+        item.classList.remove('focus');
     });
+    currentFocusIndex = -1;
+}
+
+// Ensure pointer is always reset and focused after filtering or clearing
+// Patch filterProductsAndDisplay to always call focusFirstVisibleItem
+const originalFilterProductsAndDisplay = filterProductsAndDisplay;
+filterProductsAndDisplay = function (filterTerm = '') {
+    originalFilterProductsAndDisplay(filterTerm);
+    if (!isMobileDevice()) {
+        focusFirstVisibleItem();
+    }
+};
+
+// Patch clearSearch to always focus first item
+const originalClearSearch = clearSearch;
+clearSearch = function () {
+    originalClearSearch();
+    if (!isMobileDevice()) {
+        focusFirstVisibleItem();
+    }
+};
+
+// Patch clearFilters if it exists
+if (typeof clearFilters === 'function') {
+    const originalClearFilters = clearFilters;
+    clearFilters = function () {
+        originalClearFilters();
+        if (!isMobileDevice()) {
+            focusFirstVisibleItem();
+        }
+    };
 }
