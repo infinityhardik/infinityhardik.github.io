@@ -13,6 +13,55 @@
   }
 }
 
+:root {
+  --light-bg: #ffffff;
+  --light-text: #212529;
+  --light-surface: #fff;
+  --light-border: rgba(0, 0, 0, 0.125);
+  --light-hover: #f8f9fa;
+  --light-added-item-bg: #d1e7dd;
+  --light-search-bg: linear-gradient(90deg, #f8fafc 60%, #e3e8f0 100%);
+  --light-search-text: #343a40;
+  --light-search-focus-bg: #f3f0ff;
+  --light-search-focus-shadow: #b39ddb44;
+  --light-popup-bg: rgba(255, 255, 255, 0.95);
+  --light-popup-textarea-bg: #f8f9fa;
+  --light-secondary-text: #6c757d;
+
+  --dark-bg: #121212;
+  --dark-text: #e0e0e0;
+  --dark-primary-text: #ffffff;
+  --dark-secondary-text: #adb5bd;
+  --dark-surface: #1e1e1e;
+  --dark-border: rgba(255, 255, 255, 0.15);
+  --dark-hover: #2a2a2a;
+  --dark-added-item-bg: #2a4b37; /* Darker green for added items */
+  --dark-search-bg: linear-gradient(90deg, #2c2c2c 60%, #3a3a3a 100%);
+  --dark-search-text: #e0e0e0;
+  --dark-search-focus-bg: #3a3a3a;
+  --dark-search-focus-shadow: rgba(120, 90, 220, 0.4);
+  --dark-popup-bg: rgba(30, 30, 30, 0.97);
+  --dark-popup-textarea-bg: #2c2c2c;
+  --dark-modal-bg: #212121;
+  --dark-modal-header-border: #333;
+  --dark-list-group-flush-bg: transparent;
+}
+
+body {
+    background-color: var(--light-bg);
+    color: var(--light-text);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode {
+    background-color: var(--dark-bg);
+    color: var(--dark-text);
+}
+
+.dark-mode .h2.text-body {
+    color: var(--dark-primary-text) !important; /* Override Bootstrap's text-body color */
+}
+
 button:active {
   animation: buttonPress 0.2s ease-out; /* Added ease-out for smoother return */
 }
@@ -67,6 +116,11 @@ button:active {
   transform: translateY(-2px);
 }
 
+/* Dark Mode Button Styles */
+.dark-mode .btn-secondary {
+    background-image: linear-gradient(to right, #4a4e54 0%, #3a3f44 100%);
+}
+
 .btn-outline-info {
   border: 2px solid #17a2b8;
   color: #17a2b8;
@@ -105,6 +159,10 @@ button:active {
   box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0); /* Remove blue shadow */
 }
 
+.dark-mode .list-group-item.keyboard-focus {
+    background-color: #333;
+}
+
 /* Custom styles for the product list items to incorporate quantity controls */
 .product-item {
   display: flex;
@@ -112,14 +170,24 @@ button:active {
   align-items: center;
   padding: 0.75rem 1.25rem;
   margin-bottom: -1px; /* To prevent double borders */
-  background-color: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.125);
+  background-color: var(--light-surface);
+  border: 1px solid var(--light-border);
   border-radius: 0.25rem;
   transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
 }
 
+.dark-mode .product-item {
+    background-color: var(--dark-surface);
+    border: 1px solid var(--dark-border);
+    color: var(--dark-text);
+}
+
 .product-item:hover {
-  background-color: #f8f9fa; /* Lighter hover effect */
+  background-color: var(--light-hover); /* Lighter hover effect */
+}
+
+.dark-mode .product-item:hover {
+    background-color: var(--dark-hover);
 }
 
 .product-item + .product-item {
@@ -184,6 +252,13 @@ button:active {
   border-radius: 0.25rem;
   background-color: #e9ecef; /* Light gray background */
   padding: 0.375rem 0.75rem; /* Match Bootstrap input padding */
+  color: #212529;
+}
+
+.dark-mode .quantity-controls .quantity-display {
+    background-color: #333;
+    border-color: #555;
+    color: var(--dark-text);
 }
 
 /* Hide number input arrows for Chrome, Safari, Edge, Opera */
@@ -235,8 +310,13 @@ button:active {
 
 /* Animation for adding/removing items to/from order */
 .product-item.added-to-order {
-  background-color: #d1e7dd; /* Light green background when added */
+  background-color: var(--light-added-item-bg);
   transition: background-color 0.3s ease-in-out;
+}
+
+.dark-mode .product-item.added-to-order {
+    background-color: var(--dark-added-item-bg);
+    border-color: #3c763d; /* A subtle green border */
 }
 
 .product-item.removed-from-order {
@@ -312,7 +392,7 @@ button:active {
   height: 0; /* Start hidden */
   visibility: hidden; /* Hide completely by default */
   opacity: 0; /* Fully transparent by default */
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: var(--light-popup-bg);
   z-index: 1040; /* Below floating button, above main content */
   overflow: hidden;
   transition: height 0.3s ease-in-out, opacity 0.3s ease-in-out,
@@ -323,6 +403,12 @@ button:active {
   box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
   border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
+}
+
+.dark-mode #order-text-popup {
+    background-color: var(--dark-popup-bg);
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.4);
+    color: var(--dark-text);
 }
 
 #order-text-popup.show {
@@ -337,8 +423,19 @@ button:active {
   border-radius: 0.5rem;
   padding: 0.75rem;
   font-size: 1rem;
-  background-color: #f8f9fa;
+  background-color: var(--light-popup-textarea-bg);
   resize: vertical;
+  color: #212529;
+}
+
+.dark-mode #order-text-popup textarea {
+    background-color: var(--dark-popup-textarea-bg);
+    border-color: #444;
+    color: var(--dark-text);
+}
+
+.dark-mode #order-text-popup .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
 }
 
 #order-text-popup .popup-header {
@@ -351,6 +448,10 @@ button:active {
 #order-text-popup .popup-header h5 {
   margin: 0;
   font-weight: bold;
+}
+
+.dark-mode #order-text-popup .popup-header h5 {
+    color: var(--dark-primary-text);
 }
 
 #order-text-popup .popup-footer {
@@ -415,12 +516,17 @@ button:active {
 
 /* Modern Search Bar Styling */
 .modern-search-bar {
-  background: linear-gradient(90deg, #f8fafc 60%, #e3e8f0 100%);
+  background: var(--light-search-bg);
   border-radius: 1.5rem;
   box-shadow: 0 2px 12px rgba(106, 17, 203, 0.07);
   padding: 0.25rem 0.5rem;
   align-items: center;
   border: none;
+}
+
+.dark-mode .modern-search-bar {
+    background: var(--dark-search-bg);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
 }
 
 .modern-search-bar .search-icon {
@@ -429,6 +535,11 @@ button:active {
   padding: 0 0.5rem 0 0.75rem;
   display: flex;
   align-items: center;
+}
+
+.dark-mode .search-icon svg circle,
+.dark-mode .search-icon svg path {
+    stroke: #93b5c6; /* Lighter color for icon in dark mode */
 }
 
 .modern-search-bar .modern-clear-btn {
@@ -447,6 +558,22 @@ button:active {
   box-shadow: 0 4px 12px rgba(255, 193, 7, 0.15);
 }
 
+.dark-mode .modern-search-bar .modern-clear-btn {
+  background: var(--dark-surface);
+  border: 1px solid var(--dark-border);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .modern-search-bar .modern-clear-btn:hover {
+  background: var(--dark-hover);
+  border-color: #555;
+}
+
+.dark-mode .modern-clear-btn svg circle,
+.dark-mode .modern-clear-btn svg path {
+    stroke: #ffca28; /* Brighter yellow */
+}
+
 .modern-search-bar .modern-help-btn {
   border-radius: 50%;
   padding: 0.4rem 0.6rem;
@@ -463,13 +590,32 @@ button:active {
   box-shadow: 0 4px 12px rgba(23, 162, 184, 0.15);
 }
 
+.dark-mode .modern-search-bar .modern-help-btn {
+  background: var(--dark-surface);
+  border: 1px solid var(--dark-border);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .modern-search-bar .modern-help-btn:hover {
+  background: var(--dark-hover);
+  border-color: #555;
+}
+
+.dark-mode .modern-help-btn svg circle {
+    stroke: #26c6da; /* Brighter cyan */
+}
+
+.dark-mode .modern-help-btn svg text {
+    fill: #26c6da;
+}
+
 .modern-search-input {
   background: transparent;
   border: none;
   border-radius: 1.5rem;
   font-size: 1.15rem;
   font-weight: 500;
-  color: #343a40;
+  color: var(--light-search-text);
   box-shadow: none;
   outline: none;
   transition: box-shadow 0.2s, background 0.2s;
@@ -477,11 +623,31 @@ button:active {
   padding-right: 0.5rem;
 }
 
+.dark-mode .modern-search-input {
+    color: var(--dark-search-text);
+}
+
+.dark-mode .modern-search-input::placeholder {
+    color: var(--dark-secondary-text);
+    opacity: 1;
+}
+
 .modern-search-input:focus {
-  background: #f3f0ff;
-  box-shadow: 0 0 0 3px #b39ddb44;
+  background: var(--light-search-focus-bg);
+  box-shadow: 0 0 0 3px var(--light-search-focus-shadow);
   color: #222;
 }
+
+.dark-mode .modern-search-input:focus {
+    background: var(--dark-search-focus-bg);
+    box-shadow: 0 0 0 3px var(--dark-search-focus-shadow);
+    color: var(--dark-text);
+}
+
+.dark-mode .modern-search-input:focus::placeholder {
+    color: #6c757d;
+}
+
 
 /* Remove default clear (X) button in input[type=search] for Chrome, Edge, Safari */
 input[type="search"]::-webkit-search-decoration,
@@ -515,4 +681,86 @@ input[type="search"]::-ms-reveal {
   .modern-search-input {
     font-size: 1rem;
   }
+}
+
+/* Modal Dark Mode Styles */
+.dark-mode .modal-content {
+    background-color: var(--dark-modal-bg);
+    color: var(--dark-text);
+    border-color: var(--dark-border);
+}
+
+.dark-mode .modal-header {
+    border-bottom: 1px solid var(--dark-modal-header-border);
+}
+
+.dark-mode .modal-footer {
+    border-top: 1px solid var(--dark-modal-header-border);
+}
+
+.dark-mode .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+.dark-mode .list-group-flush .list-group-item {
+    background-color: var(--dark-list-group-flush-bg) !important; /* Use important to override bootstrap's inline styles */
+    border-color: var(--dark-modal-header-border);
+    color: var(--dark-text);
+}
+
+.dark-mode .nav-tabs {
+    border-bottom-color: var(--dark-modal-header-border);
+}
+
+.dark-mode .nav-tabs .nav-link {
+    color: var(--dark-secondary-text);
+    border-color: transparent;
+}
+
+.dark-mode .nav-tabs .nav-link.active {
+    color: var(--dark-primary-text);
+    background-color: var(--dark-surface);
+    border-color: var(--dark-modal-header-border) var(--dark-modal-header-border) var(--dark-surface);
+}
+
+.dark-mode .nav-tabs .nav-link:hover {
+    border-color: var(--dark-modal-header-border);
+}
+
+.dark-mode .tab-pane {
+    color: var(--dark-text);
+}
+
+.dark-mode .list-group-item {
+    background-color: var(--dark-surface);
+    border-color: var(--dark-border);
+    color: var(--dark-text);
+}
+
+.dark-mode .text-body-secondary {
+    color: var(--dark-secondary-text) !important;
+}
+
+/* Dark Mode Toggle Button */
+#darkModeToggle {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+
+#darkModeToggle:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode #darkModeToggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }

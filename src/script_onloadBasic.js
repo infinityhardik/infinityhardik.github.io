@@ -334,10 +334,10 @@ function updateDarkModeToggleIcon() {
     const toggleButton = document.getElementById('darkModeToggle');
     if (toggleButton) {
         if (document.body.classList.contains('dark-mode')) {
-            toggleButton.innerHTML = '🌞'; // Sun icon for dark mode (click to go to light)
+            toggleButton.innerHTML = '🌙'; // Moon icon for light mode (click to go to dark)
             toggleButton.setAttribute('title', 'Switch to Light Mode');
         } else {
-            toggleButton.innerHTML = '🌙'; // Moon icon for light mode (click to go to dark)
+            toggleButton.innerHTML = '🌞'; // Sun icon for dark mode (click to go to light)
             toggleButton.setAttribute('title', 'Switch to Dark Mode');
         }
     }
