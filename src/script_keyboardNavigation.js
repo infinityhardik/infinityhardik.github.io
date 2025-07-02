@@ -89,10 +89,14 @@ document.addEventListener("keydown", function (event) {
             // The 'input' event listener on searchBox will handle filtering.
         }
 
-        // Handle Backspace Key: Remove the last character from the search box
-        if (event.key === "Backspace" && document.activeElement === searchBox) {
-            // Allow default backspace behavior in the search box
-            // The 'input' event listener on searchBox will handle filtering.
+        // Handle Backspace Key: Always focus search box and allow input
+        if (event.key === "Backspace") {
+            if (document.activeElement !== searchBox) {
+                event.preventDefault();
+                searchBox.focus();
+                searchBox.setSelectionRange(searchBox.value.length, searchBox.value.length);
+            }
+            // If already focused, allow default behavior (deleting text)
         }
 
         // Handle Delete Key: Remove the character after the cursor from the search box

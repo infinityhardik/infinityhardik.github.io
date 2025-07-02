@@ -94,8 +94,10 @@ function sendOrder() {
     const sortedProducts = sortProducts(selectedProducts);
     const orderText = encodeURIComponent(formatOrderText(sortedProducts)); // Encode for URL
 
+    const recipientNumber = '+916355360702'; // Replace with your target WhatsApp number
+
     // WhatsApp API URL for sending messages
-    const whatsappUrl = `https://wa.me/?text=${orderText}`;
+    const whatsappUrl = `https://wa.me/${recipientNumber}?text=${orderText}`;
 
     // Open WhatsApp in a new tab/window
     window.open(whatsappUrl, '_blank');
