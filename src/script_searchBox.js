@@ -97,7 +97,7 @@ function containsInOrder(str, query) {
  * Prioritizes matches by Product Name, then falls back to Brand Mark, Core Type, Grade Type, or Product Type if no matches found.
  * @param {string} filterTerm - The term to filter products by.
  */
-function filterProductsAndDisplay(filterTerm = '') {
+function filterProductsAndDisplay(filterTerm = '', options = {}) {
     const normalizedFilter = filterTerm.trim().toUpperCase();
     let filteredProductData = [];
 
@@ -135,7 +135,9 @@ function filterProductsAndDisplay(filterTerm = '') {
     resetFocus();
 
     // Ensure search box scrolls to top on every filter
-    scrollSearchBoxToTop();
+    if (!options.skipScroll) {
+        scrollSearchBoxToTop();
+    }
 }
 
 
@@ -257,6 +259,71 @@ if (typeof clearFilters === 'function') {
         originalClearFilters();
         if (!isMobileDevice()) {
             focusFirstVisibleItem();
+        }
+    };
+}
+
+// --- Show Selected Only Toggle Logic ---
+let showSelectedOnly = false;
+const showSelectedOnlyBtn = document.getElementById('showSelectedOnly');
+const showSelectedOnlyIcon = document.getElementById('showSelectedOnlyIcon');
+
+if (showSelectedOnlyBtn) {
+    showSelectedOnlyBtn.addEventListener('click', function () {
+        showSelectedOnly = !showSelectedOnly;
+        updateShowSelectedOnlyButton();
+        if (showSelectedOnly) {
+            searchBox.value = '';
+        }
+        // Call filterProductsAndDisplay but skip scroll to top
+        filterProductsAndDisplay(searchBox.value, { skipScroll: true });
+    });
+}
+
+function updateShowSelectedOnlyButton() {
+    if (showSelectedOnly) {
+        showSelectedOnlyBtn.classList.add('active');
+        showSelectedOnlyBtn.classList.add('btn-primary');
+        showSelectedOnlyIcon.textContent = '✅';
+    } else {
+        showSelectedOnlyBtn.classList.remove('active');
+        showSelectedOnlyBtn.classList.remove('btn-primary');
+        showSelectedOnlyIcon.textContent = '🔘';
+    }
+}
+
+// Patch filterProductsAndDisplay to support showSelectedOnly and skipScroll
+const originalFilterProductsAndDisplay2 = filterProductsAndDisplay;
+filterProductsAndDisplay = function (filterTerm = '', options = {}) {
+    let filteredList;
+    if (showSelectedOnly) {
+        if (!filterTerm.trim()) {
+            filteredList = selectedProducts.map(sel => {
+                return productsData.productDirectory.find(p => p.Product === sel.productName);
+            }).filter(Boolean);
+        } else {
+            filteredList = selectedProducts.map(sel => {
+                return productsData.productDirectory.find(p => p.Product === sel.productName);
+            }).filter(Boolean).filter(product => {
+                return product.Product.toUpperCase().includes(filterTerm.trim().toUpperCase());
+            });
+        }
+        displayProducts(filteredList);
+        resetFocus();
+        if (!options.skipScroll) scrollSearchBoxToTop();
+        if (!isMobileDevice()) { focusFirstVisibleItem(); }
+    } else {
+        originalFilterProductsAndDisplay2(filterTerm);
+    }
+};
+
+// Only patch updateOrderList if it exists
+if (typeof updateOrderList === 'function') {
+    const originalUpdateOrderList = updateOrderList;
+    updateOrderList = function () {
+        originalUpdateOrderList();
+        if (showSelectedOnly) {
+            filterProductsAndDisplay(searchBox.value);
         }
     };
 }

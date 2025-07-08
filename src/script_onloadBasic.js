@@ -287,14 +287,17 @@ function displayFeedbackMessage(message, type = 'warning', duration = 3000) {
 function toggleOrderPopup() {
     const popup = document.getElementById('order-text-popup');
     const selectedProductsTextarea = document.getElementById('selected-products');
+    const floatingOrderButton = document.getElementById('floating-order-button');
 
     if (popup.classList.contains('show')) {
         popup.classList.remove('show');
+        if (floatingOrderButton) floatingOrderButton.style.opacity = '1';
     } else {
         popup.classList.add('show');
         // Ensure textarea content is updated and scrolled to bottom when shown
         updateOrderList();
         selectedProductsTextarea.scrollTop = selectedProductsTextarea.scrollHeight;
+        if (floatingOrderButton) floatingOrderButton.style.opacity = '0.5';
     }
 }
 

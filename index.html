@@ -31,10 +31,10 @@
 <body>
   <header class="d-flex justify-content-between align-items-center py-3 px-3">
     <div class="d-flex align-items-center">
-        <a href="https://www.about.vaives.com" target="_blank" class="d-flex align-items-center">
-          <img src="assets/favicon.webp" width="61.8px" height="61.8px" alt="MT Logo" class="img-fluid me-3" />
-        </a>
-        <p class="h2 text-body mb-0">Order List</p>
+      <a href="https://www.about.vaives.com" target="_blank" class="d-flex align-items-center">
+        <img src="assets/favicon.webp" width="61.8px" height="61.8px" alt="MT Logo" class="img-fluid me-3" />
+      </a>
+      <p class="h2 text-body mb-0">Order List</p>
     </div>
     <!-- Dark Mode Toggle Button -->
     <button id="darkModeToggle" onclick="toggleDarkMode()" title="Switch Theme"></button>
@@ -63,29 +63,41 @@
     </div>
 
     <!-- Search Bar -->
-    <div class="input-group mb-3 modern-search-bar" id="search-box-container">
+    <div class="input-group mb-3 modern-search-bar flex-nowrap align-items-center gap-2 shadow-sm"
+      id="search-box-container">
+      <!-- Show Selected Only Toggle Button -->
+      <button id="showSelectedOnly"
+        class="btn btn-light d-flex align-items-center justify-content-center shadow-none px-1 py-1" type="button"
+        title="Ctrl + S : Show Selected Only" style="border-radius: 50%; min-width: 38px; min-height: 38px; font-size: 1rem;">
+        <span id="showSelectedOnlyIcon">🔘</span>
+      </button>
       <!-- Search Icon Button -->
-      <span class="input-group-text search-icon" id="search-icon" title="Search">
+      <span class="input-group-text search-icon bg-transparent border-0 px-1" id="search-icon" title="Search">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24">
           <circle cx="11" cy="11" r="7" stroke="#6a11cb" stroke-width="2" />
           <path d="M20 20L17 17" stroke="#6a11cb" stroke-width="2" stroke-linecap="round" />
         </svg>
       </span>
       <label for="search-box" class="visually-hidden">Search Products</label>
-      <input type="search" id="search-box" class="form-control border-0 modern-search-input"
-        placeholder="Search Products..." autocomplete="off" spellcheck="false" data-form-type="other"
-        autocapitalize="off" autocorrect="off" aria-label="Search Products..." aria-describedby="Search Products..."
+      <input type="search" id="search-box" class="form-control border-0 modern-search-input bg-transparent px-2"
+        style="min-width:0; flex:1 1 0%; font-size:1.1rem;" placeholder="Search Products..." autocomplete="off"
+        spellcheck="false" data-form-type="other" autocapitalize="off" autocorrect="off" aria-label="Search Products..."
+        aria-describedby="Search Products..."
         title="Start Typing to Search and Add Products / Quantity. Example : 1884-10 will add the First Item with 10 Qty." />
       <!-- Clear Search Button -->
-      <button id="clearSearch" class="btn btn-outline-warning input-group-btn ms-2 modern-clear-btn"
-        onclick="clearSearch()" title="Ctrl + Backspace : Clear Search" tabindex="0">
+      <button id="clearSearch"
+        class="btn btn-outline-warning input-group-btn ms-1 modern-clear-btn d-flex align-items-center justify-content-center shadow-none"
+        style="border-radius: 50%; min-width: 38px; min-height: 38px;" onclick="clearSearch()"
+        title="Ctrl + Backspace : Clear Search" tabindex="0">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24">
           <circle cx="12" cy="12" r="10" stroke="#ffc107" stroke-width="2" />
           <path d="M15 9l-6 6M9 9l6 6" stroke="#ffc107" stroke-width="2" stroke-linecap="round" />
         </svg>
       </button>
       <!-- Help Button -->
-      <button id="helpButton" class="btn btn-outline-info input-group-btn ms-2 modern-help-btn" data-bs-toggle="modal"
+      <button id="helpButton"
+        class="btn btn-outline-info input-group-btn ms-1 modern-help-btn d-flex align-items-center justify-content-center shadow-none"
+        style="border-radius: 50%; min-width: 38px; min-height: 38px;" data-bs-toggle="modal"
         data-bs-target="#help-modal" title="Help & Shortcuts">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24">
           <circle cx="12" cy="12" r="10" stroke="#17a2b8" stroke-width="2" /><text x="12" y="16" text-anchor="middle"
@@ -324,10 +336,14 @@
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-start">
                   <div class="ms-2 me-auto">
-                    <div class="fw-bold d-flex justify-content-between">
-                      <p>Ctrl + / :</p> OR
-                      <p>Ctrl + ? :</p>
-                    </div>
+                    <div class="fw-bold">Ctrl + S :</div>
+                    <span>પ્રોડક્ટ લિસ્ટમાં <strong>Show Selected Only</strong> ટૉગલ કરો.</span>
+                  </div>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                  <div class="ms-2 me-auto">
+                    <div class="fw-bold">Ctrl + / :</div> OR
+                    <div class="fw-bold">Ctrl + ? :</div>
                     Open Help Text and Shortcuts.
                   </div>
                 </li>
@@ -439,6 +455,12 @@
                   <div class="ms-2 me-auto">
                     <div class="fw-bold">Ctrl + O :</div>
                     <strong class="fw-semibold">View/Edit Order</strong> પોપઅપ ખોલો/બંધ કરો.
+                  </div>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                  <div class="ms-2 me-auto">
+                    <div class="fw-bold">Ctrl + S :</div>
+                    <span>પ્રોડક્ટ લિસ્ટમાં <strong>Show Selected Only</strong> ટૉગલ કરો.</span>
                   </div>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-start">
@@ -565,6 +587,12 @@
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-start">
                   <div class="ms-2 me-auto">
+                    <div class="fw-bold">Ctrl + S :</div>
+                    <span>प्रोडक्ट लिस्ट में <strong>Show Selected Only</strong> टॉगल करें।</span>
+                  </div>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                  <div class="ms-2 me-auto">
                     <div class="fw-bold d-flex justify-content-between">
                       <p>Ctrl + / :</p> या
                       <p>Ctrl + ? :</p>
@@ -601,13 +629,13 @@
     </div>
   </div>
 
-  <!-- <script src="src/script_keyboardNavigation.js"></script>
+  <script src="src/script_keyboardNavigation.js"></script>
   <script src="src/script_searchBox.js"></script>
   <script src="src/script_filterList.js"></script>
   <script src="src/script_onloadBasic.js"></script>
   <script src="src/script_order.js"></script>
-  <script src="src/script_sendOrder.js"></script> -->
-  <script src="dist/main.min.js"></script>
+  <script src="src/script_sendOrder.js"></script>
+  <!-- <script src="dist/main.min.js"></script> -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     xintegrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>

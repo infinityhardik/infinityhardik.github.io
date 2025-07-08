@@ -525,14 +525,14 @@ button:active {
 }
 
 .dark-mode .modern-search-bar {
-    background: var(--dark-search-bg);
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+  background: var(--dark-search-bg);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
 }
 
 .modern-search-bar .search-icon {
   background: transparent;
   border: none;
-  padding: 0 0.5rem 0 0.75rem;
+  padding: 0 0.5rem 0 0.5rem;
   display: flex;
   align-items: center;
 }

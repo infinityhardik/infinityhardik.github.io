@@ -76,6 +76,14 @@ document.addEventListener("keydown", function (event) {
             return;
         }
 
+        // Ctrl + S: Toggle Show Selected Only
+        if (event.ctrlKey && (event.key === "s" || event.key === "S")) {
+            event.preventDefault();
+            const showSelectedOnlyBtn = document.getElementById('showSelectedOnly');
+            if (showSelectedOnlyBtn) showSelectedOnlyBtn.click();
+            return;
+        }
+
         // Alphanumeric Keys: Focus search box and type the character.
         // This ensures typing directly in the search box even if it's not focused.
         if (/^[a-zA-Z0-9]$/.test(event.key) || event.key === '-' || event.key === ' ') { // Added hyphen and space for search

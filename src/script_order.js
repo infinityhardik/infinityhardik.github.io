@@ -125,6 +125,14 @@ function clearOrder() {
         item.classList.remove('removed-from-order'); // Ensure this is also cleared
     });
 
+    // Deselect the Show Selected Only button and update its UI state if active
+    if (typeof showSelectedOnly !== 'undefined' && showSelectedOnly) {
+        showSelectedOnly = false;
+        if (typeof updateShowSelectedOnlyButton === 'function') {
+            updateShowSelectedOnlyButton();
+        }
+    }
+
     updateOrderList(); // Update the textarea to reflect the empty order
     clearSearch(); // Clear the search box as well
     displayFeedbackMessage('Order cleared successfully!', 'success');
