@@ -82,6 +82,7 @@ function updateProductQuantityInOrder(productName, change) {
     // Update the quantity display on the product list item
     if (quantityDisplay) {
         quantityDisplay.value = newQuantity;
+        quantityDisplay.title = `Quantity for ${productName}`; // Accessibility fix
     }
 
     // Update the main order list textarea (now in the popup)

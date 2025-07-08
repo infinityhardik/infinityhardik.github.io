@@ -144,6 +144,7 @@ function displayProducts(productList) {
             quantityDisplayInput.dataset.productName = product.Product;
             quantityDisplayInput.id = `quantity-${product.Product.replace(/\s/g, '-')}`;
             quantityDisplayInput.name = `quantity-${product.Product.replace(/\s/g, '-')}`;
+            quantityDisplayInput.title = `Quantity for ${product.Product}`; // Accessibility fix
             const incrementButton = document.createElement('button');
             incrementButton.type = 'button';
             incrementButton.classList.add('btn', 'btn-outline-success', 'btn-sm');
