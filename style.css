@@ -534,7 +534,7 @@ button:active {
 .modern-search-bar .search-icon {
   background: transparent;
   border: none;
-  padding: 0 0.5rem 0 0.75rem;
+  padding: 0 0.5rem 0 0.5rem;
   display: flex;
   align-items: center;
 }
@@ -768,3 +768,26 @@ input[type="search"]::-ms-reveal {
 .dark-mode #darkModeToggle:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }
+
+/* --- Custom styles for search bar controls (moved from inline) --- */
+#showSelectedOnly {
+  border-radius: 50%;
+  min-width: 38px;
+  min-height: 38px;
+  font-size: 1rem;
+}
+
+#search-box {
+  min-width: 0;
+  flex: 1 1 0%;
+  font-size: 1.1rem;
+}
+
+#clearSearch,
+#helpButton {
+  border-radius: 50%;
+  min-width: 38px;
+  min-height: 38px;
+}
+
+/* End custom search bar controls */
