@@ -1,16 +1,61 @@
-/* Adding a subtle transition for smoother visual feedback on button presses */
+/* Core Animation Utilities */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 @keyframes buttonPress {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(
-      0.95
-    ); /* Slightly reduced scale for a more elegant press */
-  }
-  100% {
-    transform: scale(1);
-  }
+  0% { transform: scale(1); }
+  50% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+/* Animation Utility Classes */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-slide-up {
+  animation: slideInUp 0.3s ease-out;
+}
+
+.hover-scale {
+  transition: transform 0.2s ease;
+}
+
+.hover-scale:hover {
+  transform: scale(1.02);
+}
+
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 :root {
@@ -215,6 +260,7 @@ button:active {
   font-weight: 600;
   margin-left: 0.5rem; /* Space between checkbox and name */
   cursor: pointer; /* Indicate clickable product name for modal */
+  color: #000000 !important;
 }
 
 .quantity-controls {
@@ -287,7 +333,130 @@ button:active {
 }
 
 /* Adjustments for the numeric keypad in the order modal */
-/* REMOVED: #numeric-keypad .btn-group-vertical, #numeric-keypad .btn-group .btn */
+/* Modern Button Animations */
+.btn {
+  position: relative;
+  overflow: hidden;
+  transform-origin: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+}
+
+.btn:active {
+  animation: buttonPress 0.2s ease-in-out;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.4s ease-out, height 0.4s ease-out;
+  pointer-events: none;
+}
+
+.btn:hover::before {
+  width: 200%;
+  height: 200%;
+}
+
+/* Loading state animations */
+.btn.loading {
+  position: relative;
+  cursor: wait;
+  pointer-events: none;
+}
+
+.btn.loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent 25%, 
+    rgba(255, 255, 255, 0.3) 50%, 
+    transparent 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+/* Search Bar Animations */
+.modern-search-bar {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modern-search-bar:focus-within {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.modern-search-input {
+  transition: background-color 0.3s ease;
+}
+
+.search-icon svg {
+  transition: transform 0.3s ease;
+}
+
+.modern-search-bar:focus-within .search-icon svg {
+  transform: scale(1.1);
+}
+
+/* List Item Animations */
+.list-group-item {
+  transition: all 0.2s ease;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+.list-group-item:hover {
+  transform: translateX(4px);
+}
+
+.list-group-item.selected {
+  animation: pulse 0.3s ease-out;
+}
+
+/* Filter Button Animations */
+.filter-button {
+  transition: all 0.2s ease;
+}
+
+.filter-button.active {
+  animation: pulse 0.3s ease-out;
+}
+
+/* Card Animations */
+.card {
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Modal Animations */
+.modal.show .modal-dialog {
+  animation: slideInUp 0.3s ease-out;
+}
+
+/* Toast Notifications */
+.toast.show {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Numeric Keypad Animations - Commented out as requested */
+/* #numeric-keypad .btn-group-vertical, #numeric-keypad .btn-group .btn */
 
 #selected-products {
   font-family: monospace; /* Monospace for the order list for better readability */
@@ -326,23 +495,30 @@ button:active {
 
 /* Styles for feedback messages (e.g., "No products in order") */
 .feedback-message {
-  padding: 10px;
+  padding: 10px 20px;
   margin-top: 10px;
   border-radius: 5px;
   text-align: center;
   font-weight: bold;
   color: #fff;
-  opacity: 0; /* Start hidden */
+  opacity: 0;
   transition: opacity 0.5s ease-in-out;
-  z-index: 1060; /* Ensure it's above modals */
-  position: fixed; /* Fixed position */
+  z-index: 1060;
+  position: fixed;
   left: 50%;
   transform: translateX(-50%);
-  bottom: 20px; /* Adjust as needed */
+  bottom: 20px;
+  pointer-events: none; /* Prevent interaction with the message */
+  user-select: none; /* Prevent text selection */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  white-space: nowrap; /* Keep message on one line */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 .feedback-message.show {
-  opacity: 1; /* Show feedback */
+  opacity: 1;
 }
 
 .feedback-message.warning {
@@ -376,6 +552,13 @@ button:active {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
   cursor: pointer;
+  -webkit-touch-callout: none; /* Disable text selection on iOS Safari */
+  -webkit-user-select: none; /* Disable text selection on Safari */
+  -khtml-user-select: none; /* Disable text selection on Konqueror HTML */
+  -moz-user-select: none; /* Disable text selection on Firefox */
+  -ms-user-select: none; /* Disable text selection on Internet Explorer/Edge */
+  user-select: none; /* Disable text selection on supported browsers */
+  touch-action: manipulation; /* Optimize for touch interactions */
 }
 
 #floating-order-button:hover {
@@ -385,6 +568,12 @@ button:active {
 
 /* Order Text Area Pop-up */
 #order-text-popup {
+  -webkit-touch-callout: none; /* Disable text selection on iOS Safari */
+  -webkit-user-select: none; /* Disable text selection on Safari */
+  -khtml-user-select: none; /* Disable text selection on Konqueror HTML */
+  -moz-user-select: none; /* Disable text selection on Firefox */
+  -ms-user-select: none; /* Disable text selection on Internet Explorer/Edge */
+  user-select: none; /* Disable text selection on supported browsers */
   position: fixed;
   bottom: 0;
   left: 0;
@@ -621,6 +810,81 @@ button:active {
   transition: box-shadow 0.2s, background 0.2s;
   padding-left: 0.5rem;
   padding-right: 0.5rem;
+}
+
+/* Product List Container */
+.product-list-container {
+  max-height: calc(100vh - 15rem);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  position: relative;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Skeleton Loading Animation */
+.skeleton-loader {
+  background: linear-gradient(90deg,
+    var(--light-bg) 25%,
+    var(--light-hover) 50%,
+    var(--light-bg) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: 4px;
+  height: 24px;
+  margin: 8px 0;
+}
+
+.dark-mode .skeleton-loader {
+  background: linear-gradient(90deg,
+    var(--dark-surface) 25%,
+    var(--dark-hover) 50%,
+    var(--dark-surface) 75%
+  );
+}
+
+/* Product Item Animations */
+.product-item {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: slideInUp 0.3s ease-out forwards;
+}
+
+.product-item:nth-child(1) { animation-delay: 0.05s; }
+.product-item:nth-child(2) { animation-delay: 0.1s; }
+.product-item:nth-child(3) { animation-delay: 0.15s; }
+.product-item:nth-child(4) { animation-delay: 0.2s; }
+.product-item:nth-child(5) { animation-delay: 0.25s; }
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  .product-item {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  
+  .btn::before {
+    display: none; /* Disable ripple on mobile for better performance */
+  }
+  
+  .list-group-item:hover {
+    transform: none; /* Disable hover effects on mobile */
+  }
+  
+  /* Better touch targets */
+  .btn,
+  .list-group-item,
+  .form-control {
+    min-height: 44px; /* Apple's recommended minimum touch target size */
+  }
+  
+  /* Optimize animations for mobile */
+  * {
+    animation-duration: 0.2s !important; /* Faster animations on mobile */
+    transition-duration: 0.2s !important;
+  }
 }
 
 .dark-mode .modern-search-input {

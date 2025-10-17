@@ -112,8 +112,15 @@ function addToOrder(productName, quantity) {
 
 /**
  * Clears all selected products from the order and resets the UI.
+ * @param {Event} event - Optional event object
  */
-function clearOrder() {
+function clearOrder(event) {
+    // Prevent any default behavior that might interfere with the clear action
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    
     selectedProducts = []; // Clear the array
 
     // Uncheck all checkboxes and reset quantity displays in the product list

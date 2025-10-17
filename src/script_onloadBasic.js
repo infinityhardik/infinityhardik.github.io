@@ -133,7 +133,7 @@ function displayProducts(productList) {
             quantityControlsDiv.classList.add('quantity-controls');
             const decrementButton = document.createElement('button');
             decrementButton.type = 'button';
-            decrementButton.classList.add('btn', 'btn-outline-danger', 'btn-sm');
+            decrementButton.classList.add('btn', 'btn-outline-danger', 'btn-sm', 'qty-btn');
             decrementButton.textContent = '-';
             addHoldListeners(decrementButton, () => updateProductQuantityInOrder(product.Product, -1));
             const quantityDisplayInput = document.createElement('input');
@@ -147,7 +147,7 @@ function displayProducts(productList) {
             quantityDisplayInput.title = `Quantity for ${product.Product}`; // Accessibility fix
             const incrementButton = document.createElement('button');
             incrementButton.type = 'button';
-            incrementButton.classList.add('btn', 'btn-outline-success', 'btn-sm');
+            incrementButton.classList.add('btn', 'btn-outline-success', 'btn-sm', 'qty-btn');
             incrementButton.textContent = '+';
             addHoldListeners(incrementButton, () => updateProductQuantityInOrder(product.Product, 1));
             quantityControlsDiv.appendChild(decrementButton);
@@ -266,19 +266,34 @@ function openOrderModal(productItem) {
  * @param {number} duration - How long the message should be displayed in milliseconds.
  */
 function displayFeedbackMessage(message, type = 'warning', duration = 3000) {
-    let feedbackElement = document.getElementById('feedback-message');
-    if (!feedbackElement) {
-        feedbackElement = document.createElement('div');
-        feedbackElement.id = 'feedback-message';
-        feedbackElement.classList.add('feedback-message');
-        document.body.appendChild(feedbackElement);
+    // Remove any existing feedback message element
+    let existingFeedback = document.getElementById('feedback-message');
+    if (existingFeedback) {
+        existingFeedback.remove();
     }
 
+    // Create new feedback element
+    const feedbackElement = document.createElement('div');
+    feedbackElement.id = 'feedback-message';
+    feedbackElement.classList.add('feedback-message', type);
     feedbackElement.textContent = message;
-    feedbackElement.className = 'feedback-message show ' + type; // Reset classes and add new type
+    document.body.appendChild(feedbackElement);
 
+    // Force a reflow to ensure the animation works
+    feedbackElement.offsetHeight;
+    
+    // Add show class to trigger animation
+    feedbackElement.classList.add('show');
+
+    // Remove the element after animation
     setTimeout(() => {
         feedbackElement.classList.remove('show');
+        // Wait for fade out animation to complete before removing element
+        setTimeout(() => {
+            if (feedbackElement && feedbackElement.parentNode) {
+                feedbackElement.remove();
+            }
+        }, 500); // Match this with the CSS transition duration
     }, duration);
 }
 
