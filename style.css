@@ -103,6 +103,10 @@ body.dark-mode {
     color: var(--dark-text);
 }
 
+.dark-mode .product-item .product-name {
+    color: var(--dark-primary-text);
+}
+
 .dark-mode .h2.text-body {
     color: var(--dark-primary-text) !important; /* Override Bootstrap's text-body color */
 }
@@ -260,7 +264,7 @@ button:active {
   font-weight: 600;
   margin-left: 0.5rem; /* Space between checkbox and name */
   cursor: pointer; /* Indicate clickable product name for modal */
-  color: #000000 !important;
+  color: #000000;
 }
 
 .quantity-controls {
