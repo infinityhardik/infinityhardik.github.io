@@ -1,16 +1,61 @@
-/* Adding a subtle transition for smoother visual feedback on button presses */
+/* Core Animation Utilities */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 @keyframes buttonPress {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(
-      0.95
-    ); /* Slightly reduced scale for a more elegant press */
-  }
-  100% {
-    transform: scale(1);
-  }
+  0% { transform: scale(1); }
+  50% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+/* Animation Utility Classes */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-slide-up {
+  animation: slideInUp 0.3s ease-out;
+}
+
+.hover-scale {
+  transition: transform 0.2s ease;
+}
+
+.hover-scale:hover {
+  transform: scale(1.02);
+}
+
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 :root {
@@ -48,20 +93,22 @@
 }
 
 body {
-  background-color: var(--light-bg);
-  color: var(--light-text);
-  transition: background-color 0.3s ease, color 0.3s ease;
+    background-color: var(--light-bg);
+    color: var(--light-text);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 body.dark-mode {
-  background-color: var(--dark-bg);
-  color: var(--dark-text);
+    background-color: var(--dark-bg);
+    color: var(--dark-text);
+}
+
+.dark-mode .product-item .product-name {
+    color: var(--dark-primary-text);
 }
 
 .dark-mode .h2.text-body {
-  color: var(
-    --dark-primary-text
-  ) !important; /* Override Bootstrap's text-body color */
+    color: var(--dark-primary-text) !important; /* Override Bootstrap's text-body color */
 }
 
 button:active {
@@ -120,7 +167,7 @@ button:active {
 
 /* Dark Mode Button Styles */
 .dark-mode .btn-secondary {
-  background-image: linear-gradient(to right, #4a4e54 0%, #3a3f44 100%);
+    background-image: linear-gradient(to right, #4a4e54 0%, #3a3f44 100%);
 }
 
 .btn-outline-info {
@@ -162,7 +209,7 @@ button:active {
 }
 
 .dark-mode .list-group-item.keyboard-focus {
-  background-color: #333;
+    background-color: #333;
 }
 
 /* Custom styles for the product list items to incorporate quantity controls */
@@ -179,9 +226,9 @@ button:active {
 }
 
 .dark-mode .product-item {
-  background-color: var(--dark-surface);
-  border: 1px solid var(--dark-border);
-  color: var(--dark-text);
+    background-color: var(--dark-surface);
+    border: 1px solid var(--dark-border);
+    color: var(--dark-text);
 }
 
 .product-item:hover {
@@ -189,7 +236,7 @@ button:active {
 }
 
 .dark-mode .product-item:hover {
-  background-color: var(--dark-hover);
+    background-color: var(--dark-hover);
 }
 
 .product-item + .product-item {
@@ -217,6 +264,7 @@ button:active {
   font-weight: 600;
   margin-left: 0.5rem; /* Space between checkbox and name */
   cursor: pointer; /* Indicate clickable product name for modal */
+  color: #000000;
 }
 
 .quantity-controls {
@@ -258,9 +306,9 @@ button:active {
 }
 
 .dark-mode .quantity-controls .quantity-display {
-  background-color: #333;
-  border-color: #555;
-  color: var(--dark-text);
+    background-color: #333;
+    border-color: #555;
+    color: var(--dark-text);
 }
 
 /* Hide number input arrows for Chrome, Safari, Edge, Opera */
@@ -289,7 +337,130 @@ button:active {
 }
 
 /* Adjustments for the numeric keypad in the order modal */
-/* REMOVED: #numeric-keypad .btn-group-vertical, #numeric-keypad .btn-group .btn */
+/* Modern Button Animations */
+.btn {
+  position: relative;
+  overflow: hidden;
+  transform-origin: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+}
+
+.btn:active {
+  animation: buttonPress 0.2s ease-in-out;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.4s ease-out, height 0.4s ease-out;
+  pointer-events: none;
+}
+
+.btn:hover::before {
+  width: 200%;
+  height: 200%;
+}
+
+/* Loading state animations */
+.btn.loading {
+  position: relative;
+  cursor: wait;
+  pointer-events: none;
+}
+
+.btn.loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent 25%, 
+    rgba(255, 255, 255, 0.3) 50%, 
+    transparent 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+/* Search Bar Animations */
+.modern-search-bar {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modern-search-bar:focus-within {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.modern-search-input {
+  transition: background-color 0.3s ease;
+}
+
+.search-icon svg {
+  transition: transform 0.3s ease;
+}
+
+.modern-search-bar:focus-within .search-icon svg {
+  transform: scale(1.1);
+}
+
+/* List Item Animations */
+.list-group-item {
+  transition: all 0.2s ease;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+.list-group-item:hover {
+  transform: translateX(4px);
+}
+
+.list-group-item.selected {
+  animation: pulse 0.3s ease-out;
+}
+
+/* Filter Button Animations */
+.filter-button {
+  transition: all 0.2s ease;
+}
+
+.filter-button.active {
+  animation: pulse 0.3s ease-out;
+}
+
+/* Card Animations */
+.card {
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Modal Animations */
+.modal.show .modal-dialog {
+  animation: slideInUp 0.3s ease-out;
+}
+
+/* Toast Notifications */
+.toast.show {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Numeric Keypad Animations - Commented out as requested */
+/* #numeric-keypad .btn-group-vertical, #numeric-keypad .btn-group .btn */
 
 #selected-products {
   font-family: monospace; /* Monospace for the order list for better readability */
@@ -317,8 +488,8 @@ button:active {
 }
 
 .dark-mode .product-item.added-to-order {
-  background-color: var(--dark-added-item-bg);
-  border-color: #3c763d; /* A subtle green border */
+    background-color: var(--dark-added-item-bg);
+    border-color: #3c763d; /* A subtle green border */
 }
 
 .product-item.removed-from-order {
@@ -328,23 +499,30 @@ button:active {
 
 /* Styles for feedback messages (e.g., "No products in order") */
 .feedback-message {
-  padding: 10px;
+  padding: 10px 20px;
   margin-top: 10px;
   border-radius: 5px;
   text-align: center;
   font-weight: bold;
   color: #fff;
-  opacity: 0; /* Start hidden */
+  opacity: 0;
   transition: opacity 0.5s ease-in-out;
-  z-index: 1060; /* Ensure it's above modals */
-  position: fixed; /* Fixed position */
+  z-index: 1060;
+  position: fixed;
   left: 50%;
   transform: translateX(-50%);
-  bottom: 20px; /* Adjust as needed */
+  bottom: 20px;
+  pointer-events: none; /* Prevent interaction with the message */
+  user-select: none; /* Prevent text selection */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  white-space: nowrap; /* Keep message on one line */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 .feedback-message.show {
-  opacity: 1; /* Show feedback */
+  opacity: 1;
 }
 
 .feedback-message.warning {
@@ -378,6 +556,13 @@ button:active {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
   cursor: pointer;
+  -webkit-touch-callout: none; /* Disable text selection on iOS Safari */
+  -webkit-user-select: none; /* Disable text selection on Safari */
+  -khtml-user-select: none; /* Disable text selection on Konqueror HTML */
+  -moz-user-select: none; /* Disable text selection on Firefox */
+  -ms-user-select: none; /* Disable text selection on Internet Explorer/Edge */
+  user-select: none; /* Disable text selection on supported browsers */
+  touch-action: manipulation; /* Optimize for touch interactions */
 }
 
 #floating-order-button:hover {
@@ -387,6 +572,12 @@ button:active {
 
 /* Order Text Area Pop-up */
 #order-text-popup {
+  -webkit-touch-callout: none; /* Disable text selection on iOS Safari */
+  -webkit-user-select: none; /* Disable text selection on Safari */
+  -khtml-user-select: none; /* Disable text selection on Konqueror HTML */
+  -moz-user-select: none; /* Disable text selection on Firefox */
+  -ms-user-select: none; /* Disable text selection on Internet Explorer/Edge */
+  user-select: none; /* Disable text selection on supported browsers */
   position: fixed;
   bottom: 0;
   left: 0;
@@ -408,9 +599,9 @@ button:active {
 }
 
 .dark-mode #order-text-popup {
-  background-color: var(--dark-popup-bg);
-  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.4);
-  color: var(--dark-text);
+    background-color: var(--dark-popup-bg);
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.4);
+    color: var(--dark-text);
 }
 
 #order-text-popup.show {
@@ -431,13 +622,13 @@ button:active {
 }
 
 .dark-mode #order-text-popup textarea {
-  background-color: var(--dark-popup-textarea-bg);
-  border-color: #444;
-  color: var(--dark-text);
+    background-color: var(--dark-popup-textarea-bg);
+    border-color: #444;
+    color: var(--dark-text);
 }
 
 .dark-mode #order-text-popup .btn-close {
-  filter: invert(1) grayscale(100%) brightness(200%);
+    filter: invert(1) grayscale(100%) brightness(200%);
 }
 
 #order-text-popup .popup-header {
@@ -453,7 +644,7 @@ button:active {
 }
 
 .dark-mode #order-text-popup .popup-header h5 {
-  color: var(--dark-primary-text);
+    color: var(--dark-primary-text);
 }
 
 #order-text-popup .popup-footer {
@@ -541,7 +732,7 @@ button:active {
 
 .dark-mode .search-icon svg circle,
 .dark-mode .search-icon svg path {
-  stroke: #93b5c6; /* Lighter color for icon in dark mode */
+    stroke: #93b5c6; /* Lighter color for icon in dark mode */
 }
 
 .modern-search-bar .modern-clear-btn {
@@ -573,7 +764,7 @@ button:active {
 
 .dark-mode .modern-clear-btn svg circle,
 .dark-mode .modern-clear-btn svg path {
-  stroke: #ffca28; /* Brighter yellow */
+    stroke: #ffca28; /* Brighter yellow */
 }
 
 .modern-search-bar .modern-help-btn {
@@ -604,11 +795,11 @@ button:active {
 }
 
 .dark-mode .modern-help-btn svg circle {
-  stroke: #26c6da; /* Brighter cyan */
+    stroke: #26c6da; /* Brighter cyan */
 }
 
 .dark-mode .modern-help-btn svg text {
-  fill: #26c6da;
+    fill: #26c6da;
 }
 
 .modern-search-input {
@@ -625,13 +816,150 @@ button:active {
   padding-right: 0.5rem;
 }
 
+/* Product List Container */
+.product-list-container {
+  max-height: calc(100vh - 15rem);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  position: relative;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Skeleton Loading Animation */
+.skeleton-loader {
+  background: linear-gradient(90deg,
+    var(--light-bg) 25%,
+    var(--light-hover) 50%,
+    var(--light-bg) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: 4px;
+  height: 24px;
+  margin: 8px 0;
+}
+
+.dark-mode .skeleton-loader {
+  background: linear-gradient(90deg,
+    var(--dark-surface) 25%,
+    var(--dark-hover) 50%,
+    var(--dark-surface) 75%
+  );
+}
+
+/* Product Item Animations */
+.product-item {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: slideInUp 0.3s ease-out forwards;
+}
+
+.product-item:nth-child(1) { animation-delay: 0.05s; }
+.product-item:nth-child(2) { animation-delay: 0.1s; }
+.product-item:nth-child(3) { animation-delay: 0.15s; }
+.product-item:nth-child(4) { animation-delay: 0.2s; }
+.product-item:nth-child(5) { animation-delay: 0.25s; }
+
+/* Desktop: smooth hover/lift for product items and override generic list-group hover */
+@media (min-width: 769px) {
+  .product-item {
+    /* Ensure transforms, shadows and background-color animate smoothly on hover */
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, opacity 0.2s ease;
+    will-change: transform, box-shadow, opacity;
+  }
+
+  .product-item:hover {
+    /* Subtle lift and soft shadow for a modern hover effect */
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+    background-color: var(--light-hover);
+  }
+
+  /* Dark mode hover variant */
+  .dark-mode .product-item:hover {
+    background-color: var(--dark-hover);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+  }
+
+  /* Prevent the generic .list-group-item:hover translateX from overriding product item hover
+     by ensuring the more specific product-item hover transform is applied (latter rule wins).
+  */
+  .product-item.list-group-item:hover {
+    transform: translateY(-4px);
+  }
+}
+
+/* Keep selected/added/removed product items' background stable on hover */
+@media (min-width: 769px) {
+  /* Items that are added to the order should keep their added background on hover */
+  .product-item.added-to-order:hover {
+    background-color: var(--light-added-item-bg);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+  }
+
+  .dark-mode .product-item.added-to-order:hover {
+    background-color: var(--dark-added-item-bg);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+  }
+
+  /* Removed-from-order state should keep its removal color */
+  .product-item.removed-from-order:hover {
+    background-color: #f8d7da;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+  }
+
+  /* Selected list-group items (keyboard or programmatic selection) should not switch to hover color */
+  .product-item.selected:hover,
+  .list-group-item.selected:hover {
+    background-color: var(--light-surface);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+  }
+
+  .dark-mode .product-item.selected:hover,
+  .dark-mode .list-group-item.selected:hover {
+    background-color: var(--dark-surface);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+  }
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  .product-item {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  
+  .btn::before {
+    display: none; /* Disable ripple on mobile for better performance */
+  }
+  
+  .list-group-item:hover {
+    transform: none; /* Disable hover effects on mobile */
+  }
+  
+  /* Better touch targets */
+  .btn,
+  .list-group-item,
+  .form-control {
+    min-height: 44px; /* Apple's recommended minimum touch target size */
+  }
+  
+  /* Optimize animations for mobile */
+  * {
+    animation-duration: 0.2s !important; /* Faster animations on mobile */
+    transition-duration: 0.2s !important;
+  }
+}
+
 .dark-mode .modern-search-input {
-  color: var(--dark-search-text);
+    color: var(--dark-search-text);
 }
 
 .dark-mode .modern-search-input::placeholder {
-  color: var(--dark-secondary-text);
-  opacity: 1;
+    color: var(--dark-secondary-text);
+    opacity: 1;
 }
 
 .modern-search-input:focus {
@@ -641,14 +969,15 @@ button:active {
 }
 
 .dark-mode .modern-search-input:focus {
-  background: var(--dark-search-focus-bg);
-  box-shadow: 0 0 0 3px var(--dark-search-focus-shadow);
-  color: var(--dark-text);
+    background: var(--dark-search-focus-bg);
+    box-shadow: 0 0 0 3px var(--dark-search-focus-shadow);
+    color: var(--dark-text);
 }
 
 .dark-mode .modern-search-input:focus::placeholder {
-  color: #6c757d;
+    color: #6c757d;
 }
+
 
 /* Remove default clear (X) button in input[type=search] for Chrome, Edge, Safari */
 input[type="search"]::-webkit-search-decoration,
@@ -686,87 +1015,84 @@ input[type="search"]::-ms-reveal {
 
 /* Modal Dark Mode Styles */
 .dark-mode .modal-content {
-  background-color: var(--dark-modal-bg);
-  color: var(--dark-text);
-  border-color: var(--dark-border);
+    background-color: var(--dark-modal-bg);
+    color: var(--dark-text);
+    border-color: var(--dark-border);
 }
 
 .dark-mode .modal-header {
-  border-bottom: 1px solid var(--dark-modal-header-border);
+    border-bottom: 1px solid var(--dark-modal-header-border);
 }
 
 .dark-mode .modal-footer {
-  border-top: 1px solid var(--dark-modal-header-border);
+    border-top: 1px solid var(--dark-modal-header-border);
 }
 
 .dark-mode .btn-close {
-  filter: invert(1) grayscale(100%) brightness(200%);
+    filter: invert(1) grayscale(100%) brightness(200%);
 }
 
 .dark-mode .list-group-flush .list-group-item {
-  background-color: var(
-    --dark-list-group-flush-bg
-  ) !important; /* Use important to override bootstrap's inline styles */
-  border-color: var(--dark-modal-header-border);
-  color: var(--dark-text);
+    background-color: var(--dark-list-group-flush-bg) !important; /* Use important to override bootstrap's inline styles */
+    border-color: var(--dark-modal-header-border);
+    color: var(--dark-text);
 }
 
 .dark-mode .nav-tabs {
-  border-bottom-color: var(--dark-modal-header-border);
+    border-bottom-color: var(--dark-modal-header-border);
 }
 
 .dark-mode .nav-tabs .nav-link {
-  color: var(--dark-secondary-text);
-  border-color: transparent;
+    color: var(--dark-secondary-text);
+    border-color: transparent;
 }
 
 .dark-mode .nav-tabs .nav-link.active {
-  color: var(--dark-primary-text);
-  background-color: var(--dark-surface);
-  border-color: var(--dark-modal-header-border) var(--dark-modal-header-border)
-    var(--dark-surface);
+    color: var(--dark-primary-text);
+    background-color: var(--dark-surface);
+    border-color: var(--dark-modal-header-border) var(--dark-modal-header-border) var(--dark-surface);
 }
 
 .dark-mode .nav-tabs .nav-link:hover {
-  border-color: var(--dark-modal-header-border);
+    border-color: var(--dark-modal-header-border);
 }
 
 .dark-mode .tab-pane {
-  color: var(--dark-text);
+    color: var(--dark-text);
 }
 
 .dark-mode .list-group-item {
-  background-color: var(--dark-surface);
-  border-color: var(--dark-border);
-  color: var(--dark-text);
+    background-color: var(--dark-surface);
+    border-color: var(--dark-border);
+    color: var(--dark-text);
 }
 
 .dark-mode .text-body-secondary {
-  color: var(--dark-secondary-text) !important;
+    color: var(--dark-secondary-text) !important;
 }
 
 /* Dark Mode Toggle Button */
 #darkModeToggle {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.3s ease;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
 }
 
 #darkModeToggle:hover {
-  background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 .dark-mode #darkModeToggle:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* --- Custom styles for search bar controls (moved from inline) --- */
