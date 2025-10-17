@@ -861,6 +861,68 @@ button:active {
 .product-item:nth-child(4) { animation-delay: 0.2s; }
 .product-item:nth-child(5) { animation-delay: 0.25s; }
 
+/* Desktop: smooth hover/lift for product items and override generic list-group hover */
+@media (min-width: 769px) {
+  .product-item {
+    /* Ensure transforms, shadows and background-color animate smoothly on hover */
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, opacity 0.2s ease;
+    will-change: transform, box-shadow, opacity;
+  }
+
+  .product-item:hover {
+    /* Subtle lift and soft shadow for a modern hover effect */
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+    background-color: var(--light-hover);
+  }
+
+  /* Dark mode hover variant */
+  .dark-mode .product-item:hover {
+    background-color: var(--dark-hover);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+  }
+
+  /* Prevent the generic .list-group-item:hover translateX from overriding product item hover
+     by ensuring the more specific product-item hover transform is applied (latter rule wins).
+  */
+  .product-item.list-group-item:hover {
+    transform: translateY(-4px);
+  }
+}
+
+/* Keep selected/added/removed product items' background stable on hover */
+@media (min-width: 769px) {
+  /* Items that are added to the order should keep their added background on hover */
+  .product-item.added-to-order:hover {
+    background-color: var(--light-added-item-bg);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+  }
+
+  .dark-mode .product-item.added-to-order:hover {
+    background-color: var(--dark-added-item-bg);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+  }
+
+  /* Removed-from-order state should keep its removal color */
+  .product-item.removed-from-order:hover {
+    background-color: #f8d7da;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+  }
+
+  /* Selected list-group items (keyboard or programmatic selection) should not switch to hover color */
+  .product-item.selected:hover,
+  .list-group-item.selected:hover {
+    background-color: var(--light-surface);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+  }
+
+  .dark-mode .product-item.selected:hover,
+  .dark-mode .list-group-item.selected:hover {
+    background-color: var(--dark-surface);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+  }
+}
+
 /* Mobile Optimizations */
 @media (max-width: 768px) {
   .product-item {
