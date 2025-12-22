@@ -278,6 +278,10 @@ button:active {
     background-color: var(--dark-hover);
 }
 
+#product-list {
+  padding-bottom: 80px; /* Spacer to prevent overlap by floating buttons */
+}
+
 .product-item + .product-item {
   border-top-width: 0;
 }
