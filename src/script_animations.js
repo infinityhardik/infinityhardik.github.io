@@ -54,23 +54,21 @@ const animations = {
     optimizeForDevice: () => {
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const isMobile = window.matchMedia('(max-width: 768px)').matches;
-        
+
         if (prefersReducedMotion || isMobile) {
             document.documentElement.style.setProperty('--animation-duration', '0.2s');
             document.body.classList.add('reduced-motion');
         }
     },
 
-    // Add touch feedback
+    // Add touch feedback (using passive listeners for performance)
     initTouchFeedback: () => {
-        document.querySelectorAll('.btn, .list-group-item').forEach(element => {
+        const touchOptions = { passive: true };
+        document.querySelectorAll('.btn, .list-group-item, #floating-order-button, #floating-history-button').forEach(element => {
             element.addEventListener('touchstart', () => {
-                element.style.transform = 'scale(0.98)';
-            });
-            
-            element.addEventListener('touchend', () => {
-                element.style.transform = '';
-            });
+                // Visual feedback is handled by CSS :active now for better performance
+                // This JS hook is for any complex logic if needed
+            }, touchOptions);
         });
     },
 
@@ -79,7 +77,7 @@ const animations = {
         animations.optimizeForDevice();
         animations.initLazyLoading();
         animations.initTouchFeedback();
-        
+
         // Handle button loading states
         document.querySelectorAll('.btn').forEach(button => {
             const originalClick = button.onclick;
@@ -92,31 +90,46 @@ const animations = {
             };
         });
 
-            // Haptic feedback for important function buttons
-            const importantButtonIds = [
-                'filterProductList',
-                'clearFilters',
-                'clearOrder',
-                'sendOrder',
-                'darkModeToggle',
-                'showSelectedOnly',
-                'clearSearch',
-                'helpButton',
-                'copyOrder1',
-                'sendOrder1',
-                'clearOrder1',
-                'floating-order-button'  // Added floating order button
-            ];
-            importantButtonIds.forEach(id => {
-                const btn = document.getElementById(id);
-                if (btn) {
-                    btn.addEventListener('click', () => {
-                        if (navigator.vibrate) {
-                            navigator.vibrate([50]); // medium-strong vibration
-                        }
-                    });
-                }
-            });
+        // Haptic feedback for important function buttons
+        const importantButtonIds = [
+            'filterProductList',
+            'clearFilters',
+            'clearOrder',
+            'sendOrder',
+            'darkModeToggle',
+            'showSelectedOnly',
+            'clearSearch',
+            'helpButton',
+            'copyOrder1',
+            'sendOrder1',
+            'clearOrder1',
+            'floating-order-button',
+            'floating-history-button',
+            'history-sort',
+            'clearHistorySearch'
+        ];
+
+        const triggerHaptic = (type = 'light') => {
+            if (!navigator.vibrate) return;
+
+            if (type === 'medium') {
+                navigator.vibrate(50);
+            } else if (type === 'double') {
+                navigator.vibrate([40, 30, 40]);
+            } else {
+                navigator.vibrate(20); // Light tap
+            }
+        };
+
+        importantButtonIds.forEach(id => {
+            const btn = document.getElementById(id);
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    const isDestructive = btn.id.toLowerCase().includes('clear') || btn.id.toLowerCase().includes('delete');
+                    triggerHaptic(isDestructive ? 'medium' : 'light');
+                });
+            }
+        });
     }
 };
 

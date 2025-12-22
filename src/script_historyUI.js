@@ -440,10 +440,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // Initialize listeners once
         attachHistoryEventListeners();
 
-        // Focus search input when modal is shown
+        // Focus search input when modal is shown (only on non-mobile devices)
         historyModalElement.addEventListener('shown.bs.modal', () => {
             const searchInput = document.getElementById('history-search');
-            if (searchInput) {
+            // Check if isMobileDevice function exists and return false if not on mobile
+            const isMobile = typeof isMobileDevice === 'function' ? isMobileDevice() : false;
+
+            if (searchInput && !isMobile) {
                 searchInput.focus();
             }
         });

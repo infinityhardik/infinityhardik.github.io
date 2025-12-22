@@ -58,6 +58,33 @@
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
+/* Mobile & Touch Optimizations */
+* {
+  -webkit-tap-highlight-color: transparent; /* Remove default tap highlight */
+}
+
+.btn, 
+.list-group-item,
+#floating-order-button,
+#floating-history-button {
+  touch-action: manipulation; /* Eliminate 300ms click delay */
+  user-select: none; /* Prevent accidental text selection during fast taps */
+}
+
+/* Hardware acceleration for smooth transitions */
+#floating-order-button,
+#floating-history-button,
+.modal.fade .modal-dialog {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* Optimize rendering for long lists */
+.list-group-item {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 80px; /* Estimated height for better scrollbar stability */
+}
+
 :root {
   --light-bg: #ffffff;
   --light-text: #212529;
@@ -96,6 +123,8 @@ body {
     background-color: var(--light-bg);
     color: var(--light-text);
     transition: background-color 0.3s ease, color 0.3s ease;
+    -webkit-overflow-scrolling: touch; /* Momentum scrolling for iOS */
+    text-rendering: optimizeLegibility;
 }
 
 body.dark-mode {
@@ -113,6 +142,16 @@ body.dark-mode {
 
 button:active {
   animation: buttonPress 0.2s ease-out; /* Added ease-out for smoother return */
+  transform: scale(0.96); /* Instant feedback */
+}
+
+.list-group-item:active {
+  background-color: var(--light-added-item-bg) !important;
+  transform: scale(0.99);
+}
+
+.dark-mode .list-group-item:active {
+  background-color: var(--dark-added-item-bg) !important;
 }
 
 /* Modernize all Bootstrap buttons */
