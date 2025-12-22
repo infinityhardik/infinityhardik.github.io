@@ -108,7 +108,7 @@ function populateTabContentForCategory(filterKey, tabPaneElement) {
             updateClearFiltersButtonStyle(); // Update button style immediately
         });
     });
-    
+
     // After populating, update the checkbox states for this specific pane
     updateFilterCheckboxStates();
 }
@@ -163,10 +163,10 @@ function populateFilterOptions() {
             button.role = 'tab';
             button.setAttribute('aria-controls', tabPaneId);
             button.textContent = displayName;
-            
+
             // Store the filter key in dataset for easy access
             button.dataset.filterKey = key;
-            
+
             listTab.appendChild(button);
 
             // Create tab pane content
@@ -183,27 +183,27 @@ function populateFilterOptions() {
             // Add click event listener to populate content when tab is clicked
             button.addEventListener('click', (event) => {
                 event.preventDefault();
-                
+
                 // Remove active class from all tabs
                 listTab.querySelectorAll('.list-group-item').forEach(tab => {
                     tab.classList.remove('active');
                     tab.removeAttribute('aria-current');
                 });
-                
+
                 // Remove active class from all tab panes
                 navTabContent.querySelectorAll('.tab-pane').forEach(pane => {
                     pane.classList.remove('show', 'active');
                 });
-                
+
                 // Set clicked tab as active
                 button.classList.add('active');
                 button.setAttribute('aria-current', 'true');
-                
+
                 // Set corresponding tab pane as active
                 const targetTabPane = document.getElementById(tabPaneId);
                 if (targetTabPane) {
                     targetTabPane.classList.add('show', 'active');
-                    
+
                     // Populate the content for this category
                     const filterKey = button.dataset.filterKey;
                     if (filterKey) {
@@ -231,7 +231,7 @@ function updateFilterCheckboxStates() {
         const filterKey = checkbox.dataset.filterKey;
         const filterValue = checkbox.value;
         const isSelected = selectedFilters[filterKey] && selectedFilters[filterKey].includes(filterValue);
-        
+
         checkbox.checked = isSelected;
 
         // Update label style based on checked state for visual feedback
@@ -263,16 +263,16 @@ function applyFilters() {
             // included in the 'filterValues' array for the current category.
             filteredProducts = filteredProducts.filter(product => {
                 const productValue = product[key];
-                return productValue !== undefined && 
-                       productValue !== null && 
-                       filterValues.includes(String(productValue).trim());
+                return productValue !== undefined &&
+                    productValue !== null &&
+                    filterValues.includes(String(productValue).trim());
             });
         }
     }
-    
+
     displayProducts(filteredProducts); // Display the filtered results
     resetFocus(); // Reset focus after filtering
-    
+
     // Show feedback message
     const filterCount = Object.keys(selectedFilters).length;
     const productCount = filteredProducts.length;
@@ -301,7 +301,7 @@ function clearFilters() {
     displayProducts(productsData.productDirectory); // Display all original products
     updateClearFiltersButtonStyle(); // Reset button style
     resetFocus(); // Reset focus after clearing filters
-    
+
     if (typeof displayFeedbackMessage === 'function') {
         displayFeedbackMessage('Filters cleared. Showing all products.', 'success');
     }
@@ -318,8 +318,8 @@ function filterProductsBySelectedFilters(filters) {
         for (const key in filters) {
             if (filters.hasOwnProperty(key) && filters[key].length > 0) {
                 const productValue = product[key];
-                if (productValue === undefined || 
-                    productValue === null || 
+                if (productValue === undefined ||
+                    productValue === null ||
                     !filters[key].includes(String(productValue).trim())) {
                     return false; // If any filter doesn't match, exclude the product
                 }
@@ -336,7 +336,7 @@ function filterProductsBySelectedFilters(filters) {
 function updateClearFiltersButtonStyle() {
     const filterButton = document.getElementById('filterProductList');
     const clearFiltersButton = document.getElementById('clearFilters');
-    
+
     // Check if there are any active filters
     const filtersActive = Object.keys(selectedFilters).length > 0;
     const activeFilterCount = Object.keys(selectedFilters).reduce((count, key) => {
@@ -345,41 +345,37 @@ function updateClearFiltersButtonStyle() {
 
     if (filterButton) {
         if (filtersActive) {
-            filterButton.style.backgroundColor = '#0d6efd';
-            filterButton.style.borderColor = '#0d6efd';
-            filterButton.style.color = 'white';
-            filterButton.textContent = `Filter (${activeFilterCount})`;
+            filterButton.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                Filter (${activeFilterCount})
+            `;
         } else {
-            filterButton.style.backgroundColor = '';
-            filterButton.style.borderColor = '';
-            filterButton.style.color = '';
-            filterButton.textContent = 'Filter';
+            filterButton.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                Filters
+            `;
         }
     }
 
     if (clearFiltersButton) {
         if (filtersActive) {
-            clearFiltersButton.style.backgroundColor = '#dc3545';
-            clearFiltersButton.style.borderColor = '#dc3545';
-            clearFiltersButton.style.color = 'white';
-            clearFiltersButton.style.display = 'inline-block';
+            clearFiltersButton.classList.remove('d-none');
+            clearFiltersButton.classList.add('d-flex');
         } else {
-            clearFiltersButton.style.backgroundColor = '';
-            clearFiltersButton.style.borderColor = '';
-            clearFiltersButton.style.color = '';
-            clearFiltersButton.style.display = 'none';
+            clearFiltersButton.classList.add('d-none');
+            clearFiltersButton.classList.remove('d-flex');
         }
     }
 }
 
 // Initialize filters when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Ensure the filter modal is properly initialized
     const filterModal = document.getElementById('filterModal');
     if (filterModal) {
         filterModal.addEventListener('shown.bs.modal', openFilterModal);
     }
-    
+
     // Initialize button styles
     updateClearFiltersButtonStyle();
 });

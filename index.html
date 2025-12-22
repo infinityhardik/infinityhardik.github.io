@@ -43,21 +43,61 @@
   <div class="container-fluid">
     <!-- Button Group -->
     <div class="btn-group d-flex justify-content-center my-3 flex-wrap" role="group" aria-label="Default button group">
-      <button id="filterProductList" class="btn btn-primary fw-semibold m-1" data-bs-toggle="modal"
-        onclick="openFilterModal()" data-bs-target="#filter-modal" title="Ctrl + Shift + F : Filters">
+      <button id="filterProductList" class="btn btn-primary fw-semibold m-1 d-flex align-items-center gap-2"
+        data-bs-toggle="modal" onclick="openFilterModal()" data-bs-target="#filter-modal"
+        title="Ctrl + Shift + F : Filters">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+        </svg>
         Filters
       </button>
 
-      <button id="clearFilters" class="btn btn-secondary fw-semibold m-1" onclick="clearFilters()"
-        title="Ctrl + Shift + O : Clear Filters">
+      <button id="clearFilters" class="btn btn-secondary fw-semibold m-1 d-none align-items-center gap-2"
+        onclick="clearFilters()" title="Ctrl + Shift + O : Clear Filters">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 5H4M10 11l-2 2m0 0l-2-2m2 2l2 2m0-2l-2-2m8-2l-2 2m0 0l-2-2m2 2l2 2m0-2l-2-2"></path>
+          <path d="M4 5l6 9v5l4 2v-7l6-9"></path>
+        </svg>
         Clear Filters
       </button>
-      <button id="clearOrder" class="btn btn-danger fw-semibold m-1" onclick="clearOrder()"
-        title="Ctrl + Delete : Clear Order">
+      <button id="clearOrder" class="btn btn-danger fw-semibold m-1 d-flex align-items-center gap-2"
+        onclick="clearOrder()" title="Ctrl + Delete : Clear Order">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 6h18"></path>
+          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+          <line x1="10" y1="11" x2="10" y2="17"></line>
+          <line x1="14" y1="11" x2="14" y2="17"></line>
+        </svg>
         Clear Order
       </button>
-      <button id="sendOrder" class="btn btn-success fw-semibold m-1" onclick="sendOrder()"
-        title="Ctrl + Enter : Send Order">
+      <button id="orderHistoryBtn"
+        class="btn btn-info fw-semibold m-1 position-relative d-flex align-items-center gap-2"
+        onclick="openOrderHistory()" title="Ctrl + H : Order History">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        Order History
+        <span id="history-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+          style="display: none; font-size: 0.65rem;">
+          0
+        </span>
+      </button>
+      <button id="sendOrder" class="btn btn-success fw-semibold m-1 d-flex align-items-center gap-2"
+        onclick="sendOrder()" title="Ctrl + Enter : Send Order">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m22 2-7 20-4-9-9-4Z"></path>
+          <path d="M22 2 11 13"></path>
+        </svg>
         Send Order
       </button>
     </div>
@@ -69,13 +109,20 @@
       <button id="showSelectedOnly"
         class="btn btn-light d-flex align-items-center justify-content-center shadow-none px-1 py-1" type="button"
         title="Ctrl + S : Show Selected Only">
-        <span id="showSelectedOnlyIcon">🔘</span>
+        <span id="showSelectedOnlyIcon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="#6a11cb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+        </span>
       </button>
       <!-- Search Icon Button -->
       <span class="input-group-text search-icon bg-transparent border-0 px-1" id="search-icon" title="Search">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24">
-          <circle cx="11" cy="11" r="7" stroke="#6a11cb" stroke-width="2" />
-          <path d="M20 20L17 17" stroke="#6a11cb" stroke-width="2" stroke-linecap="round" />
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6a11cb"
+          stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
       </span>
       <label for="search-box" class="visually-hidden">Search Products</label>
@@ -87,18 +134,22 @@
       <button id="clearSearch"
         class="btn btn-outline-warning input-group-btn ms-1 modern-clear-btn d-flex align-items-center justify-content-center shadow-none"
         onclick="clearSearch()" title="Ctrl + Backspace : Clear Search" tabindex="0">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="10" stroke="#ffc107" stroke-width="2" />
-          <path d="M15 9l-6 6M9 9l6 6" stroke="#ffc107" stroke-width="2" stroke-linecap="round" />
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="15" y1="9" x2="9" y2="15"></line>
+          <line x1="9" y1="9" x2="15" y2="15"></line>
         </svg>
       </button>
       <!-- Help Button -->
       <button id="helpButton"
         class="btn btn-outline-info input-group-btn ms-1 modern-help-btn d-flex align-items-center justify-content-center shadow-none"
         data-bs-toggle="modal" data-bs-target="#help-modal" title="Help & Shortcuts">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="10" stroke="#17a2b8" stroke-width="2" /><text x="12" y="16" text-anchor="middle"
-            font-size="14" fill="#17a2b8" font-family="Arial, Helvetica, sans-serif">?</text>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
         </svg>
       </button>
     </div>
@@ -117,6 +168,17 @@
     📜
   </button>
 
+  <!-- Floating History Button -->
+  <button id="floating-history-button" title="Ctrl + H : Order History" onclick="openOrderHistory()" type="button"
+    class="d-flex align-items-center justify-content-center">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+      <polyline points="14 2 14 8 20 8"></polyline>
+      <path d="M12 18l3 3 5-5"></path>
+    </svg>
+  </button>
+
   <!-- Order Text Area Pop-up -->
   <div id="order-text-popup">
     <div class="popup-header">
@@ -126,9 +188,32 @@
     <textarea id="selected-products" name="selected-products" class="form-control" rows="10"
       placeholder="Your order will appear here..." disabled></textarea>
     <div class="popup-footer">
-      <button id="copyOrder1" class="btn btn-secondary" onclick="copyOrder()">Copy Order</button>
-      <button id="clearOrder1" class="btn btn-danger" onclick="clearOrder()">Clear Order</button>
-      <button id="sendOrder1" class="btn btn-success" onclick="sendOrder()">Send Order</button>
+      <button id="copyOrder1" class="btn btn-secondary d-flex align-items-center gap-2" onclick="copyOrder()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+        Copy Order
+      </button>
+      <button id="clearOrder1" class="btn btn-danger d-flex align-items-center gap-2" onclick="clearOrder()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6"></polyline>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          <line x1="10" y1="11" x2="10" y2="17"></line>
+          <line x1="14" y1="11" x2="14" y2="17"></line>
+        </svg>
+        Clear Order
+      </button>
+      <button id="sendOrder1" class="btn btn-success d-flex align-items-center gap-2" onclick="sendOrder()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m22 2-7 20-4-9-9-4Z"></path>
+          <path d="M22 2 11 13"></path>
+        </svg>
+        Send Order
+      </button>
     </div>
   </div>
 
@@ -159,8 +244,9 @@
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="applyFilters()">Apply
-            Filters</button>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="applyFilters()">
+            ✨ Apply Filters
+          </button>
         </div>
       </div>
     </div>
@@ -356,6 +442,36 @@
                     Decrease the quantity of the currently focused product item.
                   </div>
                 </li>
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                  <div class="ms-2 me-auto">
+                    <div class="fw-bold">Ctrl + H :</div>
+                    Open <strong class="fw-semibold">Order History</strong> to view, edit, or reuse your previously sent
+                    orders.
+                  </div>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                  <div class="ms-2 me-auto">
+                    <div class="fw-bold">Order History Feature :</div>
+                    All orders sent via WhatsApp or copied to clipboard are automatically saved in your browser for
+                    <strong class="fw-semibold">7 days</strong>. You can:
+                    <br><br>
+                    <p><span class="fst-italic fw-medium text-body-secondary">• View :</span> See complete details of
+                      any past order</p>
+                    <p><span class="fst-italic fw-medium text-body-secondary">• Edit :</span> Load a previous order to
+                      modify and send as a new order</p>
+                    <p><span class="fst-italic fw-medium text-body-secondary">• Copy :</span> Copy order text directly
+                      from history</p>
+                    <p><span class="fst-italic fw-medium text-body-secondary">• Delete :</span> Remove unwanted orders
+                      from history</p>
+                    <p><span class="fst-italic fw-medium text-body-secondary">• Search :</span> Find orders by product
+                      name, date, or quantity</p>
+                    <br>
+                    Orders are grouped by date (<strong>Today</strong>, <strong>Yesterday</strong>, etc.) for easy
+                    browsing.
+                    <strong class="fw-semibold">Note:</strong> Orders older than 7 days are automatically cleaned up to
+                    save storage space.
+                  </div>
+                </li>
               </ol>
               <br>
               <p><strong>Tip : </strong>Use the Filter Options to List specific type of results for search.
@@ -479,6 +595,36 @@
                   <div class="ms-2 me-auto">
                     <div class="fw-bold">Ctrl + Arrow Down / Ctrl + Arrow Left :</div>
                     Decrease the quantity of the currently focused product item.
+                  </div>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                  <div class="ms-2 me-auto">
+                    <div class="fw-bold">Ctrl + H :</div>
+                    તમારા અગાઉ મોકલેલા ઓર્ડર જોવા, સંપાદિત કરવા અથવા ફરીથી ઉપયોગ કરવા માટે <strong
+                      class="fw-semibold">ઓર્ડર હિસ્ટ્રી</strong> ખોલો.
+                  </div>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                  <div class="ms-2 me-auto">
+                    <div class="fw-bold">ઓર્ડર હિસ્ટ્રી ફીચર :</div>
+                    WhatsApp દ્વારા મોકલેલા અથવા ક્લિપબોર્ડ પર કોપી કરેલા તમામ ઓર્ડર તમારા બ્રાઉઝરમાં
+                    <strong class="fw-semibold">7 દિવસ</strong> માટે આપમેળે સેવ થાય છે. તમે કરી શકો છો:
+                    <br><br>
+                    <p><span class="fst-italic fw-medium text-body-secondary">• જુઓ (View) :</span> કોઈપણ પાછલા ઓર્ડરની
+                      સંપૂર્ણ વિગતો જુઓ</p>
+                    <p><span class="fst-italic fw-medium text-body-secondary">• સંપાદિત કરો (Edit) :</span> અગાઉના
+                      ઓર્ડરને લોડ કરો અને નવા ઓર્ડર તરીકે સુધારીને મોકલો</p>
+                    <p><span class="fst-italic fw-medium text-body-secondary">• કોપી કરો (Copy) :</span> હિસ્ટ્રીમાંથી
+                      સીધો ઓર્ડર ટેક્સ્ટ કોપી કરો</p>
+                    <p><span class="fst-italic fw-medium text-body-secondary">• ડિલીટ કરો (Delete) :</span> અનચાહતા
+                      ઓર્ડર હિસ્ટ્રીમાંથી દૂર કરો</p>
+                    <p><span class="fst-italic fw-medium text-body-secondary">• શોધો (Search) :</span> પ્રોડક્ટ નામ,
+                      તારીખ અથવા જથ્થા દ્વારા ઓર્ડર શોધો</p>
+                    <br>
+                    સરળ બ્રાઉઝિંગ માટે ઓર્ડર તારીખ મુજબ જૂથબદ્ધ છે (<strong>આજે</strong>, <strong>ગઈકાલે</strong>,
+                    વગેરે).
+                    <strong class="fw-semibold">નોંધ:</strong> સ્ટોરેજ સ્પેસ બચાવવા માટે 7 દિવસથી જૂના ઓર્ડર આપમેળે સાફ
+                    થાય છે.
                   </div>
                 </li>
               </ol>
@@ -609,6 +755,36 @@
                     Decrease the quantity of the currently focused product item.
                   </div>
                 </li>
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                  <div class="ms-2 me-auto">
+                    <div class="fw-bold">Ctrl + H :</div>
+                    अपने पहले भेजे गए ऑर्डर देखने, संपादित करने या पुनः उपयोग करने के लिए <strong
+                      class="fw-semibold">ऑर्डर हिस्ट्री</strong> खोलें।
+                  </div>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                  <div class="ms-2 me-auto">
+                    <div class="fw-bold">ऑर्डर हिस्ट्री फीचर :</div>
+                    WhatsApp के माध्यम से भेजे गए या क्लिपबोर्ड पर कॉपी किए गए सभी ऑर्डर आपके ब्राउज़र में
+                    <strong class="fw-semibold">7 दिनों</strong> के लिए स्वचालित रूप से सहेजे जाते हैं। आप कर सकते हैं:
+                    <br><br>
+                    <p><span class="fst-italic fw-medium text-body-secondary">• देखें (View) :</span> किसी भी पिछले
+                      ऑर्डर का पूरा विवरण देखें</p>
+                    <p><span class="fst-italic fw-medium text-body-secondary">• संपादित करें (Edit) :</span> पिछले ऑर्डर
+                      को लोड करें और नए ऑर्डर के रूप में संशोधित करके भेजें</p>
+                    <p><span class="fst-italic fw-medium text-body-secondary">• कॉपी करें (Copy) :</span> हिस्ट्री से
+                      सीधे ऑर्डर टेक्स्ट कॉपी करें</p>
+                    <p><span class="fst-italic fw-medium text-body-secondary">• डिलीट करें (Delete) :</span> अनचाहे
+                      ऑर्डर को हिस्ट्री से हटाएं</p>
+                    <p><span class="fst-italic fw-medium text-body-secondary">• खोजें (Search) :</span> प्रोडक्ट नाम,
+                      तारीख या मात्रा से ऑर्डर खोजें</p>
+                    <br>
+                    आसान ब्राउज़िंग के लिए ऑर्डर तारीख के अनुसार समूहीकृत हैं (<strong>आज</strong>, <strong>कल</strong>,
+                    आदि)।
+                    <strong class="fw-semibold">नोट:</strong> स्टोरेज स्पेस बचाने के लिए 7 दिनों से पुराने ऑर्डर
+                    स्वचालित रूप से साफ हो जाते हैं।
+                  </div>
+                </li>
               </ol>
               <br>
               <p><strong>टिप : </strong>खोज के लिए विशिष्ट प्रकार के परिणाम सूचीबद्ध करने के लिए फ़िल्टर विकल्पों का
@@ -626,12 +802,128 @@
     </div>
   </div>
 
+  <!-- Order History Modal -->
+  <div class="modal fade" id="history-modal" tabindex="-1" aria-labelledby="historyModalLabel">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+      <div class="modal-content border border-2 border-info">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold" id="historyModalLabel">📋 Order History</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Search and Sort Controls -->
+          <div class="row mb-3">
+            <div class="col-md-8">
+              <div class="input-group">
+                <span class="input-group-text bg-transparent border-end-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"
+                    class="text-primary">
+                    <path
+                      d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                  </svg>
+                </span>
+                <input type="search" id="history-search" class="form-control border-start-0"
+                  placeholder="Search by product name, date, or quantity..." aria-label="Search order history">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <select id="history-sort" class="form-select" aria-label="Sort orders">
+                <option value="newest" selected>Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="most">Most Items</option>
+                <option value="least">Least Items</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- History Container -->
+          <div id="history-container">
+            <!-- Orders will be rendered here by JavaScript -->
+            <div class="history-empty-state text-center py-5">
+              <div class="empty-icon text-muted mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v3"></path>
+                  <path d="M21 12v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-9"></path>
+                  <path d="M3 10h18"></path>
+                </svg>
+              </div>
+              <h4 class="text-secondary">Loading history...</h4>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-danger me-auto d-flex align-items-center gap-2"
+            onclick="confirmClearAllHistory()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 6h18"></path>
+              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+              <line x1="10" y1="11" x2="10" y2="17"></line>
+              <line x1="14" y1="11" x2="14" y2="17"></line>
+            </svg>
+            Clear All History
+          </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Order Modal -->
+  <div class="modal fade" id="view-order-modal" tabindex="-1" aria-labelledby="viewOrderModalLabel">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content border border-2 border-primary">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold" id="view-order-title">Order Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <pre id="view-order-content" class="order-text-display"></pre>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-info d-flex align-items-center gap-2"
+            onclick="editFromViewModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 20h9"></path>
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+            Edit Order
+          </button>
+          <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-2"
+            onclick="copyFromViewModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            Copy
+          </button>
+          <button type="button" class="btn btn-outline-success d-flex align-items-center gap-2"
+            onclick="sendAgainFromViewModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m22 2-7 20-4-9-9-4Z"></path>
+              <path d="M22 2 11 13"></path>
+            </svg>
+            Send Again
+          </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="src/script_keyboardNavigation.js"></script>
   <script src="src/script_searchBox.js"></script>
   <script src="src/script_filterList.js"></script>
   <script src="src/script_onloadBasic.js"></script>
   <script src="src/script_order.js"></script>
   <script src="src/script_sendOrder.js"></script>
+  <script src="src/script_history.js"></script>
+  <script src="src/script_historyUI.js"></script>
   <script src="src/script_animations.js" defer></script>
   <!-- <script src="dist/main.min.js"></script> -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"

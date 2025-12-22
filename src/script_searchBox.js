@@ -283,12 +283,20 @@ if (showSelectedOnlyBtn) {
 function updateShowSelectedOnlyButton() {
     if (showSelectedOnly) {
         showSelectedOnlyBtn.classList.add('active');
-        showSelectedOnlyBtn.classList.add('btn-primary');
-        showSelectedOnlyIcon.textContent = '✅';
+        showSelectedOnlyBtn.classList.add('btn-primary', 'shadow-sm');
+        showSelectedOnlyIcon.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="white" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>`;
     } else {
         showSelectedOnlyBtn.classList.remove('active');
-        showSelectedOnlyBtn.classList.remove('btn-primary');
-        showSelectedOnlyIcon.textContent = '🔘';
+        showSelectedOnlyBtn.classList.remove('btn-primary', 'shadow-sm');
+        showSelectedOnlyIcon.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6a11cb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>`;
     }
 }
 

@@ -8,17 +8,19 @@ document.addEventListener("keydown", function (event) {
     const filterModal = document.getElementById("filter-modal");
     const orderModal = document.getElementById("order-modal");
     const helpModal = document.getElementById("help-modal");
+    const historyModal = document.getElementById("history-modal");
     const orderTextPopup = document.getElementById('order-text-popup');
 
     // Check if any modal or the order text popup is currently open.
-    const isFilterModalOpen = filterModal.classList.contains("show");
-    const isOrderModalOpen = orderModal.classList.contains("show");
-    const isHelpModalOpen = helpModal.classList.contains("show");
-    const isOrderPopupOpen = orderTextPopup.classList.contains("show");
+    const isFilterModalOpen = filterModal?.classList.contains("show");
+    const isOrderModalOpen = orderModal?.classList.contains("show");
+    const isHelpModalOpen = helpModal?.classList.contains("show");
+    const isHistoryModalOpen = historyModal?.classList.contains("show");
+    const isOrderPopupOpen = orderTextPopup?.classList.contains("show");
 
 
     // Handle keyboard shortcuts globally if no modal or popup is open.
-    if (!isFilterModalOpen && !isOrderModalOpen && !isHelpModalOpen && !isOrderPopupOpen) {
+    if (!isFilterModalOpen && !isOrderModalOpen && !isHelpModalOpen && !isHistoryModalOpen && !isOrderPopupOpen) {
 
         // Ctrl + Shift + F: Open Filters Modal
         if (event.ctrlKey && event.shiftKey && (event.key === "f" || event.key === "F")) {
@@ -76,6 +78,13 @@ document.addEventListener("keydown", function (event) {
             return;
         }
 
+        // Ctrl + H: Open Order History
+        if (event.ctrlKey && (event.key === "h" || event.key === "H")) {
+            event.preventDefault();
+            openOrderHistory(); // Open the Order History modal
+            return;
+        }
+
         // Ctrl + S: Toggle Show Selected Only
         if (event.ctrlKey && (event.key === "s" || event.key === "S")) {
             event.preventDefault();
@@ -86,9 +95,12 @@ document.addEventListener("keydown", function (event) {
 
         // Alphanumeric Keys: Focus search box and type the character.
         // This ensures typing directly in the search box even if it's not focused.
-        if (/^[a-zA-Z0-9]$/.test(event.key) || event.key === '-' || event.key === ' ') { // Added hyphen and space for search
+        if ((/^[a-zA-Z0-9]$/.test(event.key) || event.key === '-' || event.key === ' ') && !event.ctrlKey && !event.altKey && !event.metaKey) {
             // If the search box is not currently focused, focus it
-            if (document.activeElement !== searchBox) {
+            const activeElement = document.activeElement;
+            const isInputFocused = activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA';
+
+            if (activeElement !== searchBox && !isInputFocused) {
                 searchBox.focus();
                 // If the search box was not focused and now is, ensure the cursor is at the end
                 searchBox.setSelectionRange(searchBox.value.length, searchBox.value.length);
