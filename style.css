@@ -1615,3 +1615,55 @@ input[type="search"]::-ms-reveal {
 #history-container::-webkit-scrollbar-thumb:hover {
   background: #5a0fbb;
 }
+
+/* PWA Install Button Styles */
+#pwa-install-btn {
+  padding: 0.4rem 0.8rem !important;
+  font-size: 0.8rem !important;
+  border-radius: 50rem !important;
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%) !important;
+  border: none !important;
+  box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3) !important;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+#pwa-install-btn.fade-in {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  display: flex !important;
+  animation: pwaFadeIn 0.5s ease forwards !important;
+}
+
+#pwa-install-btn.fade-out {
+  opacity: 0 !important;
+  transform: translateY(-10px) !important;
+  animation: pwaFadeOut 0.5s ease forwards !important;
+}
+
+#pwa-install-btn:hover {
+  transform: scale(1.05) translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(106, 17, 203, 0.4) !important;
+}
+
+.dark-mode #ios-install-modal .modal-content {
+  background-color: var(--dark-modal-bg);
+  color: var(--dark-text);
+}
+
+.dark-mode #ios-install-modal .bg-light {
+  background-color: var(--dark-hover) !important;
+  color: var(--dark-text);
+}
+
+/* Animations */
+@keyframes pwaFadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pwaFadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-10px); }
+}

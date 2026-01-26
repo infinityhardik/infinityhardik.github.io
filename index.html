@@ -40,6 +40,16 @@
       </a>
       <p class="h2 text-body mb-0">Order List</p>
     </div>
+    <!-- PWA Install Button -->
+    <button id="pwa-install-btn" class="btn btn-primary d-none align-items-center gap-1" title="Install MT Order App">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="7 10 12 15 17 10"></polyline>
+        <line x1="12" y1="15" x2="12" y2="3"></line>
+      </svg>
+      <span id="install-btn-text">Install App</span>
+    </button>
     <!-- Dark Mode Toggle Button -->
     <button id="darkModeToggle" onclick="toggleDarkMode()" title="Switch Theme"></button>
   </header>
@@ -920,6 +930,7 @@
     </div>
   </div>
 
+  <script src="src/script_pwa.js"></script>
   <script src="src/script_keyboardNavigation.js"></script>
   <script src="src/script_searchBox.js"></script>
   <script src="src/script_filterList.js"></script>
@@ -933,6 +944,50 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
     crossorigin="anonymous"></script>
+
+  <!-- iOS PWA Install Instructions Modal -->
+  <div class="modal fade" id="ios-install-modal" tabindex="-1" aria-labelledby="iosInstallModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" id="iosInstallModalLabel">Install App on iOS</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center py-4">
+          <p class="mb-4">Install this app on your iPhone for a better experience!</p>
+          <div class="d-flex flex-column align-items-start gap-3 bg-light p-3 rounded-4 mx-2">
+            <div class="d-flex align-items-center gap-3">
+              <span class="badge bg-primary rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 28px; height: 28px;">1</span>
+              <span>Tap the <strong class="text-primary">Share</strong> button <svg xmlns="http://www.w3.org/2000/svg"
+                  width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" class="text-primary">
+                  <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                  <polyline points="16 6 12 2 8 6"></polyline>
+                  <line x1="12" y1="2" x2="12" y2="15"></line>
+                </svg></span>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+              <span class="badge bg-primary rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 28px; height: 28px;">2</span>
+              <span>Scroll down and tap <strong class="text-primary">Add to Home Screen</strong> <svg
+                  xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  class="text-primary">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="12" y1="8" x2="12" y2="16"></line>
+                  <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg></span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-primary w-100 py-3 rounded-4" data-bs-dismiss="modal">Got it!</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>
