@@ -5,6 +5,7 @@ const ASSETS = [
     'products.json',
     'assets/manifest.json',
     'assets/favicon.webp',
+    'assets/help-modal-content.html',
     'dist/main.min.js'
 ];
 

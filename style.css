@@ -71,11 +71,17 @@
   user-select: none; /* Prevent accidental text selection during fast taps */
 }
 
-/* Hardware acceleration for smooth transitions */
+/* Hardware acceleration for smooth transitions - only when needed */
+#floating-order-button:hover,
+#floating-order-button:active,
+#floating-history-button:hover,
+#floating-history-button:active {
+  will-change: transform;
+}
+
 #floating-order-button,
 #floating-history-button,
 .modal.fade .modal-dialog {
-  will-change: transform;
   backface-visibility: hidden;
 }
 
@@ -379,7 +385,6 @@ button:active {
   }
 }
 
-/* Adjustments for the numeric keypad in the order modal */
 /* Modern Button Animations */
 .btn {
   position: relative;
@@ -387,7 +392,6 @@ button:active {
   transform-origin: center;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   backface-visibility: hidden;
-  will-change: transform, opacity;
 }
 
 .btn:active {
@@ -501,9 +505,6 @@ button:active {
 .toast.show {
   animation: fadeIn 0.3s ease-out;
 }
-
-/* Numeric Keypad Animations - Commented out as requested */
-/* #numeric-keypad .btn-group-vertical, #numeric-keypad .btn-group .btn */
 
 #selected-products {
   font-family: monospace; /* Monospace for the order list for better readability */
@@ -1666,4 +1667,27 @@ input[type="search"]::-ms-reveal {
 @keyframes pwaFadeOut {
   from { opacity: 1; transform: translateY(0); }
   to { opacity: 0; transform: translateY(-10px); }
+}
+
+/* Fix for list numbering showing as 0.1 instead of 1, 2, ... */
+.list-group-numbered {
+  counter-reset: section !important;
+}
+
+.list-group-numbered > .list-group-item {
+  display: flex !important; /* Ensure it's a flex container for standard alignment */
+}
+
+.list-group-numbered > .list-group-item::before {
+  content: counter(section) "." !important;
+  counter-increment: section !important;
+  font-weight: 700;
+  color: #6a11cb; /* Primary color */
+  min-width: 1.5rem;
+  margin-right: 0.25rem;
+  flex-shrink: 0;
+}
+
+.dark-mode .list-group-numbered > .list-group-item::before {
+  color: #a78bfa; /* Lighter purple for dark mode */
 }
