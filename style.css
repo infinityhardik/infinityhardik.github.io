@@ -1668,26 +1668,3 @@ input[type="search"]::-ms-reveal {
   from { opacity: 1; transform: translateY(0); }
   to { opacity: 0; transform: translateY(-10px); }
 }
-
-/* Fix for list numbering showing as 0.1 instead of 1, 2, ... */
-.list-group-numbered {
-  counter-reset: section !important;
-}
-
-.list-group-numbered > .list-group-item {
-  display: flex !important; /* Ensure it's a flex container for standard alignment */
-}
-
-.list-group-numbered > .list-group-item::before {
-  content: counter(section) "." !important;
-  counter-increment: section !important;
-  font-weight: 700;
-  color: #6a11cb; /* Primary color */
-  min-width: 1.5rem;
-  margin-right: 0.25rem;
-  flex-shrink: 0;
-}
-
-.dark-mode .list-group-numbered > .list-group-item::before {
-  color: #a78bfa; /* Lighter purple for dark mode */
-}

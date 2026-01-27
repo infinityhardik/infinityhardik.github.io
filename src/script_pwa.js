@@ -17,11 +17,11 @@ function showInstallButton() {
     installBtn.style.display = 'flex';
     installBtn.classList.add('fade-in');
 
-    // Auto-hide after 30 seconds
+    // Auto-hide after 10 seconds
     setTimeout(() => {
         installBtn?.classList.replace('fade-in', 'fade-out');
         setTimeout(() => { if (installBtn) installBtn.style.display = 'none'; }, 500);
-    }, 30000);
+    }, 10000);
 }
 
 // iOS Detection & Handling

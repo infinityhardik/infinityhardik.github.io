@@ -6,6 +6,7 @@ const ASSETS = [
     'assets/manifest.json',
     'assets/favicon.webp',
     'assets/help-modal-content.html',
+    'src/script_pwa.js',
     'dist/main.min.js'
 ];
 
