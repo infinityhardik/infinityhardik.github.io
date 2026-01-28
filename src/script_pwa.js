@@ -1,3 +1,5 @@
+// Progressive Web App (PWA) Installation Service Worker and Prompt Handling
+
 let deferredPrompt;
 const installBtn = document.getElementById('pwa-install-btn');
 const iosModal = document.getElementById('ios-install-modal');

@@ -4,7 +4,7 @@
   "description": "",
   "main": "script.js",
   "devDependencies": {
-    "terser": "^5.37.0",
+    "terser": "^5.46.0",
     "uglify-js": "^3.19.3"
   },
   "scripts": {

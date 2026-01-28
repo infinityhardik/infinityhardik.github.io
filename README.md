@@ -13,8 +13,8 @@ Steps for Generating the Website :
 
 Steps for Generating/Updating Products.json :
 
-- Go To Alt RSP 3rd Format named Product Name Directory
-- Update Filter named # JSON Continuous Updated List to currently available Products or as per need
+- Go To Alt RSP 1st Format named **Product Name Directory**
+- **Update Filter** named **# JSON Continuous Updated** List to currently available Products or as per need
 - To use Filter Options Properly, use Two Words in Header. Example "Product Type", Core Type. Don't use Single Words like "Branding", "Grade", etc.
 - Excel Export the File and Clean the Data in Excel
 - Rename the **Sheet1** to **productDirectory**
