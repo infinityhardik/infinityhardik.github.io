@@ -63,7 +63,7 @@ function showInstallButton() {
     installBtn.classList.remove('d-none');
     installBtn.classList.add('fade-in');
 
-    // Auto-hide after 20 seconds (increased from 10)
+    // Auto-hide after 10 seconds
     setTimeout(() => {
         if (installBtn && installBtn.classList.contains('fade-in')) {
             installBtn.classList.replace('fade-in', 'fade-out');
@@ -71,7 +71,7 @@ function showInstallButton() {
                 if (installBtn) installBtn.style.display = 'none';
             }, 500);
         }
-    }, 20000);
+    }, 10000);
 }
 
 window.addEventListener('appinstalled', () => {
