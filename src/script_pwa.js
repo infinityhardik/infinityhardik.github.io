@@ -27,12 +27,12 @@ function initPWA() {
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        if (!isInstalled) {
+        if (!isInstalled && window.innerWidth < 768) {
             showInstallButton();
         }
     });
 
-    if (isIOS() && !isInstalled) {
+    if (isIOS() && !isInstalled && window.innerWidth < 768) {
         showInstallButton();
     }
 
