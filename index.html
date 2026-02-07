@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MT Order Page</title>
+  <meta name="title" content="Order Page for Mahadev Traders Plywood, Block-Board & Flush-Door Wholesaler, Rajkot." />
+  <meta name="description"
+    content="Product Directory and Order Page for Mahadev Traders Plywood, Block-Board & Flush-Door Wholesaler, Rajkot. The Best Quality Wholesaler in Rajkot. Vaives.com is the Order Page for Mahadev Traders Plywood, Block-Board & Flush-Door Wholesaler, Rajkot." />
+  <meta name="keywords"
+    content="Mahadev, Traders, Plywood, Block-Board, Flush-Door, Door, Wholesaler, Best, Rajkot, Laminate, Wood, Quality, Best, Vaives, Marlex, Zevik, Simson, Greytone, Limelite, Limelite Pro, Plywood" />
+  <meta name="robots" content="index, follow" />
+  <meta name="language" content="English" />
+  <meta name="revisit-after" content="1 days" />
+  <meta name="author" content="Mahadev Traders Plywood Block-Board & Flush-Door Wholesaler" />
+  <meta property="og:title" content="MT Order Page" />
+  <meta property="og:description"
+    content="Order Page for Mahadev Traders Plywood, Block-Board & Flush-Door Wholesaler, Rajkot." />
+  <meta property="og:url" content="https://vaives.com" />
+  <meta property="og:image" content="https://www.vaives.com/assets/favicon.webp" />
+
+  <link rel="manifest" href="assets/manifest.json">
+  <meta name="theme-color" content="#6a11cb">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="MT Order Page">
+  <link rel="apple-touch-icon" href="assets/favicon.webp">
+  <link rel="icon" type="image/png" href="assets/favicon.webp" alt="MT Logo" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="animate-fade-in">
+  <header class="d-flex justify-content-between align-items-center py-3 px-3">
+    <div class="d-flex align-items-center">
+      <a href="https://www.mahadev-traders.com" target="_blank" class="d-flex align-items-center">
+        <img src="assets/favicon.webp" width="61.8px" height="61.8px" alt="MT Logo" class="img-fluid me-3" />
+      </a>
+      <p class="h2 text-body mb-0">Order List</p>
+    </div>
+    <!-- PWA Install Button -->
+    <button id="pwa-install-btn" class="btn btn-primary d-none align-items-center gap-1" title="Install MT Order App">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="7 10 12 15 17 10"></polyline>
+        <line x1="12" y1="15" x2="12" y2="3"></line>
+      </svg>
+      <span id="install-btn-text">Install App</span>
+    </button>
+    <!-- Dark Mode Toggle Button -->
+    <button id="darkModeToggle" onclick="toggleDarkMode()" title="Switch Theme"></button>
+  </header>
+
+  <div class="container-fluid">
+    <!-- Button Group -->
+    <div class="btn-group d-flex justify-content-center my-3 flex-wrap" role="group" aria-label="Default button group">
+      <button id="filterProductList" class="btn btn-primary fw-semibold m-1 d-flex align-items-center gap-2"
+        data-bs-toggle="modal" onclick="openFilterModal()" data-bs-target="#filter-modal"
+        title="Ctrl + Shift + F : Filters">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+        </svg>
+        Filters
+      </button>
+
+      <button id="clearFilters" class="btn btn-secondary fw-semibold m-1 d-none align-items-center gap-2"
+        onclick="clearFilters()" title="Ctrl + Shift + O : Clear Filters">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 5H4M10 11l-2 2m0 0l-2-2m2 2l2 2m0-2l-2-2m8-2l-2 2m0 0l-2-2m2 2l2 2m0-2l-2-2"></path>
+          <path d="M4 5l6 9v5l4 2v-7l6-9"></path>
+        </svg>
+        Clear Filters
+      </button>
+      <button id="clearOrder" class="btn btn-danger fw-semibold m-1 d-flex align-items-center gap-2"
+        onclick="clearOrder()" title="Ctrl + Delete : Clear Order">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 6h18"></path>
+          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+          <line x1="10" y1="11" x2="10" y2="17"></line>
+          <line x1="14" y1="11" x2="14" y2="17"></line>
+        </svg>
+        Clear Order
+      </button>
+      <button id="orderHistoryBtn"
+        class="btn btn-info fw-semibold m-1 position-relative d-flex align-items-center gap-2"
+        onclick="openOrderHistory()" title="Ctrl + H : Order History">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        Order History
+        <span id="history-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+          style="display: none; font-size: 0.65rem;">
+          0
+        </span>
+      </button>
+      <button id="sendOrder" class="btn btn-success fw-semibold m-1 d-flex align-items-center gap-2"
+        onclick="sendOrder()" title="Ctrl + Enter : Send Order">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m22 2-7 20-4-9-9-4Z"></path>
+          <path d="M22 2 11 13"></path>
+        </svg>
+        Send Order
+      </button>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="input-group mb-3 modern-search-bar flex-nowrap align-items-center gap-2 shadow-sm"
+      id="search-box-container">
+      <!-- Show Selected Only Toggle Button -->
+      <button id="showSelectedOnly"
+        class="btn btn-light d-flex align-items-center justify-content-center shadow-none px-1 py-1" type="button"
+        title="Ctrl + S : Show Selected Only">
+        <span id="showSelectedOnlyIcon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="#6a11cb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+        </span>
+      </button>
+      <!-- Search Icon Button -->
+      <span class="input-group-text search-icon bg-transparent border-0 px-1" id="search-icon" title="Search">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6a11cb"
+          stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </span>
+      <label for="search-box" class="visually-hidden">Search Products</label>
+      <input type="search" id="search-box" class="form-control border-0 modern-search-input bg-transparent px-2"
+        placeholder="Search Products..." autocomplete="off" spellcheck="false" data-form-type="other"
+        autocapitalize="off" autocorrect="off" aria-label="Search Products..." aria-describedby="Search Products..."
+        title="Start Typing to Search and Add Products / Quantity. Example : 1884-10 will add the First Item with 10 Qty." />
+      <!-- Clear Search Button -->
+      <button id="clearSearch"
+        class="btn btn-outline-warning input-group-btn ms-1 modern-clear-btn d-flex align-items-center justify-content-center shadow-none"
+        onclick="clearSearch()" title="Ctrl + Backspace : Clear Search" tabindex="0">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="15" y1="9" x2="9" y2="15"></line>
+          <line x1="9" y1="9" x2="15" y2="15"></line>
+        </svg>
+      </button>
+      <!-- Help Button -->
+      <button id="helpButton"
+        class="btn btn-outline-info input-group-btn ms-1 modern-help-btn d-flex align-items-center justify-content-center shadow-none"
+        data-bs-toggle="modal" data-bs-target="#help-modal" title="Help & Shortcuts">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+
+  <!-- Product List -->
+  <form class="flex my-3">
+    <ul id="product-list" class="list-group"></ul>
+  </form>
+
+  </div>
+
+  <!-- Floating Order Button -->
+  <button id="floating-order-button" title="Ctrl + O : View/Edit Order" onclick="toggleOrderPopup()" type="button">
+    📜
+  </button>
+
+  <!-- Floating History Button -->
+  <button id="floating-history-button" title="Ctrl + H : Order History" onclick="openOrderHistory()" type="button"
+    class="d-flex align-items-center justify-content-center">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+      <polyline points="14 2 14 8 20 8"></polyline>
+      <path d="M12 18l3 3 5-5"></path>
+    </svg>
+  </button>
+
+  <!-- Order Text Area Pop-up -->
+  <div id="order-text-popup">
+    <div class="popup-header">
+      <h5>Your Order</h5>
+      <button type="button" class="btn-close" aria-label="Close" onclick="toggleOrderPopup()"></button>
+    </div>
+    <textarea id="selected-products" name="selected-products" class="form-control" rows="10"
+      placeholder="Your order will appear here..." disabled></textarea>
+    <div class="popup-footer">
+      <button id="copyOrder1" class="btn btn-secondary d-flex align-items-center gap-2" onclick="copyOrder()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+        Copy Order
+      </button>
+      <button id="clearOrder1" class="btn btn-danger d-flex align-items-center gap-2" onclick="clearOrder()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6"></polyline>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          <line x1="10" y1="11" x2="10" y2="17"></line>
+          <line x1="14" y1="11" x2="14" y2="17"></line>
+        </svg>
+        Clear Order
+      </button>
+      <button id="sendOrder1" class="btn btn-success d-flex align-items-center gap-2" onclick="sendOrder()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m22 2-7 20-4-9-9-4Z"></path>
+          <path d="M22 2 11 13"></path>
+        </svg>
+        Send Order
+      </button>
+    </div>
+  </div>
+
+
+  <!-- Filter Modal -->
+  <div class="modal fade" id="filter-modal" tabindex="-1" aria-labelledby="FilterModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border border-2 border-primary">
+
+        <div class="modal-header">
+          <p class="modal-title fs-5 fw-bold">Product List Filter Options</p>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div id="filter-options" class="modal-body">
+          <div class="row">
+            <div class="col-4">
+              <div class="list-group" id="list-tab" role="tablist">
+                <!-- Tabs will be dynamically populated here -->
+              </div>
+            </div>
+            <div class="col-8">
+              <div class="tab-content" id="nav-tabContent">
+                <!-- Tab contents will be dynamically populated here -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="applyFilters()">
+            ✨ Apply Filters
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Order Quantity Modal -->
+  <div id="order-modal" class="modal fade" data-bs-backdrop="static" tabindex="-1" aria-labelledby="orderModalLabel"
+    role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <p class="modal-title fw-semibold h4" id="modal-product-name"></p>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container mb-3">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item lh-1 bg-light border-0">
+                <span id="modal-product-type"></span>
+              </li>
+              <li class="list-group-item lh-1 bg-light border-0">
+                <span id="modal-face-type"></span>
+              </li>
+              <li class="list-group-item lh-1 bg-light border-0">
+                <span id="modal-core-type"></span>
+              </li>
+              <li class="list-group-item lh-1 bg-light border-0">
+                <span id="modal-grade-type"></span>
+              </li>
+              <li class="list-group-item lh-1 bg-light border-0">
+                <span id="modal-brand-mark"></span>
+              </li>
+            </ul>
+          </div>
+          <!-- Numeric keypad and quantity input removed from here -->
+        </div>
+        <div class="modal-footer">
+          <!-- Removed all buttons from modal footer as keypad is removed -->
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Help Modal - Content loaded on demand -->
+  <div class="modal fade" id="help-modal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="helpModalLabel">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content border border-2 border-info">
+        <!-- Content will be loaded dynamically -->
+        <div class="modal-body text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p class="mt-3">Loading help content...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order History Modal -->
+  <div class="modal fade" id="history-modal" tabindex="-1" aria-labelledby="historyModalLabel">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+      <div class="modal-content border border-2 border-info">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold" id="historyModalLabel">📋 Order History</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Search and Sort Controls -->
+          <div class="row mb-3">
+            <div class="col-md-8">
+              <div class="input-group">
+                <span class="input-group-text bg-transparent border-end-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"
+                    class="text-primary">
+                    <path
+                      d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                  </svg>
+                </span>
+                <input type="search" id="history-search" class="form-control border-start-0"
+                  placeholder="Search by product name, date, or quantity..." aria-label="Search order history">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <select id="history-sort" class="form-select" aria-label="Sort orders">
+                <option value="newest" selected>Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="most">Most Items</option>
+                <option value="least">Least Items</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- History Container -->
+          <div id="history-container">
+            <!-- Orders will be rendered here by JavaScript -->
+            <div class="history-empty-state text-center py-5">
+              <div class="empty-icon text-muted mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v3"></path>
+                  <path d="M21 12v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-9"></path>
+                  <path d="M3 10h18"></path>
+                </svg>
+              </div>
+              <h4 class="text-secondary">Loading history...</h4>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-danger me-auto d-flex align-items-center gap-2"
+            onclick="confirmClearAllHistory()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 6h18"></path>
+              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+              <line x1="10" y1="11" x2="10" y2="17"></line>
+              <line x1="14" y1="11" x2="14" y2="17"></line>
+            </svg>
+            Clear All History
+          </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Order Modal -->
+  <div class="modal fade" id="view-order-modal" tabindex="-1" aria-labelledby="viewOrderModalLabel">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content border border-2 border-primary">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold" id="view-order-title">Order Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <pre id="view-order-content" class="order-text-display"></pre>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-info d-flex align-items-center gap-2"
+            onclick="editFromViewModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 20h9"></path>
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+            Edit Order
+          </button>
+          <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-2"
+            onclick="copyFromViewModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            Copy
+          </button>
+          <button type="button" class="btn btn-outline-success d-flex align-items-center gap-2"
+            onclick="sendAgainFromViewModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m22 2-7 20-4-9-9-4Z"></path>
+              <path d="M22 2 11 13"></path>
+            </svg>
+            Send Again
+          </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <script src="src/script_helpModal.js"></script>
+  <script src="src/script_pwa.js" defer></script>
+  <script src="src/script_keyboardNavigation.js"></script>
+  <script src="src/script_searchBox.js"></script>
+  <script src="src/script_filterList.js"></script>
+  <script src="src/script_onloadBasic.js"></script>
+  <script src="src/script_order.js"></script>
+  <script src="src/script_sendOrder.js"></script>
+  <script src="src/script_history.js"></script>
+  <script src="src/script_historyUI.js"></script>
+  <script src="src/script_animations.js" defer></script> -->
+  <script src="dist/main.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"></script>
+
+  <!-- iOS PWA Install Instructions Modal -->
+  <div class="modal fade" id="ios-install-modal" tabindex="-1" aria-labelledby="iosInstallModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" id="iosInstallModalLabel">Install App on iOS</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center py-4">
+          <p class="mb-4">Install this app on your iPhone for a better experience!</p>
+          <div class="d-flex flex-column align-items-start gap-3 bg-light p-3 rounded-4 mx-2">
+            <div class="d-flex align-items-center gap-3">
+              <span class="badge bg-primary rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 28px; height: 28px;">1</span>
+              <span>Tap the <strong class="text-primary">Share</strong> button <svg xmlns="http://www.w3.org/2000/svg"
+                  width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" class="text-primary">
+                  <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                  <polyline points="16 6 12 2 8 6"></polyline>
+                  <line x1="12" y1="2" x2="12" y2="15"></line>
+                </svg></span>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+              <span class="badge bg-primary rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 28px; height: 28px;">2</span>
+              <span>Scroll down and tap <strong class="text-primary">Add to Home Screen</strong> <svg
+                  xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  class="text-primary">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="12" y1="8" x2="12" y2="16"></line>
+                  <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg></span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-primary w-100 py-3 rounded-4" data-bs-dismiss="modal">Got it!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
