@@ -1,337 +1,150 @@
-const searchBox = document.getElementById('search-box');
+/**
+ * Search Box, Show-Selected-Only, and Mobile Search Pin
+ */
 
-// Function to scroll to the search box and position it at the top of the screen with margin
-function scrollSearchBoxToTop() {
-    const offset = 15; // Margin from the top of the screen
-    const elementPosition = searchBox.getBoundingClientRect().top + window.scrollY;
-    const offsetPosition = elementPosition - offset;
+// ─── State ────────────────────────────────────────────────────────────────────
+let showSelectedOnly = false;
 
-    window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
+// ─── Init ─────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    const searchBox = document.getElementById('search-box');
+    if (!searchBox) return;
+
+    const stickyControls = searchBox.closest('.sticky-controls');
+
+    // ── Mobile: Highlight sticky header when focused ──
+    searchBox.addEventListener('focus', () => {
+        if (window.innerWidth > 1023) return;
+
+        if (stickyControls) {
+            stickyControls.classList.add('search-active');
+            
+            // Auto-scroll to top so the search bar is clearly visible
+            // Use a slight delay to allow the keyboard to start opening
+            setTimeout(() => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 100);
+        }
     });
-}
 
-// Function to determine if the current device is a mobile device
-function isMobileDevice() {
-    return /Android|webOS|iPhone|iPad|IPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-        (window.innerWidth <= 768);
-}
+    searchBox.addEventListener('blur', () => {
+        if (window.innerWidth > 1023) return;
+        
+        // Small delay to allow clicks on results
+        setTimeout(() => {
+            if (stickyControls) stickyControls.classList.remove('search-active');
+        }, 150);
+    });
 
-// Add an event listener to the search box to trigger the scroll when it gains focus
-searchBox.addEventListener('focus', () => {
-    scrollSearchBoxToTop();
+    // ── Debounced input handling ──
+    let _timer = null;
+    searchBox.addEventListener('input', () => {
+        // Longer delay when hyphen present (quantity shortcut needs to settle)
+        const delay = searchBox.value.includes('-') ? 600 : 120;
+        clearTimeout(_timer);
+        _timer = setTimeout(() => handleSearchInput(searchBox.value), delay);
+    });
 });
 
-// Debounce function to prevent rapid firing of events
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
-
-/**
- * Parses the search input to extract a search term and an optional quantity.
- * Expected format: "searchTerm-quantity" (e.g., "MRX9036-10")
- * @param {string} input - The full string from the search box.
- * @returns {{searchTerm: string, quantity: number|null, isValid: boolean}} An object containing the parsed search term, quantity, and a validity flag.
- */
-function parseSearchInput(input) {
-    const lastHyphenIndex = input.lastIndexOf('-');
-
-    if (lastHyphenIndex !== -1 && lastHyphenIndex < input.length - 1) {
-        const potentialSearchTerm = input.substring(0, lastHyphenIndex).trim();
-        const quantityStr = input.substring(lastHyphenIndex + 1).trim();
-
-        // Check if the part after hyphen is a valid positive integer
-        // Use a more robust regex for quantity validation to ensure only digits
-        const quantity = parseInt(quantityStr, 10);
-        if (!isNaN(quantity) && quantity >= 0 && /^\d+$/.test(quantityStr)) {
-            return {
-                searchTerm: potentialSearchTerm.replace(/-/g, ''), // Clean hyphens from search term for better matching
-                quantity: quantity,
-                isValid: true
-            };
-        }
-    }
-
-    // If no valid quantity found, return just the cleaned search term
-    return {
-        searchTerm: input.trim().replace(/-/g, ''), // Always clean search term
-        quantity: null,
-        isValid: false
-    };
-}
-
-/**
- * Optimized function to check if a string contains another string's characters in the same order (case insensitive).
- * This uses a more efficient character-by-character comparison without creating new strings for each comparison.
- * @param {string} str - The string to search within.
- * @param {string} query - The string to search for.
- * @returns {boolean} True if the query characters are found in order within the string, false otherwise.
- */
+// ─── Search Logic ─────────────────────────────────────────────────────────────
 function containsInOrder(str, query) {
-    const lowerStr = str.toLowerCase();
-    const lowerQuery = query.toLowerCase();
-
-    let strIdx = 0;
-    let queryIdx = 0;
-
-    while (strIdx < lowerStr.length && queryIdx < lowerQuery.length) {
-        if (lowerStr[strIdx] === lowerQuery[queryIdx]) {
-            queryIdx++;
-        }
-        strIdx++;
-    }
-    return queryIdx === lowerQuery.length;
+    const s = str.toLowerCase(), q = query.toLowerCase();
+    let si = 0, qi = 0;
+    while (si < s.length && qi < q.length) { if (s[si] === q[qi]) qi++; si++; }
+    return qi === q.length;
 }
 
-/**
- * Filters the main product directory based on a search term and updates the display.
- * Prioritizes matches by Product Name, then falls back to Brand Mark, Core Type, Grade Type, or Product Type if no matches found.
- * @param {string} filterTerm - The term to filter products by.
- */
+function parseSearchInput(raw) {
+    const i = raw.lastIndexOf('-');
+    if (i > 0 && i < raw.length - 1) {
+        const term = raw.slice(0, i).trim();
+        const qty = parseInt(raw.slice(i + 1).trim(), 10);
+        if (!isNaN(qty) && qty >= 0) {
+            return { searchTerm: term.replace(/-/g, ''), quantity: qty, isValid: true };
+        }
+    }
+    return { searchTerm: raw.trim().replace(/-/g, ''), quantity: null, isValid: false };
+}
+
+function handleSearchInput(raw) {
+    const { searchTerm, quantity, isValid } = parseSearchInput(raw);
+    filterProductsAndDisplay(searchTerm);
+
+    if (isValid && quantity !== null) {
+        // Find first visible item and set its quantity
+        const first = document.querySelector('#product-list .product-item:not([style*="display: none"]):not([style*="display:none"])');
+        if (first && first.dataset.productName) {
+            addToOrder(first.dataset.productName, quantity);
+            const searchBox = document.getElementById('search-box');
+            if (searchBox) searchBox.value = searchTerm;
+        }
+    }
+}
+
 function filterProductsAndDisplay(filterTerm = '', options = {}) {
-    const normalizedFilter = filterTerm.trim().toUpperCase();
-    let filteredProductData = [];
+    let list;
 
-    if (!normalizedFilter) {
-        // If no filter term, display all products
-        filteredProductData = productsData.productDirectory;
-    } else {
-        // First, try to match by Product Name only
-        filteredProductData = productsData.productDirectory.filter(product => {
-            const productName = (product.Product || '').toUpperCase();
-            return containsInOrder(productName, normalizedFilter);
-        });
-
-        // If no matches by Product Name, try fallback attributes
-        if (filteredProductData.length === 0) {
-            filteredProductData = productsData.productDirectory.filter(product => {
-                const brandMark = (product['Brand Mark'] || '').toUpperCase();
-                const coreType = (product['Core Type'] || '').toUpperCase();
-                const gradeType = (product['Grade Type'] || '').toUpperCase();
-                const productType = (product['Product Type'] || '').toUpperCase();
-                return (
-                    containsInOrder(brandMark, normalizedFilter) ||
-                    containsInOrder(coreType, normalizedFilter) ||
-                    containsInOrder(gradeType, normalizedFilter) ||
-                    containsInOrder(productType, normalizedFilter)
-                );
-            });
+    if (showSelectedOnly) {
+        list = selectedProducts
+            .map(s => productsData.productDirectory.find(p => p.Product === s.productName))
+            .filter(Boolean);
+        if (filterTerm) {
+            const f = filterTerm.toUpperCase();
+            list = list.filter(p => containsInOrder(p.Product.toUpperCase(), f));
         }
-    }
-
-    // Now, update the UI with the filtered data
-    displayProducts(filteredProductData);
-
-    // After filtering and displaying, reset focus to ensure proper navigation behavior
-    resetFocus();
-
-    // Ensure search box scrolls to top on every filter
-    if (!options.skipScroll) {
-        scrollSearchBoxToTop();
-    }
-}
-
-
-// Remove the previous static debounce event listener
-// searchBox.addEventListener('input', debounce(...));
-
-// Dynamic debounce based on presence of hyphen in search term
-let lastDebouncedHandler = null;
-let lastDebounceDelay = null;
-
-function dynamicDebounceHandler() {
-    const searchInput = searchBox.value;
-    const debounceDelay = searchInput.includes('-') ? 1000 : 0;
-
-    // If debounce delay changes, re-attach the event listener
-    if (lastDebouncedHandler) {
-        searchBox.removeEventListener('input', lastDebouncedHandler);
-    }
-    const handler = debounce(() => {
-        const { searchTerm, quantity, isValid } = parseSearchInput(searchBox.value);
-        filterProductsAndDisplay(searchTerm);
-        if (isValid && quantity !== null) {
-            const firstVisibleProductElement = getFirstVisibleProductElement();
-            if (firstVisibleProductElement) {
-                const productName = firstVisibleProductElement.dataset.productName;
-                addToOrder(productName, quantity);
-                searchBox.value = searchTerm;
+    } else {
+        const normalized = filterTerm.trim().toUpperCase();
+        if (!normalized) {
+            list = productsData.productDirectory;
+        } else {
+            list = productsData.productDirectory.filter(p =>
+                containsInOrder(p.Product.toUpperCase(), normalized)
+            );
+            // Fallback: search product attributes if no name match
+            if (list.length === 0) {
+                list = productsData.productDirectory.filter(p =>
+                    containsInOrder((p['Brand Mark']    || '').toUpperCase(), normalized) ||
+                    containsInOrder((p['Core Type']     || '').toUpperCase(), normalized) ||
+                    containsInOrder((p['Grade Type']    || '').toUpperCase(), normalized) ||
+                    containsInOrder((p['Product Type']  || '').toUpperCase(), normalized)
+                );
             }
         }
-        if (!isMobileDevice()) {
-            focusFirstVisibleItem();
-        }
-    }, debounceDelay);
-    searchBox.addEventListener('input', handler);
-    lastDebouncedHandler = handler;
-    lastDebounceDelay = debounceDelay;
+    }
+
+    displayProducts(list);
 }
 
-// Attach a watcher to the input for dynamic debounce
-searchBox.addEventListener('input', function debounceWatcher() {
-    const searchInput = searchBox.value;
-    const debounceDelay = searchInput.includes('-') ? 1000 : 0;
-    if (debounceDelay !== lastDebounceDelay) {
-        dynamicDebounceHandler();
-    }
-});
-// Initialize the correct debounce handler on load
-window.addEventListener('DOMContentLoaded', dynamicDebounceHandler);
-
-// Function to clear the search box and reset the product list
 function clearSearch() {
-    searchBox.value = '';
-    filterProductsAndDisplay(''); // Show all products by passing an empty filter term
-    resetFocus();
+    const searchBox = document.getElementById('search-box');
+    if (searchBox) searchBox.value = '';
+    filterProductsAndDisplay('');
 }
 
-/**
- * Gets the first currently visible product list item element.
- * @returns {HTMLElement|null} The first visible product list item, or null if none are visible.
- */
 function getFirstVisibleProductElement() {
-    const productList = document.getElementById('product-list');
-    if (!productList) return null;
-
-    // After `displayProducts` is called, `productList.children` will only contain the visible items.
-    // So, we just need to check the first child.
-    if (productList.children.length > 0) {
-        return productList.children[0];
-    }
-    return null;
+    return document.querySelector('#product-list .product-item:not([style*="display: none"]):not([style*="display:none"])') || null;
 }
 
-// Function to focus the first visible product item in the list after filtering or clearing
-function focusFirstVisibleItem() {
-    const productListContainer = document.getElementById("product-list");
-    const visibleItems = Array.from(productListContainer.children);
-    resetFocus(); // Always clear any previous focus
-    if (visibleItems.length > 0) {
-        currentFocusIndex = 1;
-        visibleItems[0].classList.add("focus");
-        visibleItems[0].scrollIntoView({ block: "nearest", behavior: "smooth" });
-    } else {
-        currentFocusIndex = -1;
-    }
-}
-
-// Function to remove focus from all items and reset pointer
-function resetFocus() {
-    const focusedItems = document.querySelectorAll('.list-group-item.focus');
-    focusedItems.forEach(item => {
-        item.classList.remove('focus');
-    });
-    currentFocusIndex = -1;
-}
-
-// Ensure pointer is always reset and focused after filtering or clearing
-// Patch filterProductsAndDisplay to always call focusFirstVisibleItem
-const originalFilterProductsAndDisplay = filterProductsAndDisplay;
-filterProductsAndDisplay = function (filterTerm = '') {
-    originalFilterProductsAndDisplay(filterTerm);
-    if (!isMobileDevice()) {
-        focusFirstVisibleItem();
-    }
-};
-
-// Patch clearSearch to always focus first item
-const originalClearSearch = clearSearch;
-clearSearch = function () {
-    originalClearSearch();
-    if (!isMobileDevice()) {
-        focusFirstVisibleItem();
-    }
-};
-
-// Patch clearFilters if it exists
-if (typeof clearFilters === 'function') {
-    const originalClearFilters = clearFilters;
-    clearFilters = function () {
-        originalClearFilters();
-        if (!isMobileDevice()) {
-            focusFirstVisibleItem();
-        }
-    };
-}
-
-// --- Show Selected Only Toggle Logic ---
-let showSelectedOnly = false;
-const showSelectedOnlyBtn = document.getElementById('showSelectedOnly');
-const showSelectedOnlyIcon = document.getElementById('showSelectedOnlyIcon');
-
-if (showSelectedOnlyBtn) {
-    showSelectedOnlyBtn.addEventListener('click', function () {
-        showSelectedOnly = !showSelectedOnly;
-        updateShowSelectedOnlyButton();
-        if (showSelectedOnly) {
-            searchBox.value = '';
-        }
-        // Call filterProductsAndDisplay but skip scroll to top
-        filterProductsAndDisplay(searchBox.value, { skipScroll: true });
-    });
+// ─── Show Selected Only ───────────────────────────────────────────────────────
+function toggleShowSelectedOnly() {
+    showSelectedOnly = !showSelectedOnly;
+    updateShowSelectedOnlyButton();
+    const searchBox = document.getElementById('search-box');
+    if (showSelectedOnly && searchBox) searchBox.value = '';
+    filterProductsAndDisplay('', { skipScroll: true });
 }
 
 function updateShowSelectedOnlyButton() {
+    const btn = document.getElementById('showSelectedOnly');
+    if (!btn) return;
     if (showSelectedOnly) {
-        showSelectedOnlyBtn.classList.add('active');
-        showSelectedOnlyBtn.classList.add('btn-primary', 'shadow-sm');
-        showSelectedOnlyIcon.innerHTML = `
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="white" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-          </svg>`;
+        btn.style.color = 'var(--color-success)';
+        btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="11" fill="currentColor" stroke="none"/>
+            <path d="M7 12l3.5 3.5 6.5-6.5" stroke="white" fill="none"/>
+        </svg>`;
     } else {
-        showSelectedOnlyBtn.classList.remove('active');
-        showSelectedOnlyBtn.classList.remove('btn-primary', 'shadow-sm');
-        showSelectedOnlyIcon.innerHTML = `
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6a11cb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-            <circle cx="12" cy="12" r="3"></circle>
-          </svg>`;
+        btn.style.color = 'var(--color-primary)';
+        btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
     }
-}
-
-// Patch filterProductsAndDisplay to support showSelectedOnly and skipScroll
-const originalFilterProductsAndDisplay2 = filterProductsAndDisplay;
-filterProductsAndDisplay = function (filterTerm = '', options = {}) {
-    let filteredList;
-    if (showSelectedOnly) {
-        if (!filterTerm.trim()) {
-            filteredList = selectedProducts.map(sel => {
-                return productsData.productDirectory.find(p => p.Product === sel.productName);
-            }).filter(Boolean);
-        } else {
-            filteredList = selectedProducts.map(sel => {
-                return productsData.productDirectory.find(p => p.Product === sel.productName);
-            }).filter(Boolean).filter(product => {
-                return product.Product.toUpperCase().includes(filterTerm.trim().toUpperCase());
-            });
-        }
-        displayProducts(filteredList);
-        resetFocus();
-        if (!options.skipScroll) scrollSearchBoxToTop();
-        if (!isMobileDevice()) { focusFirstVisibleItem(); }
-    } else {
-        originalFilterProductsAndDisplay2(filterTerm);
-    }
-};
-
-// Only patch updateOrderList if it exists
-if (typeof updateOrderList === 'function') {
-    const originalUpdateOrderList = updateOrderList;
-    updateOrderList = function () {
-        originalUpdateOrderList();
-        if (showSelectedOnly) {
-            filterProductsAndDisplay(searchBox.value);
-        }
-    };
 }

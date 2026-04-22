@@ -1,454 +1,166 @@
 /**
- * Order History UI Management
- * Handles rendering and interaction with the history modal
+ * Order History UI
  */
-
 let currentHistorySort = 'newest';
 let currentHistorySearch = '';
 
-/**
- * Open the Order History modal
- */
+// Called by the History button in HTML
 function openOrderHistory() {
-    // Clean up old orders before showing
     cleanupOldOrders();
-
-    // Show the modal
-    const historyModal = new bootstrap.Modal(document.getElementById('history-modal'));
-    historyModal.show();
-
-    // Update the badge count
+    renderOrderHistory();
+    Modal.open('history-modal');
     updateHistoryBadge();
+    attachHistoryListeners();
 }
 
-/**
- * Close the Order History modal
- */
-function closeOrderHistory() {
-    const modalElement = document.getElementById('history-modal');
-    const modal = bootstrap.Modal.getInstance(modalElement);
-    if (modal) {
-        modal.hide();
-    }
-}
-
-/**
- * Render the complete order history
- */
 function renderOrderHistory() {
-    const historyContainer = document.getElementById('history-container');
+    const container = document.getElementById('history-container');
+    if (!container) return;
 
-    if (!historyContainer) {
-        console.error('History container not found');
-        return;
-    }
-
-    // Get orders
     let orders = getOrderHistory();
 
-    // Apply search filter
     if (currentHistorySearch) {
-        orders = searchOrders(currentHistorySearch);
+        const q = currentHistorySearch.toLowerCase();
+        orders = orders.filter(o =>
+            o.orderText.toLowerCase().includes(q) ||
+            o.products.some(p => p.productName.toLowerCase().includes(q))
+        );
     }
 
-    // Apply sorting
-    orders = sortOrderHistory(orders, currentHistorySort);
+    if (currentHistorySort === 'oldest') {
+        orders = [...orders].sort((a, b) => a.timestamp - b.timestamp);
+    } else {
+        orders = [...orders].sort((a, b) => b.timestamp - a.timestamp);
+    }
 
-    // Check if empty
     if (orders.length === 0) {
-        historyContainer.innerHTML = renderEmptyState();
+        container.innerHTML = `
+            <div style="text-align:center;padding:40px 20px;color:var(--color-text-muted)">
+                <div style="font-size:2.5rem;margin-bottom:12px">📭</div>
+                <p style="font-weight:600">No orders yet</p>
+                <p style="font-size:0.85rem;margin-top:4px">Sent and copied orders appear here for 7 days.</p>
+            </div>`;
         return;
     }
 
-    // Group by date
-    const groupedOrders = groupOrdersByDate(orders);
-
-    // Render
-    let html = '';
-
-    // Get keys and maintain order (newest dates first if sorted by newest)
-    const dateKeys = Object.keys(groupedOrders);
-    if (currentHistorySort === 'newest' || currentHistorySort === 'most' || currentHistorySort === 'least') {
-        // Keep date keys in order of first appearance (already correct from grouping)
-    } else if (currentHistorySort === 'oldest') {
-        dateKeys.reverse();
-    }
-
-    dateKeys.forEach(dateLabel => {
-        const group = groupedOrders[dateLabel];
-        html += renderDateGroup(group);
+    // Group by date label
+    const groups = {};
+    orders.forEach(o => {
+        const label = formatDateLabel(new Date(o.timestamp));
+        if (!groups[label]) groups[label] = [];
+        groups[label].push(o);
     });
 
-    historyContainer.innerHTML = html;
+    container.innerHTML = Object.entries(groups).map(([label, grpOrders]) => `
+        <div style="margin-bottom:20px">
+            <div style="font-size:0.75rem;font-weight:700;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--color-border)">${label}</div>
+            ${grpOrders.map(o => `
+                <div class="product-item" style="flex-direction:column;align-items:stretch;gap:8px;margin-bottom:8px;border-radius:var(--radius-md);border:1px solid var(--color-border)">
+                    <div style="display:flex;justify-content:space-between;align-items:center">
+                        <span style="font-weight:700;font-size:0.8rem;color:var(--color-primary)">${formatTimeLabel(new Date(o.timestamp))}</span>
+                        <span style="font-size:0.75rem;background:var(--color-bg);padding:2px 8px;border-radius:4px">${o.totalItems} pcs</span>
+                    </div>
+                    <div style="font-size:0.85rem;color:var(--color-text-muted)">
+                        ${o.products.slice(0, 3).map(p => p.productName).join(', ')}${o.products.length > 3 ? ` +${o.products.length - 3} more` : ''}
+                    </div>
+                    <div style="display:flex;gap:6px;flex-wrap:wrap">
+                        <button class="btn btn-secondary" style="padding:4px 10px;font-size:0.78rem" onclick="editOrderFromHistory('${o.id}')">Edit</button>
+                        <button class="btn btn-secondary" style="padding:4px 10px;font-size:0.78rem" onclick="copyOrderFromHistory('${o.id}')">Copy</button>
+                        <button class="btn btn-danger" style="padding:4px 10px;font-size:0.78rem;margin-left:auto" onclick="confirmDeleteOrder('${o.id}')">Delete</button>
+                    </div>
+                </div>`).join('')}
+        </div>`).join('');
 }
 
-/**
- * Render empty state
- */
-function renderEmptyState() {
-    const hasSearch = currentHistorySearch && currentHistorySearch.trim() !== '';
-
-    if (hasSearch) {
-        return `
-            <div class="history-empty-state">
-                <div class="empty-icon">🔍</div>
-                <h4>No Results Found</h4>
-                <p>No orders match "${currentHistorySearch}"</p>
-                <button class="btn btn-secondary" onclick="clearHistorySearch()">Clear Search</button>
-            </div>
-        `;
-    }
-
-    return `
-        <div class="history-empty-state">
-            <div class="empty-icon">📭</div>
-            <h4>No Order History Yet</h4>
-            <p>Your sent and copied orders will appear here.</p>
-            <p class="text-muted">Orders are automatically saved for 7 days.</p>
-            <button class="btn btn-primary" onclick="closeOrderHistory()">Start Creating Orders →</button>
-        </div>
-    `;
-}
-
-/**
- * Render a date group
- */
-function renderDateGroup(group) {
-    let html = `
-        <div class="history-date-group">
-            <div class="date-group-header">
-                <span class="date-icon">📅</span>
-                <span class="date-label">${group.label}</span>
-                ${group.label !== group.fullDate ? `<span class="date-full text-muted">- ${group.fullDate}</span>` : ''}
-            </div>
-            <div class="date-group-orders">
-    `;
-
-    group.orders.forEach(order => {
-        html += renderOrderCard(order);
-    });
-
-    html += `
-            </div>
-        </div>
-    `;
-
-    return html;
-}
-
-/**
- * Render an individual order card
- */
-function renderOrderCard(order) {
-    const timeLabel = formatTimeLabel(new Date(order.timestamp));
-    const statusClass = order.action === 'sent' ? 'status-sent' : 'status-copied';
-    const statusIcon = order.sentVia === 'whatsapp' ? '📱' : '📋';
-
-    // Get preview (first 2-3 products)
-    const previewProducts = order.products.slice(0, 2);
-    const remaining = order.products.length - previewProducts.length;
-
-    let preview = previewProducts.map(p => `${p.productName} - ${p.quantity}`).join(', ');
-    if (remaining > 0) {
-        preview += ` ... and ${remaining} more`;
-    }
-
-    return `
-        <div class="history-order-card ${statusClass}" data-order-id="${order.id}">
-            <div class="order-card-header">
-                <div class="order-time">
-                    <span class="time-icon">⏰</span>
-                    <span class="time-label">${timeLabel}</span>
-                </div>
-                <div class="order-count">
-                    <span class="count-icon">📦</span>
-                    <span class="count-label">${order.totalItems} items</span>
-                </div>
-            </div>
-            <div class="order-card-preview">
-                ${preview}
-            </div>
-            <div class="order-card-actions">
-                <button class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1" onclick="viewOrderDetails('${order.id}')" title="View full order details">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                    View
-                </button>
-                <button class="btn btn-sm btn-outline-info d-flex align-items-center gap-1" onclick="editOrderFromHistory('${order.id}')" title="Load order for editing">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-                    Edit
-                </button>
-                <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1" onclick="copyOrderFromHistory('${order.id}')" title="Copy order text">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                    Copy
-                </button>
-                <button class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1" onclick="confirmDeleteOrder('${order.id}')" title="Delete this order">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                    Delete
-                </button>
-            </div>
-        </div>
-    `;
-}
-
-/**
- * Update the history badge count
- */
-function updateHistoryBadge() {
-    const count = getOrderHistoryCount();
-    const badge = document.getElementById('history-badge');
-
-    if (badge) {
-        if (count > 0) {
-            badge.textContent = count > 99 ? '99+' : count;
-            badge.style.display = 'inline';
-        } else {
-            badge.style.display = 'none';
-        }
-    }
-}
-
-/**
- * Handle history search input
- */
-function handleHistorySearch(query) {
-    currentHistorySearch = query;
-    renderOrderHistory();
-}
-
-/**
- * Clear history search
- */
-function clearHistorySearch() {
-    currentHistorySearch = '';
-    const searchInput = document.getElementById('history-search');
-    if (searchInput) {
-        searchInput.value = '';
-    }
-    renderOrderHistory();
-}
-
-/**
- * Handle sort change
- */
-function handleHistorySort(sortBy) {
-    currentHistorySort = sortBy;
-    renderOrderHistory();
-}
-
-/**
- * View order details in a modal
- */
-function viewOrderDetails(orderId) {
-    const order = getOrderById(orderId);
-
-    if (!order) {
-        displayFeedbackMessage('Order not found', 'error');
-        return;
-    }
-
-    // Populate the view modal
-    document.getElementById('view-order-title').textContent =
-        `Order Details - ${formatDateLabel(new Date(order.timestamp))} at ${formatTimeLabel(new Date(order.timestamp))}`;
-
-    document.getElementById('view-order-content').textContent = order.orderText;
-
-    // Store current order ID for actions
-    document.getElementById('view-order-modal').dataset.orderId = orderId;
-
-    // Show the modal
-    const viewModal = new bootstrap.Modal(document.getElementById('view-order-modal'));
-    viewModal.show();
-}
-
-/**
- * Edit order from history (load into current workspace)
- */
 function editOrderFromHistory(orderId) {
     const order = getOrderById(orderId);
+    if (!order) return;
 
-    if (!order) {
-        displayFeedbackMessage('Order not found', 'error');
-        return;
-    }
-
-    // Clear current order first
+    // 1. Clear current order
     clearOrder();
 
-    // Load products into current order
-    order.products.forEach(product => {
-        updateProductQuantityInOrder(product.productName, product.quantity);
-    });
+    // 2. Load products in their saved sequence (insertion order)
+    order.products.forEach(p => addToOrder(p.productName, p.quantity));
 
-    // Close history modal
-    closeOrderHistory();
+    // 3. Close modal
+    Modal.close('history-modal');
 
-    // Show feedback
-    displayFeedbackMessage('✏️ Order loaded for editing. Modify and send as a new order.', 'success');
+    // 4. Automatically enable "Show Selected Only" so the user sees the restored order immediately
+    if (typeof showSelectedOnly !== 'undefined') {
+        showSelectedOnly = true;
+        if (typeof updateShowSelectedOnlyButton === 'function') updateShowSelectedOnlyButton();
+        if (typeof filterProductsAndDisplay === 'function') {
+            filterProductsAndDisplay('', { skipScroll: true });
+        }
+    }
 
-    // Scroll to top to show the loaded order
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    displayFeedbackMessage('Order loaded for editing.', 'success');
 }
 
-/**
- * Copy order from history
- */
 function copyOrderFromHistory(orderId) {
     const order = getOrderById(orderId);
-
-    if (!order) {
-        displayFeedbackMessage('Order not found', 'error');
-        return;
-    }
-
-    // Copy to clipboard
+    if (!order) return;
     if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(order.orderText)
-            .then(() => {
-                displayFeedbackMessage('Order copied to clipboard!', 'success');
-            })
-            .catch(err => {
-                console.error('Failed to copy:', err);
-                displayFeedbackMessage('Failed to copy order', 'error');
-            });
+            .then(() => displayFeedbackMessage('Order copied!', 'success'))
+            .catch(() => displayFeedbackMessage('Copy failed.', 'error'));
     } else {
         // Fallback
-        const textarea = document.createElement('textarea');
-        textarea.value = order.orderText;
-        textarea.style.position = 'fixed';
-        textarea.style.opacity = '0';
-        document.body.appendChild(textarea);
-        textarea.select();
-        try {
-            document.execCommand('copy');
-            displayFeedbackMessage('Order copied to clipboard!', 'success');
-        } catch (err) {
-            displayFeedbackMessage('Failed to copy order', 'error');
-        }
-        document.body.removeChild(textarea);
+        const ta = document.createElement('textarea');
+        ta.value = order.orderText;
+        ta.style.cssText = 'position:fixed;opacity:0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); displayFeedbackMessage('Order copied!', 'success'); }
+        catch { displayFeedbackMessage('Copy failed.', 'error'); }
+        document.body.removeChild(ta);
     }
 }
 
-/**
- * Confirm and delete order
- */
 function confirmDeleteOrder(orderId) {
-    // Simple confirmation
-    if (confirm('Are you sure you want to delete this order from history?')) {
-        const success = deleteOrderFromHistory(orderId);
-
-        if (success) {
-            displayFeedbackMessage('Order deleted from history', 'success');
-            renderOrderHistory();
-            updateHistoryBadge();
-        } else {
-            displayFeedbackMessage('Failed to delete order', 'error');
-        }
+    if (confirm('Delete this order from history?')) {
+        deleteOrderFromHistory(orderId);
+        renderOrderHistory();
+        updateHistoryBadge();
     }
 }
 
-/**
- * Copy from view modal
- */
-function copyFromViewModal() {
-    const orderId = document.getElementById('view-order-modal').dataset.orderId;
-    copyOrderFromHistory(orderId);
-}
-
-/**
- * Edit from view modal
- */
-function editFromViewModal() {
-    const orderId = document.getElementById('view-order-modal').dataset.orderId;
-
-    // Close view modal
-    const viewModal = bootstrap.Modal.getInstance(document.getElementById('view-order-modal'));
-    if (viewModal) {
-        viewModal.hide();
-    }
-
-    // Edit the order
-    editOrderFromHistory(orderId);
-}
-
-/**
- * Send again from view modal
- */
-function sendAgainFromViewModal() {
-    const orderId = document.getElementById('view-order-modal').dataset.orderId;
-    editOrderFromHistory(orderId);
-
-    // Close view modal
-    const viewModal = bootstrap.Modal.getInstance(document.getElementById('view-order-modal'));
-    if (viewModal) {
-        viewModal.hide();
-    }
-
-    // Trigger send order (user will need to confirm via WhatsApp)
-    setTimeout(() => {
-        sendOrder();
-    }, 500);
-}
-
-/**
- * Attach event listeners to history elements
- */
-function attachHistoryEventListeners() {
-    // Search input
-    const searchInput = document.getElementById('history-search');
-    if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            handleHistorySearch(e.target.value);
-        });
-    }
-
-    // Sort select
-    const sortSelect = document.getElementById('history-sort');
-    if (sortSelect) {
-        sortSelect.addEventListener('change', (e) => {
-            handleHistorySort(e.target.value);
-        });
-    }
-}
-
-/**
- * Confirm and clear all order history
- */
 function confirmClearAllHistory() {
-    if (confirm('Are you sure you want to delete ALL order history? This action cannot be undone.')) {
-        if (clearAllHistory()) {
-            displayFeedbackMessage('All order history cleared', 'success');
-            renderOrderHistory();
-            updateHistoryBadge();
-        } else {
-            displayFeedbackMessage('Failed to clear history', 'error');
-        }
+    if (confirm('Clear ALL order history? This cannot be undone.')) {
+        clearAllHistory();
+        renderOrderHistory();
+        updateHistoryBadge();
+        displayFeedbackMessage('History cleared.', 'success');
     }
 }
 
-// Initialize on DOM ready
-document.addEventListener('DOMContentLoaded', () => {
-    updateHistoryBadge();
+function updateHistoryBadge() {
+    const count = getOrderHistoryCount();
+    document.querySelectorAll('.history-badge').forEach(badge => {
+        badge.textContent = count;
+        badge.style.display = count > 0 ? 'inline' : 'none';
+    });
+}
 
-    // Initialize search and sort listeners ONCE
-    const historyModalElement = document.getElementById('history-modal');
-    if (historyModalElement) {
-        // Render on show
-        historyModalElement.addEventListener('show.bs.modal', () => {
+let _historyListenersAttached = false;
+function attachHistoryListeners() {
+    if (_historyListenersAttached) return;
+    _historyListenersAttached = true;
+
+    const search = document.getElementById('history-search');
+    if (search) {
+        search.addEventListener('input', (e) => {
+            currentHistorySearch = e.target.value;
             renderOrderHistory();
         });
-
-        // Initialize listeners once
-        attachHistoryEventListeners();
-
-        // Focus search input when modal is shown (only on non-mobile devices)
-        historyModalElement.addEventListener('shown.bs.modal', () => {
-            const searchInput = document.getElementById('history-search');
-            // Check if isMobileDevice function exists and return false if not on mobile
-            const isMobile = typeof isMobileDevice === 'function' ? isMobileDevice() : false;
-
-            if (searchInput && !isMobile) {
-                searchInput.focus();
-            }
+    }
+    const sort = document.getElementById('history-sort');
+    if (sort) {
+        sort.addEventListener('change', (e) => {
+            currentHistorySort = e.target.value;
+            renderOrderHistory();
         });
     }
-});
+}
+
+document.addEventListener('DOMContentLoaded', updateHistoryBadge);

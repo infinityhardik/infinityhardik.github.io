@@ -1,50 +1,38 @@
-// Lazy load help modal content on first open
-let helpModalLoaded = false;
-
 /**
- * Loads the help modal content on demand
+ * Help Modal — loads content on first open, handles language tabs.
  */
-async function loadHelpModal() {
-    if (helpModalLoaded) return;
+let _helpLoaded = false;
+
+async function openHelpModal() {
+    Modal.open('help-modal');
+    if (_helpLoaded) return;
 
     try {
-        const response = await fetch('assets/help-modal-content.html');
-        if (!response.ok) {
-            throw new Error(`Failed to load help modal: ${response.status}`);
+        const res = await fetch('assets/help-modal-content.html');
+        if (!res.ok) throw new Error('Failed to load');
+        const html = await res.text();
+        const body = document.getElementById('help-content');
+        if (body) {
+            body.innerHTML = html;
+            _helpLoaded = true;
+            initHelpTabs();
         }
-
-        const content = await response.text();
-        const helpModalContent = document.querySelector('#help-modal .modal-content');
-
-        if (helpModalContent) {
-            helpModalContent.innerHTML = content;
-            helpModalLoaded = true;
-        }
-    } catch (error) {
-        console.error('Error loading help modal:', error);
-        // Fallback: show a simple error message
-        const helpModalContent = document.querySelector('#help-modal .modal-content');
-        if (helpModalContent) {
-            helpModalContent.innerHTML = `
-                <div class="modal-header">
-                    <h5 class="modal-title">Help</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Unable to load help content. Please refresh the page and try again.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            `;
-        }
+    } catch (e) {
+        const body = document.getElementById('help-content');
+        if (body) body.innerHTML = '<p style="padding:16px;color:var(--color-danger)">Unable to load help content.</p>';
     }
 }
 
-// Listen for help modal show event
-document.addEventListener('DOMContentLoaded', () => {
-    const helpModal = document.getElementById('help-modal');
-    if (helpModal) {
-        helpModal.addEventListener('show.bs.modal', loadHelpModal);
-    }
-});
+function initHelpTabs() {
+    const tabs = document.querySelectorAll('.help-tab-btn');
+    const sections = document.querySelectorAll('.help-section');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            sections.forEach(s => s.style.display = 'none');
+            tab.classList.add('active');
+            const target = document.getElementById(tab.dataset.target);
+            if (target) target.style.display = 'block';
+        });
+    });
+}

@@ -54,8 +54,8 @@ function copyOrder() {
         navigator.clipboard.writeText(orderText)
             .then(() => {
                 displayFeedbackMessage('Order copied to clipboard!', 'success');
-                // Save to history
-                saveOrderToHistory(sortedProducts, 'copied', 'clipboard');
+                // Save to history (passing raw selectedProducts to preserve insertion order)
+                saveOrderToHistory(selectedProducts, 'copied', 'clipboard');
                 updateHistoryBadge();
             })
             .catch(err => {
@@ -74,8 +74,8 @@ function copyOrder() {
             const successful = document.execCommand('copy');
             if (successful) {
                 displayFeedbackMessage('Order copied to clipboard (fallback)!', 'success');
-                // Save to history
-                saveOrderToHistory(sortedProducts, 'copied', 'clipboard');
+                // Save to history (passing raw selectedProducts to preserve insertion order)
+                saveOrderToHistory(selectedProducts, 'copied', 'clipboard');
                 updateHistoryBadge();
             } else {
                 throw new Error('execCommand failed');
@@ -109,8 +109,8 @@ function sendOrder() {
     window.open(whatsappUrl, '_blank');
     displayFeedbackMessage('Order sent via WhatsApp!', 'success');
 
-    // Save to history
-    saveOrderToHistory(sortedProducts, 'sent', 'whatsapp');
+    // Save to history (passing raw selectedProducts to preserve insertion order)
+    saveOrderToHistory(selectedProducts, 'sent', 'whatsapp');
     updateHistoryBadge();
 }
 
