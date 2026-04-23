@@ -13,7 +13,8 @@
   <meta name="robots" content="index, follow" />
   <meta name="author" content="Mahadev Traders" />
   <meta property="og:title" content="MT Order Page" />
-  <meta property="og:description" content="Order Page for Mahadev Traders — Plywood, Block-Board & Flush-Door Wholesaler, Rajkot." />
+  <meta property="og:description"
+    content="Order Page for Mahadev Traders — Plywood, Block-Board & Flush-Door Wholesaler, Rajkot." />
   <meta property="og:url" content="https://vaives.com" />
   <meta property="og:image" content="https://www.vaives.com/assets/favicon.webp" />
 
@@ -59,32 +60,53 @@
         <div class="sticky-controls">
           <!-- Action Bar -->
           <div class="action-bar">
-            <button id="filterProductList" class="btn btn-primary" onclick="openFilterModal()" title="Open Filters (Ctrl+Shift+F)">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+            <button id="filterProductList" class="btn btn-primary" onclick="openFilterModal()"
+              title="Open Filters (Ctrl+Shift+F)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+              </svg>
               Filters
             </button>
-            <button id="clearFilters" class="btn btn-secondary is-hidden" onclick="clearFilters()" title="Clear All Active Filters (Ctrl+Shift+O)">Clear Filters</button>
-            <button id="clearOrder" class="btn btn-danger" onclick="clearOrder()" title="Clear Entire Current Order (Ctrl+Delete)">Clear Order</button>
-            <button id="orderHistoryBtn" class="btn btn-info" onclick="openOrderHistory()" title="View Past Orders (Ctrl+H)">
+            <button id="clearFilters" class="btn btn-secondary is-hidden" onclick="clearFilters()"
+              title="Clear All Active Filters (Ctrl+Shift+O)">Clear Filters</button>
+            <button id="clearOrder" class="btn btn-danger" onclick="clearOrder()"
+              title="Clear Entire Current Order (Ctrl+Delete)">Clear Order</button>
+            <button id="orderHistoryBtn" class="btn btn-info" onclick="openOrderHistory()"
+              title="View Past Orders (Ctrl+H)">
               History
               <span class="history-badge history-badge--inline">0</span>
             </button>
-            <button id="sendOrder" class="btn btn-success" onclick="sendOrder()" title="Send Order via WhatsApp (Ctrl+Enter)">Send Order</button>
+            <button id="sendOrder" class="btn btn-success" onclick="sendOrder()"
+              title="Send Order via WhatsApp (Ctrl+Enter)">Send Order</button>
           </div>
 
           <!-- Search Bar -->
           <div class="search-container" role="search">
-            <button id="showSelectedOnly" class="icon-button toggle-selected-button" onclick="toggleShowSelectedOnly()" title="Toggle: Show Only Selected Items (Ctrl+S)" aria-label="Toggle Show Selected Only">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <button id="showSelectedOnly" class="icon-button toggle-selected-button" onclick="toggleShowSelectedOnly()"
+              title="Toggle: Show Only Selected Items (Ctrl+S)" aria-label="Toggle Show Selected Only">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
             </button>
-            <input type="search" id="search-box" class="search-input" placeholder="Search products..." autocomplete="off" 
-              aria-label="Search products" role="combobox" aria-autocomplete="list" aria-expanded="false" 
-              aria-haspopup="listbox" aria-controls="product-list" title="Tip: Type 'NAME-QTY' to add quickly (e.g., Plywood-10)">
-            <button id="clear-search-btn" onclick="clearSearch()" title="Clear Search (Esc / Ctrl+Backspace)" aria-label="Clear Search">
+            <input type="search" id="search-box" class="search-input" placeholder="Search products..."
+              autocomplete="off" aria-label="Search products" role="combobox" aria-autocomplete="list"
+              aria-expanded="false" aria-haspopup="listbox" aria-controls="product-list"
+              title="Tip: Type 'NAME-QTY' to add quickly (e.g., Plywood-10)">
+            <button id="clear-search-btn" onclick="clearSearch()" title="Clear Search (Esc / Ctrl+Backspace)"
+              aria-label="Clear Search">
               ✕
             </button>
-            <button id="helpButton" class="icon-button help-button" onclick="openHelpModal()" title="Help & Shortcuts (Ctrl+?)" aria-label="Help and Shortcuts">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <button id="helpButton" class="icon-button help-button" onclick="openHelpModal()"
+              title="Help & Shortcuts (Ctrl+?)" aria-label="Help and Shortcuts">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
             </button>
           </div>
         </div>
@@ -96,7 +118,8 @@
 
         <!-- No Results State -->
         <div id="no-results" class="no-results hidden">
-          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+            stroke-linecap="round" stroke-linejoin="round">
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             <line x1="11" y1="8" x2="11" y2="14"></line>
@@ -120,7 +143,8 @@
         <div class="scratchpad-actions">
           <button class="btn btn-secondary" onclick="copyOrder()" title="Copy Order to Clipboard (Ctrl+C)">Copy</button>
           <button class="btn btn-danger" onclick="clearOrder()" title="Clear Entire Order (Ctrl+Delete)">Clear</button>
-          <button class="btn btn-success" onclick="sendOrder()" title="Send Order via WhatsApp (Ctrl+Enter)">Send via WhatsApp</button>
+          <button class="btn btn-success" onclick="sendOrder()" title="Send Order via WhatsApp (Ctrl+Enter)">Send via
+            WhatsApp</button>
         </div>
       </aside>
 
@@ -129,11 +153,18 @@
 
   <!-- ── Mobile Floating Buttons ───────────────────────────────────────────── -->
   <div class="floating-actions">
-    <button id="floating-order-button" class="floating-btn" onclick="toggleOrderPopup()" title="View Current Order (Ctrl+O)" aria-label="View Order">
+    <button id="floating-order-button" class="floating-btn" onclick="toggleOrderPopup()"
+      title="View Current Order (Ctrl+O)" aria-label="View Order">
       📜
     </button>
-    <button id="floating-history-button" class="floating-btn floating-btn-history" onclick="openOrderHistory()" title="View Order History (Ctrl+H)" aria-label="Order History">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+    <button id="floating-history-button" class="floating-btn floating-btn-history" onclick="openOrderHistory()"
+      title="View Order History (Ctrl+H)" aria-label="Order History">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+        <polyline points="14 2 14 8 20 8" />
+        <line x1="9" y1="15" x2="15" y2="15" />
+      </svg>
       <span class="history-badge history-badge--floating">0</span>
     </button>
   </div>
@@ -185,7 +216,8 @@
       </div>
       <div class="modal-body">
         <div class="history-toolbar">
-          <input type="search" id="history-search" class="search-input history-search-input" placeholder="Search history...">
+          <input type="search" id="history-search" class="search-input history-search-input"
+            placeholder="Search history...">
           <select id="history-sort" class="btn btn-secondary history-sort-select">
             <option value="newest">Newest First</option>
             <option value="oldest">Oldest First</option>
@@ -278,5 +310,8 @@
   <script src="src/script_pwa.js" defer></script>
   <script src="src/script_animations.js" defer></script>
 
+  <!-- Build Scripts -->
+  <!-- <script src="dist/main.min.js"></script> -->
 </body>
+
 </html>
