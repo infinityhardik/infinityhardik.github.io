@@ -534,6 +534,22 @@ input { font-family: inherit; }
     font-weight: 600;
     font-size: 0.9375rem;
     overflow-wrap: anywhere;
+    display: block;
+}
+
+.product-name.product-name-split {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.product-name-line {
+    display: block;
+}
+
+.product-name-line-secondary {
+    overflow-wrap: normal;
+    word-break: keep-all;
 }
 
 .product-item.added-to-order {

@@ -9,6 +9,72 @@ window.addEventListener('load', () => {
     loadProducts();
 });
 
+let productNameLayoutFrame = null;
+
+function getProductNameParts(productName) {
+    const match = productName.match(/^(.*?\bmm)\s+(\d.*)$/i);
+    return match ? { firstLine: match[1], secondLine: match[2] } : null;
+}
+
+function setProductNameContent(nameElement, productName, splitAfterMm) {
+    nameElement.textContent = '';
+    nameElement.classList.toggle('product-name-split', splitAfterMm);
+
+    if (!splitAfterMm) {
+        nameElement.textContent = productName;
+        return;
+    }
+
+    const parts = getProductNameParts(productName);
+    if (!parts) {
+        nameElement.textContent = productName;
+        nameElement.classList.remove('product-name-split');
+        return;
+    }
+
+    const primaryLine = document.createElement('span');
+    primaryLine.className = 'product-name-line';
+    primaryLine.textContent = parts.firstLine;
+
+    const secondaryLine = document.createElement('span');
+    secondaryLine.className = 'product-name-line product-name-line-secondary';
+    secondaryLine.textContent = parts.secondLine;
+
+    nameElement.appendChild(primaryLine);
+    nameElement.appendChild(secondaryLine);
+}
+
+function updateVisibleProductNameLayouts() {
+    document.querySelectorAll('#product-list .product-item:not(.hidden) .product-name').forEach(nameElement => {
+        const productName = nameElement.dataset.productName || '';
+        const parts = getProductNameParts(productName);
+
+        setProductNameContent(nameElement, productName, false);
+        if (!parts) {
+            return;
+        }
+
+        const computedStyle = window.getComputedStyle(nameElement);
+        const lineHeight = parseFloat(computedStyle.lineHeight) || parseFloat(computedStyle.fontSize) * 1.2;
+        const wrapsNaturally = nameElement.getBoundingClientRect().height > (lineHeight * 1.5);
+
+        if (wrapsNaturally) {
+            setProductNameContent(nameElement, productName, true);
+        }
+    });
+}
+
+function queueProductNameLayoutUpdate() {
+    if (productNameLayoutFrame) {
+        cancelAnimationFrame(productNameLayoutFrame);
+    }
+
+    productNameLayoutFrame = requestAnimationFrame(() => {
+        productNameLayoutFrame = null;
+        updateVisibleProductNameLayouts();
+    });
+}
+
 // ─── Data Loading ─────────────────────────────────────────────────────────────
 async function loadProducts() {
     try {
@@ -84,7 +150,8 @@ function renderAllProducts() {
 
         const nameSpan = document.createElement('span');
         nameSpan.className = 'product-name';
-        nameSpan.textContent = name;
+        nameSpan.dataset.productName = name;
+        setProductNameContent(nameSpan, name, false);
         info.appendChild(nameSpan);
         item.appendChild(info);
 
@@ -123,6 +190,8 @@ function renderAllProducts() {
 
         container.appendChild(item);
     });
+
+    queueProductNameLayoutUpdate();
 }
 
 // ─── Filter-Only Display (no DOM mutations) ───────────────────────────────────
@@ -173,10 +242,14 @@ function displayProducts(productList) {
         container.appendChild(fragment);
     }
 
+    queueProductNameLayoutUpdate();
+
     if (typeof syncVisibleProductState === 'function') {
         syncVisibleProductState();
     }
 }
+
+window.addEventListener('resize', queueProductNameLayoutUpdate);
 
 // ─── Hold-to-Repeat ───────────────────────────────────────────────────────────
 function addHoldListeners(button, action) {
