@@ -1,6 +1,5 @@
 // ─── Global State ────────────────────────────────────────────────────────────
 let productsData = { productDirectory: [] };
-let openedProductForOrder = null;
 const HOLD_DELAY = 300;
 const REPEAT_INTERVAL = 100;
 
@@ -96,7 +95,7 @@ function renderAllProducts() {
         controls.setAttribute('aria-label', `Quantity controls for ${name}`);
 
         const decBtn = document.createElement('button');
-decBtn.type = 'button';
+        decBtn.type = 'button';
         decBtn.className = 'qty-btn btn-outline-danger';
         decBtn.textContent = '−';
         decBtn.setAttribute('aria-label', `Decrease quantity of ${name}`);
@@ -142,50 +141,40 @@ function displayProducts(productList) {
         noResults.classList.toggle('hidden', productList.length > 0);
     }
 
+    const allItems = Array.from(container.children);
     const visibleSet = new Set(productList.map(p => p.Product));
-    const children = Array.from(container.children);
-    
-    // 1. Update visibility and state
-    children.forEach(li => {
+
+    allItems.forEach(li => {
         const name = li.dataset.productName;
-        const isVisible = visibleSet.has(name);
-        const wasHidden = li.classList.contains('hidden');
-        
-        if (isVisible) {
-            li.classList.remove('hidden');
-            if (wasHidden) {
-                li.classList.add('appearing');
-                setTimeout(() => li.classList.remove('appearing'), 400);
-            }
-            // Sync order state
-            const sel = selectedProducts.find(s => s.productName === name);
-            li.classList.toggle('added-to-order', !!sel);
-            const qd = li.querySelector('.quantity-display');
-            if (qd) qd.value = sel ? sel.quantity : 0;
-        } else {
-            li.classList.add('hidden');
-        }
+        const sel = selectedProducts.find(s => s.productName === name);
+        li.classList.toggle('hidden', !visibleSet.has(name));
+        li.classList.toggle('added-to-order', !!sel);
+        li.setAttribute('aria-selected', sel ? 'true' : 'false');
+
+        const qd = li.querySelector('.quantity-display');
+        if (qd) qd.value = sel ? sel.quantity : 0;
     });
 
-    // 2. Reorder ONLY if necessary
-    // Check if the current visible order matches the productList order
-    const currentVisibleOrder = children
+    const currentVisibleOrder = allItems
         .filter(li => !li.classList.contains('hidden'))
         .map(li => li.dataset.productName);
-    
-    const desiredOrder = productList.map(p => p.Product);
-    
-    const needsReorder = currentVisibleOrder.length !== desiredOrder.length || 
-                         currentVisibleOrder.some((name, i) => name !== desiredOrder[i]);
+    const desiredOrder = productList.map(product => product.Product);
+    const needsReorder = currentVisibleOrder.length !== desiredOrder.length ||
+        currentVisibleOrder.some((name, index) => name !== desiredOrder[index]);
 
     if (needsReorder) {
-        // Use a fragment to Batch the moves and prevent layout thrashing
         const fragment = document.createDocumentFragment();
-        productList.forEach(p => {
-            const li = children.find(c => c.dataset.productName === p.Product);
-            if (li) fragment.appendChild(li);
+        productList.forEach(product => {
+            const item = allItems.find(li => li.dataset.productName === product.Product);
+            if (item) {
+                fragment.appendChild(item);
+            }
         });
         container.appendChild(fragment);
+    }
+
+    if (typeof syncVisibleProductState === 'function') {
+        syncVisibleProductState();
     }
 }
 
@@ -224,7 +213,6 @@ function openOrderModal(productItem) {
     document.getElementById('modal-core-type').innerHTML     = `<b>Core Type:</b> ${productItem.dataset.coreType}`;
     document.getElementById('modal-grade-type').innerHTML    = `<b>Grade Type:</b> ${productItem.dataset.gradeType}`;
     document.getElementById('modal-brand-mark').innerHTML    = `<b>Brand Mark:</b> ${productItem.dataset.brandMark}`;
-    openedProductForOrder = productItem;
     Modal.open('order-modal');
 }
 

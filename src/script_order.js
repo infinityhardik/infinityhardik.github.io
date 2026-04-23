@@ -39,8 +39,6 @@ function updateProductQuantityInOrder(productName, change) {
         selectedProducts = selectedProducts.filter(p => p.productName !== productName);
         if (li) {
             li.classList.remove('added-to-order');
-            li.classList.add('removed-from-order');
-            setTimeout(() => li.classList.remove('removed-from-order'), 300);
         }
     }
 
@@ -68,7 +66,7 @@ function clearOrder(event) {
     document.querySelectorAll('#product-list .product-item').forEach(item => {
         const qd = item.querySelector('.quantity-display');
         if (qd) qd.value = 0;
-        item.classList.remove('added-to-order', 'removed-from-order');
+        item.classList.remove('added-to-order');
     });
 
     // Reset show-selected-only if active
@@ -112,8 +110,8 @@ function updateOrderList() {
 
     // Keep "Show Selected Only" view in sync when items are added/removed
     if (typeof showSelectedOnly !== 'undefined' && showSelectedOnly &&
-        typeof filterProductsAndDisplay === 'function') {
-        filterProductsAndDisplay('', { skipScroll: true });
+        typeof refreshProductList === 'function') {
+        refreshProductList();
     }
 
     // Mobile textarea
@@ -130,7 +128,7 @@ function updateOrderList() {
                 .replace(/\*(.*?)\*/g, '<strong>$1</strong>')
                 .replace(/\n/g, '<br>');
         } else {
-            scratchpad.innerHTML = '<span style="color:var(--color-text-muted)">Your order will appear here...</span>';
+            scratchpad.innerHTML = '<span class="scratchpad-placeholder">Your order will appear here...</span>';
         }
     }
 }

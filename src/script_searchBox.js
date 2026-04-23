@@ -4,6 +4,7 @@
 
 // ─── State ────────────────────────────────────────────────────────────────────
 let showSelectedOnly = false;
+let currentSearchTerm = '';
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
@@ -18,14 +19,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (stickyControls) {
             stickyControls.classList.add('search-active');
-            
-            // Auto-scroll to top so the search bar is clearly visible
-            // Use a slight delay to allow the keyboard to start opening
-            setTimeout(() => {
+
+            // Bring the sticky action/search controls to the top on mobile
+            // so the focused search field stays visible above the keyboard.
+            window.clearTimeout(searchBox._mobileFocusScrollTimer);
+            searchBox._mobileFocusScrollTimer = window.setTimeout(() => {
                 const rect = stickyControls.getBoundingClientRect();
                 const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                window.scrollTo({ top: scrollTop + rect.top, behavior: 'smooth' });
-            }, 300); // Increased delay for mobile keyboards
+                const targetTop = Math.max(0, scrollTop + rect.top);
+                window.scrollTo({ top: targetTop, behavior: 'smooth' });
+            }, 300);
         }
     });
 
@@ -36,6 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             if (stickyControls) stickyControls.classList.remove('search-active');
         }, 150);
+
+        window.clearTimeout(searchBox._mobileFocusScrollTimer);
     });
 
     // ── Debounced input handling ──
@@ -83,7 +88,8 @@ function parseSearchInput(raw) {
 
 function handleSearchInput(raw) {
     const { searchTerm, quantity, isValid } = parseSearchInput(raw);
-    filterProductsAndDisplay(searchTerm);
+    currentSearchTerm = searchTerm;
+    refreshProductList();
 
     if (isValid && quantity !== null) {
         // Find first visible item using the .hidden class (matches how displayProducts works)
@@ -105,43 +111,60 @@ function handleSearchInput(raw) {
             }
 
             const searchBox = document.getElementById('search-box');
-            if (searchBox) searchBox.value = searchTerm;
+            if (searchBox) {
+                searchBox.value = searchTerm;
+                currentSearchTerm = searchTerm;
+            }
         }
     }
 }
 
-function filterProductsAndDisplay(filterTerm = '', options = {}) {
-    let list;
+function getFilteredProducts(filterTerm = currentSearchTerm) {
+    const normalized = filterTerm.trim().toUpperCase();
+    let list = productsData.productDirectory;
 
     if (showSelectedOnly) {
         list = selectedProducts
-            .map(s => productsData.productDirectory.find(p => p.Product === s.productName))
+            .map(selectedProduct =>
+                productsData.productDirectory.find(product => product.Product === selectedProduct.productName)
+            )
             .filter(Boolean);
-        if (filterTerm) {
-            const f = filterTerm.toUpperCase();
-            list = list.filter(p => containsInOrder(p.Product.toUpperCase(), f));
-        }
-    } else {
-        const normalized = filterTerm.trim().toUpperCase();
-        if (!normalized) {
-            list = productsData.productDirectory;
-        } else {
-            list = productsData.productDirectory.filter(p =>
-                containsInOrder(p.Product.toUpperCase(), normalized)
-            );
-            // Fallback: search product attributes if no name match
-            if (list.length === 0) {
-                list = productsData.productDirectory.filter(p =>
-                    containsInOrder((p['Brand Mark']    || '').toUpperCase(), normalized) ||
-                    containsInOrder((p['Core Type']     || '').toUpperCase(), normalized) ||
-                    containsInOrder((p['Grade Type']    || '').toUpperCase(), normalized) ||
-                    containsInOrder((p['Product Type']  || '').toUpperCase(), normalized)
-                );
-            }
-        }
     }
 
-    displayProducts(list);
+    if (typeof selectedFilters !== 'undefined' && Object.keys(selectedFilters).length > 0) {
+        list = list.filter(product =>
+            Object.entries(selectedFilters).every(([key, values]) =>
+                values.length === 0 || values.includes(String(product[key] || '').trim())
+            )
+        );
+    }
+
+    if (!normalized) {
+        return list;
+    }
+
+    const byName = list.filter(product =>
+        containsInOrder(product.Product.toUpperCase(), normalized)
+    );
+
+    if (byName.length > 0) {
+        return byName;
+    }
+
+    return list.filter(product =>
+        containsInOrder((product['Brand Mark'] || '').toUpperCase(), normalized) ||
+        containsInOrder((product['Core Type'] || '').toUpperCase(), normalized) ||
+        containsInOrder((product['Grade Type'] || '').toUpperCase(), normalized) ||
+        containsInOrder((product['Product Type'] || '').toUpperCase(), normalized) ||
+        containsInOrder((product['Group Name'] || '').toUpperCase(), normalized)
+    );
+}
+
+function refreshProductList() {
+    displayProducts(getFilteredProducts());
+    if (typeof resetFocus === 'function') {
+        resetFocus();
+    }
 }
 
 function clearSearch() {
@@ -152,7 +175,8 @@ function clearSearch() {
         const clearBtn = document.getElementById('clear-search-btn');
         if (clearBtn) clearBtn.classList.remove('is-visible');
     }
-    filterProductsAndDisplay('');
+    currentSearchTerm = '';
+    refreshProductList();
     if (typeof resetFocus === 'function') resetFocus();
 }
 
@@ -166,7 +190,8 @@ function toggleShowSelectedOnly() {
     updateShowSelectedOnlyButton();
     const searchBox = document.getElementById('search-box');
     if (showSelectedOnly && searchBox) searchBox.value = '';
-    filterProductsAndDisplay('', { skipScroll: true });
+    if (showSelectedOnly) currentSearchTerm = '';
+    refreshProductList();
 }
 
 function updateShowSelectedOnlyButton() {

@@ -43,8 +43,8 @@
       </div>
     </div>
     <div class="header-actions">
-      <button id="pwa-install-btn" class="btn btn-primary" style="display:none">Install</button>
-      <button id="darkModeToggle" onclick="toggleDarkMode()" title="Switch Theme">🌙</button>
+      <button id="pwa-install-btn" class="btn btn-primary is-hidden">Install</button>
+      <button id="darkModeToggle" class="icon-button" onclick="toggleDarkMode()" title="Switch Theme">🌙</button>
     </div>
   </header>
 
@@ -63,18 +63,18 @@
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
               Filters
             </button>
-            <button id="clearFilters" class="btn btn-secondary" style="display:none" onclick="clearFilters()" title="Clear All Active Filters (Ctrl+Shift+O)">Clear Filters</button>
+            <button id="clearFilters" class="btn btn-secondary is-hidden" onclick="clearFilters()" title="Clear All Active Filters (Ctrl+Shift+O)">Clear Filters</button>
             <button id="clearOrder" class="btn btn-danger" onclick="clearOrder()" title="Clear Entire Current Order (Ctrl+Delete)">Clear Order</button>
             <button id="orderHistoryBtn" class="btn btn-info" onclick="openOrderHistory()" title="View Past Orders (Ctrl+H)">
               History
-              <span class="history-badge" style="background:white;color:var(--color-info);padding:2px 6px;border-radius:4px;font-size:0.7rem;margin-left:4px;display:none">0</span>
+              <span class="history-badge history-badge--inline">0</span>
             </button>
             <button id="sendOrder" class="btn btn-success" onclick="sendOrder()" title="Send Order via WhatsApp (Ctrl+Enter)">Send Order</button>
           </div>
 
           <!-- Search Bar -->
           <div class="search-container" role="search">
-            <button id="showSelectedOnly" onclick="toggleShowSelectedOnly()" title="Toggle: Show Only Selected Items (Ctrl+S)" style="color:var(--color-primary);background:none;border:none;cursor:pointer;display:flex;align-items:center;padding:0 4px" aria-label="Toggle Show Selected Only">
+            <button id="showSelectedOnly" class="icon-button toggle-selected-button" onclick="toggleShowSelectedOnly()" title="Toggle: Show Only Selected Items (Ctrl+S)" aria-label="Toggle Show Selected Only">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             </button>
             <input type="search" id="search-box" class="search-input" placeholder="Search products..." autocomplete="off" 
@@ -83,7 +83,7 @@
             <button id="clear-search-btn" onclick="clearSearch()" title="Clear Search (Esc / Ctrl+Backspace)" aria-label="Clear Search">
               ✕
             </button>
-            <button id="helpButton" onclick="openHelpModal()" title="Help & Shortcuts (Ctrl+?)" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;padding:0 4px;color:var(--color-text-muted)" aria-label="Help and Shortcuts">
+            <button id="helpButton" class="icon-button help-button" onclick="openHelpModal()" title="Help & Shortcuts (Ctrl+?)" aria-label="Help and Shortcuts">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             </button>
           </div>
@@ -115,7 +115,7 @@
           <h2 class="scratchpad-title">Review before sending</h2>
         </div>
         <div id="scratchpad-content" class="scratchpad-content">
-          <span style="color:var(--color-text-muted)">Your order will appear here...</span>
+          <span class="scratchpad-placeholder">Your order will appear here...</span>
         </div>
         <div class="scratchpad-actions">
           <button class="btn btn-secondary" onclick="copyOrder()" title="Copy Order to Clipboard (Ctrl+C)">Copy</button>
@@ -132,9 +132,9 @@
     <button id="floating-order-button" class="floating-btn" onclick="toggleOrderPopup()" title="View Current Order (Ctrl+O)" aria-label="View Order">
       📜
     </button>
-    <button id="floating-history-button" class="floating-btn" onclick="openOrderHistory()" title="View Order History (Ctrl+H)" aria-label="Order History" style="position:relative">
+    <button id="floating-history-button" class="floating-btn floating-btn-history" onclick="openOrderHistory()" title="View Order History (Ctrl+H)" aria-label="Order History">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
-      <span class="history-badge" style="position:absolute;top:-4px;right:-4px;background:var(--color-danger);color:white;padding:1px 5px;border-radius:50%;font-size:0.65rem;display:none">0</span>
+      <span class="history-badge history-badge--floating">0</span>
     </button>
   </div>
 
@@ -146,7 +146,7 @@
         <button onclick="toggleOrderPopup()" aria-label="Close">✕</button>
       </div>
       <div class="modal-body">
-        <textarea id="selected-products" class="scratchpad-content" style="width:100%;min-height:180px;border:none;resize:none;outline:none" disabled></textarea>
+        <textarea id="selected-products" class="scratchpad-content mobile-order-text" disabled></textarea>
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" onclick="copyOrder()" title="Copy to Clipboard (Ctrl+C)">Copy</button>
@@ -158,14 +158,14 @@
 
   <!-- ── Filter Modal ──────────────────────────────────────────────────────── -->
   <div id="filter-modal" class="modal-overlay">
-    <div class="modal-content" style="max-width:560px">
+    <div class="modal-content modal-content--medium">
       <div class="modal-header">
         <h2 class="scratchpad-title">Filters</h2>
         <button onclick="Modal.close('filter-modal')" aria-label="Close">✕</button>
       </div>
       <div class="modal-body">
-        <div id="filter-options" style="display:grid;grid-template-columns:110px 1fr;gap:16px;min-height:200px">
-          <div id="list-tab" style="display:flex;flex-direction:column;gap:4px;border-right:1px solid var(--color-border);padding-right:12px"></div>
+        <div id="filter-options" class="filter-options-layout">
+          <div id="list-tab" class="filter-tab-list"></div>
           <div id="nav-tabContent"></div>
         </div>
       </div>
@@ -178,16 +178,15 @@
 
   <!-- ── History Modal ─────────────────────────────────────────────────────── -->
   <div id="history-modal" class="modal-overlay">
-    <div class="modal-content" style="max-width:680px">
+    <div class="modal-content modal-content--wide">
       <div class="modal-header">
         <h2 class="scratchpad-title">Order History</h2>
         <button onclick="Modal.close('history-modal')" aria-label="Close">✕</button>
       </div>
       <div class="modal-body">
-        <div style="display:flex;gap:8px;margin-bottom:16px">
-          <input type="search" id="history-search" class="search-input" placeholder="Search history..."
-            style="flex:1;border:1px solid var(--color-border);border-radius:var(--radius-md);padding:8px 12px">
-          <select id="history-sort" class="btn btn-secondary" style="padding:8px 12px">
+        <div class="history-toolbar">
+          <input type="search" id="history-search" class="search-input history-search-input" placeholder="Search history...">
+          <select id="history-sort" class="btn btn-secondary history-sort-select">
             <option value="newest">Newest First</option>
             <option value="oldest">Oldest First</option>
           </select>
@@ -195,7 +194,7 @@
         <div id="history-container"></div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-danger" onclick="confirmClearAllHistory()" style="margin-right:auto">Clear All</button>
+        <button class="btn btn-danger modal-footer-spacer" onclick="confirmClearAllHistory()">Clear All</button>
         <button class="btn btn-secondary" onclick="Modal.close('history-modal')">Close</button>
       </div>
     </div>
@@ -203,7 +202,7 @@
 
   <!-- ── Help Modal ────────────────────────────────────────────────────────── -->
   <div id="help-modal" class="modal-overlay">
-    <div class="modal-content" style="max-width:560px">
+    <div class="modal-content modal-content--medium">
       <div class="modal-header">
         <h2 class="scratchpad-title">Help & Shortcuts</h2>
         <button onclick="Modal.close('help-modal')" aria-label="Close">✕</button>
@@ -222,7 +221,7 @@
         <button onclick="Modal.close('order-modal')" aria-label="Close">✕</button>
       </div>
       <div class="modal-body">
-        <ul style="display:flex;flex-direction:column;gap:10px;list-style:none;font-size:0.9rem">
+        <ul class="product-meta-list">
           <li id="modal-product-type"></li>
           <li id="modal-face-type"></li>
           <li id="modal-core-type"></li>
@@ -243,10 +242,10 @@
         <h2 class="scratchpad-title">Install App</h2>
         <button onclick="Modal.close('ios-install-modal')" aria-label="Close">✕</button>
       </div>
-      <div class="modal-body" style="text-align:center">
+      <div class="modal-body install-modal-body">
         <p>To install on your iPhone/iPad:</p>
-        <div style="margin:20px 0;padding:16px;background:var(--color-bg);border-radius:var(--radius-md)">
-          <p style="margin-bottom:10px">1. Tap <strong>Share</strong> <span style="color:#007aff">⬆</span></p>
+        <div class="install-instructions">
+          <p class="install-step">1. Tap <strong>Share</strong> <span class="ios-share-icon">⬆</span></p>
           <p>2. Tap <strong>Add to Home Screen</strong> ＋</p>
         </div>
       </div>

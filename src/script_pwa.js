@@ -20,19 +20,19 @@ function initPWA() {
         e.preventDefault();
         deferredPrompt = e;
         if (!isInstalled && isMobile) {
-            installBtn.style.display = 'inline-flex';
+            installBtn.classList.remove('is-hidden');
         }
     });
 
     if (isIOS() && !isInstalled && isMobile) {
-        installBtn.style.display = 'inline-flex';
+        installBtn.classList.remove('is-hidden');
     }
 
     installBtn.addEventListener('click', async () => {
         if (deferredPrompt) {
             deferredPrompt.prompt();
             const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') installBtn.style.display = 'none';
+            if (outcome === 'accepted') installBtn.classList.add('is-hidden');
             deferredPrompt = null;
         } else if (isIOS()) {
             Modal.open('ios-install-modal');
@@ -41,7 +41,7 @@ function initPWA() {
 }
 
 window.addEventListener('appinstalled', () => {
-    if (installBtn) installBtn.style.display = 'none';
+    if (installBtn) installBtn.classList.add('is-hidden');
     deferredPrompt = null;
 });
 

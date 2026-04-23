@@ -1,6 +1,15 @@
 // Track the currently focused index for keyboard navigation in the product list.
 let currentFocusIndex = -1;
 
+function getVisibleProductItems() {
+    const productList = document.getElementById("product-list");
+    if (!productList) return [];
+
+    return Array.from(productList.children).filter(
+        li => li.classList.contains('product-item') && !li.classList.contains('hidden')
+    );
+}
+
 document.addEventListener("keydown", function (event) {
     const searchBox = document.getElementById("search-box");
     if (!searchBox) return;
@@ -89,11 +98,7 @@ document.addEventListener("keydown", function (event) {
         }
 
         // ─── List Navigation (Arrows) ───────────────────────────────────────
-        const productList = document.getElementById("product-list");
-        // Guard: only consider actual product rows (excludes #no-results and any other sibling elements)
-        const visibleItems = Array.from(productList.children).filter(
-            li => li.classList.contains('product-item') && !li.classList.contains('hidden')
-        );
+        const visibleItems = getVisibleProductItems();
 
         if (event.key === "ArrowDown" || event.key === "ArrowUp") {
             event.preventDefault();
@@ -207,41 +212,36 @@ function resetFocus() {
     });
 }
 
-// Ensure focus is reset after filtering
-const searchInput = document.getElementById("search-box");
-if (searchInput) {
-    searchInput.addEventListener("input", () => {
-        resetFocus();
-    });
-}
+function syncVisibleProductState() {
+    const visibleItems = getVisibleProductItems();
 
-const observer = new MutationObserver(() => {
-    // If the focused item was removed or hidden, reset focus
-    const productList = document.getElementById("product-list");
-    if (!productList) return;
-    
-    // Guard: only consider actual product rows (excludes #no-results and any other sibling elements)
-    const visibleItems = Array.from(productList.children).filter(
-        li => li.classList.contains('product-item') && !li.classList.contains('hidden')
-    );
-    
     const searchBox = document.getElementById("search-box");
     if (searchBox) {
         searchBox.setAttribute('aria-expanded', visibleItems.length > 0 ? 'true' : 'false');
     }
 
-    if (currentFocusIndex >= visibleItems.length) {
+    const focusedItem = document.querySelector('.product-item.keyboard-focus');
+
+    if (focusedItem && !visibleItems.includes(focusedItem)) {
+        resetFocus();
+        return;
+    }
+
+    if (focusedItem) {
+        currentFocusIndex = visibleItems.indexOf(focusedItem);
+    }
+
+    if (currentFocusIndex < 0 || currentFocusIndex >= visibleItems.length) {
         resetFocus();
     }
-});
-
-const productListEl = document.getElementById("product-list");
-if (productListEl) {
-    observer.observe(productListEl, { 
-        childList: true, 
-        subtree: true, 
-        attributes: true, 
-        attributeFilter: ['style', 'class'] 
-    });
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById("search-box");
+    if (!searchInput) return;
+
+    searchInput.addEventListener("input", () => {
+        resetFocus();
+    });
+});
 

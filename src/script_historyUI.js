@@ -89,8 +89,8 @@ function editOrderFromHistory(orderId) {
     if (typeof showSelectedOnly !== 'undefined') {
         showSelectedOnly = true;
         if (typeof updateShowSelectedOnlyButton === 'function') updateShowSelectedOnlyButton();
-        if (typeof filterProductsAndDisplay === 'function') {
-            filterProductsAndDisplay('', { skipScroll: true });
+        if (typeof refreshProductList === 'function') {
+            refreshProductList();
         }
     }
 
@@ -138,7 +138,7 @@ function updateHistoryBadge() {
     const count = getOrderHistoryCount();
     document.querySelectorAll('.history-badge').forEach(badge => {
         badge.textContent = count;
-        badge.style.display = count > 0 ? 'inline' : 'none';
+        badge.style.display = count > 0 ? '' : 'none';
     });
 }
 

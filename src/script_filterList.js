@@ -100,15 +100,7 @@ function populateFilterOptions() {
 
 // ─── Apply / Clear ────────────────────────────────────────────────────────────
 function applyFilters() {
-    let list = productsData.productDirectory;
-
-    Object.entries(selectedFilters).forEach(([key, values]) => {
-        if (values.length > 0) {
-            list = list.filter(p => values.includes(String(p[key] || '').trim()));
-        }
-    });
-
-    displayProducts(list);
+    if (typeof refreshProductList === 'function') refreshProductList();
     Modal.close('filter-modal');
 
     const count = Object.values(selectedFilters).filter(v => v.length > 0).length;
@@ -118,7 +110,7 @@ function applyFilters() {
 function clearFilters() {
     selectedFilters = {};
     document.querySelectorAll('.filter-checkbox').forEach(cb => cb.checked = false);
-    displayProducts(productsData.productDirectory);
+    if (typeof refreshProductList === 'function') refreshProductList();
     updateClearFiltersButtonStyle();
     displayFeedbackMessage('Filters cleared.', 'success');
 }
@@ -134,5 +126,5 @@ function updateClearFiltersButtonStyle() {
             : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg> Filters`;
     }
 
-    if (clearBtn) clearBtn.style.display = count > 0 ? 'inline-flex' : 'none';
+    if (clearBtn) clearBtn.classList.toggle('is-hidden', count === 0);
 }

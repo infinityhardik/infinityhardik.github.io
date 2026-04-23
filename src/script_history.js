@@ -5,7 +5,6 @@
  */
 
 const ORDER_HISTORY_KEY = 'orderHistory';
-const LAST_CLEANUP_KEY = 'lastCleanup';
 const MAX_HISTORY_ITEMS = 100;
 const CLEANUP_DAYS = 7;
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
@@ -157,7 +156,6 @@ function cleanupOldOrders() {
 
         if (cleanedCount > 0) {
             localStorage.setItem(ORDER_HISTORY_KEY, JSON.stringify(filteredHistory));
-            localStorage.setItem(LAST_CLEANUP_KEY, now.toString());
             console.log(`Cleaned up ${cleanedCount} old orders`);
 
             // Show subtle notification
@@ -175,78 +173,6 @@ function cleanupOldOrders() {
 }
 
 /**
- * Search orders by query string
- * @param {string} query - Search query
- * @returns {Array<Object>} Filtered orders
- */
-function searchOrders(query) {
-    if (!query || query.trim() === '') {
-        return getOrderHistory();
-    }
-
-    const history = getOrderHistory();
-    const searchLower = query.toLowerCase().trim();
-
-    return history.filter(order => {
-        // Search in order text
-        if (order.orderText.toLowerCase().includes(searchLower)) {
-            return true;
-        }
-
-        // Search in product names
-        const hasMatchingProduct = order.products.some(product =>
-            product.productName.toLowerCase().includes(searchLower)
-        );
-        if (hasMatchingProduct) {
-            return true;
-        }
-
-        // Search in formatted date
-        const dateStr = formatDateLabel(new Date(order.timestamp)).toLowerCase();
-        if (dateStr.includes(searchLower)) {
-            return true;
-        }
-
-        // Search in total items
-        if (order.totalItems.toString().includes(searchLower)) {
-            return true;
-        }
-
-        return false;
-    });
-}
-
-/**
- * Sort orders by different criteria
- * @param {Array<Object>} orders - Orders to sort
- * @param {string} sortBy - Sort criteria: 'newest', 'oldest', 'most', 'least'
- * @returns {Array<Object>} Sorted orders
- */
-function sortOrderHistory(orders, sortBy = 'newest') {
-    const sorted = [...orders]; // Create copy
-
-    switch (sortBy) {
-        case 'newest':
-            sorted.sort((a, b) => b.timestamp - a.timestamp);
-            break;
-        case 'oldest':
-            sorted.sort((a, b) => a.timestamp - b.timestamp);
-            break;
-        case 'most':
-            sorted.sort((a, b) => b.totalItems - a.totalItems);
-            break;
-        case 'least':
-            sorted.sort((a, b) => a.totalItems - b.totalItems);
-            break;
-        default:
-            // Default to newest first
-            sorted.sort((a, b) => b.timestamp - a.timestamp);
-    }
-
-    return sorted;
-}
-
-/**
  * Get the count of orders in history
  * @returns {number} Number of orders
  */
@@ -261,7 +187,6 @@ function getOrderHistoryCount() {
 function clearAllHistory() {
     try {
         localStorage.setItem(ORDER_HISTORY_KEY, JSON.stringify([]));
-        localStorage.setItem(LAST_CLEANUP_KEY, Date.now().toString());
         console.log('All order history cleared');
         return true;
     } catch (error) {
@@ -313,35 +238,6 @@ function formatTimeLabel(date) {
         minute: '2-digit',
         hour12: true
     });
-}
-
-/**
- * Group orders by date
- * @param {Array<Object>} orders - Orders to group
- * @returns {Object} Object with date labels as keys and arrays of orders as values
- */
-function groupOrdersByDate(orders) {
-    const grouped = {};
-
-    orders.forEach(order => {
-        const dateLabel = formatDateLabel(new Date(order.timestamp));
-
-        if (!grouped[dateLabel]) {
-            grouped[dateLabel] = {
-                label: dateLabel,
-                fullDate: new Date(order.timestamp).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                }),
-                orders: []
-            };
-        }
-
-        grouped[dateLabel].orders.push(order);
-    });
-
-    return grouped;
 }
 
 // Initialize on DOM ready
