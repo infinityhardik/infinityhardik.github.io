@@ -22,8 +22,10 @@ document.addEventListener('DOMContentLoaded', () => {
             // Auto-scroll to top so the search bar is clearly visible
             // Use a slight delay to allow the keyboard to start opening
             setTimeout(() => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }, 100);
+                const rect = stickyControls.getBoundingClientRect();
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                window.scrollTo({ top: scrollTop + rect.top, behavior: 'smooth' });
+            }, 300); // Increased delay for mobile keyboards
         }
     });
 
@@ -39,11 +41,24 @@ document.addEventListener('DOMContentLoaded', () => {
     // ── Debounced input handling ──
     let _timer = null;
     searchBox.addEventListener('input', () => {
+        // Toggle clear button visibility via CSS class (prevents layout shift)
+        const clearBtn = document.getElementById('clear-search-btn');
+        if (clearBtn) {
+            clearBtn.classList.toggle('is-visible', !!searchBox.value);
+        }
+
         // Longer delay when hyphen present (quantity shortcut needs to settle)
         const delay = searchBox.value.includes('-') ? 600 : 120;
         clearTimeout(_timer);
         _timer = setTimeout(() => handleSearchInput(searchBox.value), delay);
     });
+
+    // ── Sticky Header Shadow on Scroll ──
+    window.addEventListener('scroll', () => {
+        if (stickyControls) {
+            stickyControls.classList.toggle('sticky-scrolled', window.scrollY > 10);
+        }
+    }, { passive: true });
 });
 
 // ─── Search Logic ─────────────────────────────────────────────────────────────
@@ -71,10 +86,24 @@ function handleSearchInput(raw) {
     filterProductsAndDisplay(searchTerm);
 
     if (isValid && quantity !== null) {
-        // Find first visible item and set its quantity
-        const first = document.querySelector('#product-list .product-item:not([style*="display: none"]):not([style*="display:none"])');
+        // Find first visible item using the .hidden class (matches how displayProducts works)
+        const first = getFirstVisibleProductElement();
         if (first && first.dataset.productName) {
             addToOrder(first.dataset.productName, quantity);
+
+            // Sync keyboard-navigation focus to the first visible item
+            if (typeof currentFocusIndex !== 'undefined' && typeof updateListFocus === 'function') {
+                const productList = document.getElementById('product-list');
+                if (productList) {
+                    // Guard: only consider actual product rows (excludes #no-results and any other sibling elements)
+                    const visibleItems = Array.from(productList.children).filter(
+                        li => li.classList.contains('product-item') && !li.classList.contains('hidden')
+                    );
+                    currentFocusIndex = 0;
+                    updateListFocus(visibleItems);
+                }
+            }
+
             const searchBox = document.getElementById('search-box');
             if (searchBox) searchBox.value = searchTerm;
         }
@@ -117,12 +146,18 @@ function filterProductsAndDisplay(filterTerm = '', options = {}) {
 
 function clearSearch() {
     const searchBox = document.getElementById('search-box');
-    if (searchBox) searchBox.value = '';
+    if (searchBox) {
+        searchBox.value = '';
+        searchBox.focus();
+        const clearBtn = document.getElementById('clear-search-btn');
+        if (clearBtn) clearBtn.classList.remove('is-visible');
+    }
     filterProductsAndDisplay('');
+    if (typeof resetFocus === 'function') resetFocus();
 }
 
 function getFirstVisibleProductElement() {
-    return document.querySelector('#product-list .product-item:not([style*="display: none"]):not([style*="display:none"])') || null;
+    return document.querySelector('#product-list .product-item:not(.hidden)') || null;
 }
 
 // ─── Show Selected Only ───────────────────────────────────────────────────────

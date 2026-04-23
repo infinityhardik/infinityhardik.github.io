@@ -14,16 +14,18 @@ function initPWA() {
 
     if (!installBtn) return;
 
+    const isMobile = window.innerWidth < 1024;
+
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        if (!isInstalled) {
-            installBtn.style.display = 'flex';
+        if (!isInstalled && isMobile) {
+            installBtn.style.display = 'inline-flex';
         }
     });
 
-    if (isIOS() && !isInstalled) {
-        installBtn.style.display = 'flex';
+    if (isIOS() && !isInstalled && isMobile) {
+        installBtn.style.display = 'inline-flex';
     }
 
     installBtn.addEventListener('click', async () => {

@@ -1,325 +1,247 @@
 // Track the currently focused index for keyboard navigation in the product list.
-// -1: Search box is focused or no item is focused.
-// 0+: Corresponds to the index of the visible product item (0-based).
 let currentFocusIndex = -1;
 
 document.addEventListener("keydown", function (event) {
     const searchBox = document.getElementById("search-box");
-    const filterModal = document.getElementById("filter-modal");
-    const orderModal = document.getElementById("order-modal");
-    const helpModal = document.getElementById("help-modal");
-    const historyModal = document.getElementById("history-modal");
-    const orderTextPopup = document.getElementById('order-text-popup');
+    if (!searchBox) return;
 
-    // Check if any modal or the order text popup is currently open.
-    const isFilterModalOpen = filterModal?.classList.contains("show");
-    const isOrderModalOpen = orderModal?.classList.contains("show");
-    const isHelpModalOpen = helpModal?.classList.contains("show");
-    const isHistoryModalOpen = historyModal?.classList.contains("show");
-    const isOrderPopupOpen = orderTextPopup?.classList.contains("show");
+    // Check for open modals/popups using the design system's .active class
+    const activeModal = document.querySelector(".modal-overlay.active");
+    const isModalOpen = !!activeModal;
 
-
-    // Handle keyboard shortcuts globally if no modal or popup is open.
-    if (!isFilterModalOpen && !isOrderModalOpen && !isHelpModalOpen && !isHistoryModalOpen && !isOrderPopupOpen) {
-
-        // Ctrl + Shift + F: Open Filters Modal
-        if (event.ctrlKey && event.shiftKey && (event.key === "f" || event.key === "F")) {
-            event.preventDefault(); // Prevent default browser actions (e.g., find)
-            document.getElementById('filterProductList').click(); // Simulate click on the Filters button
-            return; // Exit to prevent further key processing
-        }
-
-        // Ctrl + Shift + O : Clear Filters
-        if (event.ctrlKey && event.shiftKey && (event.key === "o" || event.key === "O")) {
-            event.preventDefault();
-            document.getElementById('clearFilters').click(); // Simulate click on the Clear Filters button
-            return;
-        }
-
-        // Ctrl + Delete: Clear Entire Order
-        if (event.ctrlKey && event.key === "Delete") {
-            event.preventDefault();
-            clearOrder(); // Call the function to clear the order
-            return;
-        }
-
-        // Ctrl + Backspace: Clear Search Text
-        if (event.ctrlKey && event.key === "Backspace") {
-            event.preventDefault();
-            clearSearch(); // Properly clear search and filter list
-            return;
-        }
-
-        // Ctrl + Enter: Send Order via WhatsApp
-        if (event.ctrlKey && event.key === "Enter") {
-            event.preventDefault();
-            sendOrder(); // Call the function to send the order
-            return;
-        }
-
-        // Ctrl + C: Copy Order Text to Clipboard
-        if (event.ctrlKey && (event.key === "c" || event.key === "C")) {
-            event.preventDefault();
-            copyOrder(); // Call the function to copy the order text
-            return;
-        }
-
-        // Ctrl + / or ?: Open Help Text Modal
-        if (event.ctrlKey && (event.key === "/" || event.key === "?")) {
-            event.preventDefault();
-            document.getElementById('helpButton').click(); // Simulate click on the Help button
-            return;
-        }
-
-        // Ctrl + O: Toggle View/Edit Order Popup
-        if (event.ctrlKey && !event.shiftKey && (event.key === "o" || event.key === "O")) {
-            event.preventDefault();
-            toggleOrderPopup(); // Toggle the View/Edit Order popup
-            return;
-        }
-
-        // Ctrl + H: Open Order History
-        if (event.ctrlKey && (event.key === "h" || event.key === "H")) {
-            event.preventDefault();
-            openOrderHistory(); // Open the Order History modal
-            return;
-        }
-
-        // Ctrl + S: Toggle Show Selected Only
-        if (event.ctrlKey && (event.key === "s" || event.key === "S")) {
-            event.preventDefault();
-            const showSelectedOnlyBtn = document.getElementById('showSelectedOnly');
-            if (showSelectedOnlyBtn) showSelectedOnlyBtn.click();
-            return;
-        }
-
-        // Alphanumeric Keys: Focus search box and type the character.
-        // This ensures typing directly in the search box even if it's not focused.
-        if ((/^[a-zA-Z0-9]$/.test(event.key) || event.key === '-' || event.key === ' ') && !event.ctrlKey && !event.altKey && !event.metaKey) {
-            // If the search box is not currently focused, focus it
-            const activeElement = document.activeElement;
-            const isInputFocused = activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA';
-
-            if (activeElement !== searchBox && !isInputFocused) {
-                searchBox.focus();
-                // If the search box was not focused and now is, ensure the cursor is at the end
-                searchBox.setSelectionRange(searchBox.value.length, searchBox.value.length);
+    // ─── Global Shortcuts (when no modal is open) ───────────────────────────
+    if (!isModalOpen) {
+        // Ctrl shortcuts
+        if (event.ctrlKey) {
+            const key = event.key.toLowerCase();
+            switch (key) {
+                case 'f': // Filter Modal
+                    if (event.shiftKey) {
+                        event.preventDefault();
+                        const filterBtn = document.getElementById('filterProductList');
+                        if (filterBtn) filterBtn.click();
+                        return;
+                    }
+                    break;
+                case 'o': // Order Popup or Clear Filters
+                    event.preventDefault();
+                    if (event.shiftKey) {
+                        const clearFiltersBtn = document.getElementById('clearFilters');
+                        if (clearFiltersBtn) clearFiltersBtn.click();
+                    } else {
+                        if (typeof toggleOrderPopup === 'function') toggleOrderPopup();
+                    }
+                    return;
+                case 'delete': // Clear Order
+                    event.preventDefault();
+                    if (typeof clearOrder === 'function') clearOrder();
+                    return;
+                case 'backspace': // Clear Search
+                    event.preventDefault();
+                    if (typeof clearSearch === 'function') clearSearch();
+                    return;
+                case 'enter': // Send Order
+                    event.preventDefault();
+                    if (typeof sendOrder === 'function') sendOrder();
+                    return;
+                case 'c': // Copy Order
+                    event.preventDefault();
+                    if (typeof copyOrder === 'function') copyOrder();
+                    return;
+                case 'h': // History
+                    event.preventDefault();
+                    if (typeof openOrderHistory === 'function') openOrderHistory();
+                    return;
+                case 's': // Toggle Show Selected
+                    event.preventDefault();
+                    if (typeof toggleShowSelectedOnly === 'function') toggleShowSelectedOnly();
+                    return;
+                case '/': // Help
+                case '?':
+                    event.preventDefault();
+                    const helpBtn = document.getElementById('helpButton');
+                    if (helpBtn) helpBtn.click();
+                    return;
             }
-            // Allow default typing behavior for alphanumeric keys in the search box
-            // The 'input' event listener on searchBox will handle filtering.
         }
 
-        // Handle Backspace Key: Always focus search box and allow input
-        if (event.key === "Backspace") {
-            if (document.activeElement !== searchBox) {
+        // ─── Escape Key Handling ───────────────────────────────────────────
+        if (event.key === "Escape") {
+            if (searchBox.value !== "") {
                 event.preventDefault();
+                if (typeof clearSearch === 'function') clearSearch();
+            } else if (document.activeElement === searchBox) {
+                searchBox.blur();
+            }
+            return;
+        }
+
+        // ─── Alphanumeric Keys (focus search) ───────────────────────────
+        if ((/^[a-zA-Z0-9]$/.test(event.key) || event.key === '-' || event.key === ' ') && 
+            !event.ctrlKey && !event.altKey && !event.metaKey) {
+            const active = document.activeElement;
+            const isInput = active.tagName === 'INPUT' || active.tagName === 'TEXTAREA';
+            if (active !== searchBox && !isInput) {
                 searchBox.focus();
+                // Cursor to end
                 searchBox.setSelectionRange(searchBox.value.length, searchBox.value.length);
             }
-            // If already focused, allow default behavior (deleting text)
         }
 
-        // Handle Delete Key: Remove the character after the cursor from the search box
-        if (event.key === "Delete" && document.activeElement === searchBox) {
-            // Allow default delete behavior in the search box
-            // The 'input' event listener on searchBox will handle filtering.
-        }
-
-        // Arrow Key Navigation (Down and Up arrows) for product list items.
-        const productListContainer = document.getElementById("product-list");
-        // Get only the currently visible product items
-        // This is simplified as `displayProducts` now only renders visible items.
-        const visibleItems = Array.from(productListContainer.children);
-
-        // --- Quantity Change Shortcuts ---
-        // Ctrl + Arrow Up or Ctrl + Arrow Right: Increase quantity
-        if ((event.ctrlKey && (event.key === "ArrowUp" || event.key === "ArrowRight")) && currentFocusIndex >= 0 && currentFocusIndex < visibleItems.length) {
-            event.preventDefault();
-            const productName = visibleItems[currentFocusIndex].dataset.productName;
-            if (productName) {
-                updateProductQuantityInOrder(productName, 1);
-            }
-            return;
-        }
-        // Ctrl + Arrow Down or Ctrl + Arrow Left: Decrease quantity
-        if ((event.ctrlKey && (event.key === "ArrowDown" || event.key === "ArrowLeft")) && currentFocusIndex >= 0 && currentFocusIndex < visibleItems.length) {
-            event.preventDefault();
-            const productName = visibleItems[currentFocusIndex].dataset.productName;
-            if (productName) {
-                updateProductQuantityInOrder(productName, -1);
-            }
-            return;
-        }
+        // ─── List Navigation (Arrows) ───────────────────────────────────────
+        const productList = document.getElementById("product-list");
+        // Guard: only consider actual product rows (excludes #no-results and any other sibling elements)
+        const visibleItems = Array.from(productList.children).filter(
+            li => li.classList.contains('product-item') && !li.classList.contains('hidden')
+        );
 
         if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-            event.preventDefault(); // Prevent page scrolling
-
-            if (visibleItems.length === 0) {
-                currentFocusIndex = -1;
-                searchBox.focus(); // Ensure search box is focused if list is empty
-                return;
-            }
-
-            // Remove keyboard-focus and focus from all items before updating
-            visibleItems.forEach(item => item.classList.remove("focus", "keyboard-focus"));
-
-            // Always clamp currentFocusIndex to -1 after search/filter
-            if (document.activeElement === searchBox) {
-                currentFocusIndex = -1;
-            }
+            event.preventDefault();
+            if (visibleItems.length === 0) return;
 
             if (event.key === "ArrowDown") {
                 if (currentFocusIndex === -1) {
-                    // From search box, move to the first visible item
+                    // ↓ First press from search box → always land on first item
                     currentFocusIndex = 0;
-                    searchBox.blur(); // Unfocus search box
                 } else if (currentFocusIndex < visibleItems.length - 1) {
-                    // Move to the next visible item
                     currentFocusIndex++;
-                }
-                // Always highlight the current focused item if in range
-                if (currentFocusIndex >= 0 && currentFocusIndex < visibleItems.length) {
-                    visibleItems[currentFocusIndex].classList.add("focus", "keyboard-focus");
-                    visibleItems[currentFocusIndex].scrollIntoView({ block: "nearest", behavior: "smooth" });
-                }
-            }
-
-            if (event.key === "ArrowUp") {
-                if (currentFocusIndex <= 0) {
-                    // From the first item, move back to search box
-                    if (visibleItems[0]) {
-                        visibleItems[0].classList.remove("focus", "keyboard-focus");
-                    }
-                    searchBox.focus();
-                    currentFocusIndex = -1;
                 } else {
-                    // Move to the previous visible item
+                    currentFocusIndex = 0; // Wrap to top
+                }
+            } else { // ArrowUp
+                if (currentFocusIndex <= 0) {
+                    // ↑ On first item (or already at search) → return to search box
+                    currentFocusIndex = -1;
+                    updateListFocus(visibleItems);
+                    searchBox.focus();
+                    return;
+                } else {
                     currentFocusIndex--;
-                    if (currentFocusIndex >= 0 && visibleItems[currentFocusIndex]) {
-                        visibleItems[currentFocusIndex].classList.add("focus", "keyboard-focus");
-                        visibleItems[currentFocusIndex].scrollIntoView({ block: "nearest", behavior: "smooth" });
-                    }
                 }
             }
+
+            updateListFocus(visibleItems);
+            return;
         }
 
-        // Simulate click with Enter key on the currently focused list item.
-        if (event.key === "Enter") {
-            if (currentFocusIndex >= 0 && currentFocusIndex < visibleItems.length) {
+        // ─── Quantity Shortcuts (Left/Right) ─────────────────────────────────
+        if ((event.key === "ArrowLeft" || event.key === "ArrowRight") && currentFocusIndex >= 0) {
+            const item = visibleItems[currentFocusIndex];
+            if (item) {
                 event.preventDefault();
-                // Simulate click on the product info div, not the entire li
-                const productInfoDiv = visibleItems[currentFocusIndex].querySelector('.product-info');
-                if (productInfoDiv) {
-                    productInfoDiv.click();
+                const productName = item.dataset.productName;
+                const change = event.key === "ArrowRight" ? 1 : -1;
+                if (typeof updateProductQuantityInOrder === 'function') {
+                    updateProductQuantityInOrder(productName, change);
                 }
-            } else if (document.activeElement === searchBox) {
-                // If search box is active and Enter is pressed, try to process quantity if present
-                const searchInput = searchBox.value;
-                const { searchTerm, quantity, isValid } = parseSearchInput(searchInput);
+            }
+            return;
+        }
 
-                if (isValid && quantity !== null) {
-                    const firstVisibleProductElement = getFirstVisibleProductElement();
-                    if (firstVisibleProductElement) {
-                        const productName = firstVisibleProductElement.dataset.productName;
-                        // Call addToOrder with the product name and desired quantity
-                        addToOrder(productName, quantity);
-                        searchBox.value = searchTerm; // Clear quantity from search box after processing
-                        filterProductsAndDisplay(searchTerm); // Refresh the list using the new improved function
-                        resetFocus(); // Reset focus after action
-                    }
-                }
+        // ─── Enter Key (Select/Detail) ───────────────────────────────────────
+        if (event.key === "Enter") {
+            if (currentFocusIndex >= 0 && visibleItems[currentFocusIndex]) {
+                event.preventDefault();
+                const infoDiv = visibleItems[currentFocusIndex].querySelector('.product-info');
+                if (infoDiv) infoDiv.click();
+            } else if (document.activeElement === searchBox) {
+                // Already handled by input logic usually, but let's ensure Enter 
+                // on search doesn't do anything weird if we're not using it for quantity
             }
         }
 
-    } else if (isOrderModalOpen) {
-        // Keyboard navigation specific to the Order Quantity Modal (now simplified)
-        // No numeric keypad to handle here
-        // If Escape key is pressed, close the modal
-        if (event.key === 'Escape') {
+    } else {
+        // ─── Modal Shortcuts ────────────────────────────────────────────────
+        if (event.key === "Escape") {
             event.preventDefault();
-            // Assuming the close button has data-bs-dismiss="modal" and onclick="addToOrder()"
-            // Simulating click on the close button to close the modal.
-            document.querySelector('#order-modal .btn-close').click();
-        }
-    } else if (isOrderPopupOpen) {
-        // Handle keyboard shortcuts specifically for the Order Text Popup
-        if (event.key === 'Escape') {
-            event.preventDefault();
-            toggleOrderPopup(); // Close the popup
-        } else if (event.ctrlKey && !event.shiftKey && (event.key === "o" || event.key === "O")) {
-            event.preventDefault();
-            toggleOrderPopup(); // Toggle the popup with Ctrl+O
-        } else if (event.ctrlKey && (event.key === "c" || event.key === "C")) {
-            event.preventDefault();
-            copyOrder(); // Call the function to copy the order text
-        } else if (event.ctrlKey && event.key === "Delete") {
-            event.preventDefault();
-            clearOrder(); // Call the function to clear the order
-        } else if (event.ctrlKey && event.key === "Enter") {
-            event.preventDefault();
-            sendOrder(); // Call the function to send the order
+            const closeBtn = activeModal.querySelector('.modal-header button, .modal-footer .btn-secondary');
+            if (closeBtn) closeBtn.click();
+            else if (typeof Modal !== 'undefined') Modal.close(activeModal.id);
         }
     }
-    // No 'else' block for `event.preventDefault()` if a modal is open.
-    // This allows default behavior within modals unless explicitly handled.
 });
 
-// Function to focus the first visible product item in the list after filtering or clearing
-function focusFirstVisibleItem() {
-    const productListContainer = document.getElementById("product-list");
-    const visibleItems = Array.from(productListContainer.children);
-    resetFocus(); // Always clear any previous focus
-    if (visibleItems.length > 0) {
-        currentFocusIndex = 0;
-        visibleItems[0].classList.add("focus");
-        // Do NOT add keyboard-focus here (only for arrow keys)
-        visibleItems[0].scrollIntoView({ block: "nearest", behavior: "smooth" });
+/**
+ * Updates the visual and ARIA focus states for the list.
+ */
+function updateListFocus(visibleItems) {
+    const searchBox = document.getElementById("search-box");
+    
+    // Update aria-expanded based on results
+    if (searchBox) {
+        searchBox.setAttribute('aria-expanded', visibleItems.length > 0 ? 'true' : 'false');
+    }
+
+    // Remove all old focus classes
+    document.querySelectorAll('.product-item.keyboard-focus').forEach(el => {
+        el.classList.remove('keyboard-focus');
+        el.setAttribute('aria-selected', el.classList.contains('added-to-order') ? 'true' : 'false');
+    });
+
+    if (currentFocusIndex >= 0 && visibleItems[currentFocusIndex]) {
+        const item = visibleItems[currentFocusIndex];
+        item.classList.add('keyboard-focus');
+        item.scrollIntoView({ block: "nearest", behavior: "smooth" });
+        
+        // Update ARIA
+        if (searchBox) {
+            searchBox.setAttribute('aria-activedescendant', item.id);
+        }
     } else {
-        currentFocusIndex = -1;
+        if (searchBox) {
+            searchBox.removeAttribute('aria-activedescendant');
+        }
     }
 }
 
-// Ensure pointer never stays on a hidden item after navigation
-function validatePointerAfterListChange() {
-    const productListContainer = document.getElementById("product-list");
-    const visibleItems = Array.from(productListContainer.children);
+/**
+ * Resets the focus index, usually called after filtering.
+ */
+function resetFocus() {
+    currentFocusIndex = -1;
+    const searchBox = document.getElementById("search-box");
+    if (searchBox) searchBox.removeAttribute('aria-activedescendant');
+    
+    document.querySelectorAll('.product-item.keyboard-focus').forEach(el => {
+        el.classList.remove('keyboard-focus');
+    });
+}
+
+// Ensure focus is reset after filtering
+const searchInput = document.getElementById("search-box");
+if (searchInput) {
+    searchInput.addEventListener("input", () => {
+        resetFocus();
+    });
+}
+
+const observer = new MutationObserver(() => {
+    // If the focused item was removed or hidden, reset focus
+    const productList = document.getElementById("product-list");
+    if (!productList) return;
+    
+    // Guard: only consider actual product rows (excludes #no-results and any other sibling elements)
+    const visibleItems = Array.from(productList.children).filter(
+        li => li.classList.contains('product-item') && !li.classList.contains('hidden')
+    );
+    
+    const searchBox = document.getElementById("search-box");
+    if (searchBox) {
+        searchBox.setAttribute('aria-expanded', visibleItems.length > 0 ? 'true' : 'false');
+    }
+
     if (currentFocusIndex >= visibleItems.length) {
         resetFocus();
-        if (visibleItems.length > 0) {
-            currentFocusIndex = 0;
-            visibleItems[0].classList.add("focus");
-            visibleItems[0].scrollIntoView({ block: "nearest", behavior: "smooth" });
-        }
     }
-}
+});
 
-// Listen for DOM changes to product list to validate pointer
-const productListContainer = document.getElementById("product-list");
-if (productListContainer) {
-    const observer = new MutationObserver(() => {
-        validatePointerAfterListChange();
-    });
-    observer.observe(productListContainer, { childList: true });
-}
-
-// In resetFocus, also remove keyboard-focus
-function resetFocus() {
-    const focusedItems = document.querySelectorAll('.list-group-item.focus, .list-group-item.keyboard-focus');
-    focusedItems.forEach(item => {
-        item.classList.remove('focus', 'keyboard-focus');
-    });
-    currentFocusIndex = -1;
-}
-
-// Ensure focus is reset after filtering/searching
-const searchBoxInput = document.getElementById("search-box");
-if (searchBoxInput) {
-    searchBoxInput.addEventListener("input", function () {
-        resetFocus();
-        // Remove all focus and keyboard-focus classes from product list items
-        const productListContainer = document.getElementById("product-list");
-        if (productListContainer) {
-            Array.from(productListContainer.children).forEach(item => item.classList.remove("focus", "keyboard-focus"));
-        }
+const productListEl = document.getElementById("product-list");
+if (productListEl) {
+    observer.observe(productListEl, { 
+        childList: true, 
+        subtree: true, 
+        attributes: true, 
+        attributeFilter: ['style', 'class'] 
     });
 }
+

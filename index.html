@@ -59,35 +59,52 @@
         <div class="sticky-controls">
           <!-- Action Bar -->
           <div class="action-bar">
-            <button id="filterProductList" class="btn btn-primary" onclick="openFilterModal()" title="Filters">
+            <button id="filterProductList" class="btn btn-primary" onclick="openFilterModal()" title="Open Filters (Ctrl+Shift+F)">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
               Filters
             </button>
-            <button id="clearFilters" class="btn btn-secondary" style="display:none" onclick="clearFilters()">Clear Filters</button>
-            <button id="clearOrder" class="btn btn-danger" onclick="clearOrder()">Clear Order</button>
-            <button id="orderHistoryBtn" class="btn btn-info" onclick="openOrderHistory()">
+            <button id="clearFilters" class="btn btn-secondary" style="display:none" onclick="clearFilters()" title="Clear All Active Filters (Ctrl+Shift+O)">Clear Filters</button>
+            <button id="clearOrder" class="btn btn-danger" onclick="clearOrder()" title="Clear Entire Current Order (Ctrl+Delete)">Clear Order</button>
+            <button id="orderHistoryBtn" class="btn btn-info" onclick="openOrderHistory()" title="View Past Orders (Ctrl+H)">
               History
               <span class="history-badge" style="background:white;color:var(--color-info);padding:2px 6px;border-radius:4px;font-size:0.7rem;margin-left:4px;display:none">0</span>
             </button>
-            <button id="sendOrder" class="btn btn-success" onclick="sendOrder()">Send Order</button>
+            <button id="sendOrder" class="btn btn-success" onclick="sendOrder()" title="Send Order via WhatsApp (Ctrl+Enter)">Send Order</button>
           </div>
 
           <!-- Search Bar -->
-          <div class="search-container">
-            <button id="showSelectedOnly" onclick="toggleShowSelectedOnly()" title="Show Selected Only" style="color:var(--color-primary);background:none;border:none;cursor:pointer;display:flex;align-items:center;padding:0 4px">
+          <div class="search-container" role="search">
+            <button id="showSelectedOnly" onclick="toggleShowSelectedOnly()" title="Toggle: Show Only Selected Items (Ctrl+S)" style="color:var(--color-primary);background:none;border:none;cursor:pointer;display:flex;align-items:center;padding:0 4px" aria-label="Toggle Show Selected Only">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             </button>
-            <input type="search" id="search-box" class="search-input" placeholder="Search products..." autocomplete="off">
-            <button id="helpButton" onclick="openHelpModal()" title="Help" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;padding:0 4px;color:var(--color-text-muted)">
+            <input type="search" id="search-box" class="search-input" placeholder="Search products..." autocomplete="off" 
+              aria-label="Search products" role="combobox" aria-autocomplete="list" aria-expanded="false" 
+              aria-haspopup="listbox" aria-controls="product-list" title="Tip: Type 'NAME-QTY' to add quickly (e.g., Plywood-10)">
+            <button id="clear-search-btn" onclick="clearSearch()" title="Clear Search (Esc / Ctrl+Backspace)" aria-label="Clear Search">
+              ✕
+            </button>
+            <button id="helpButton" onclick="openHelpModal()" title="Help & Shortcuts (Ctrl+?)" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;padding:0 4px;color:var(--color-text-muted)" aria-label="Help and Shortcuts">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             </button>
           </div>
         </div>
 
         <!-- Product List -->
-        <ul id="product-list" class="product-list">
+        <ul id="product-list" class="product-list" role="listbox" aria-label="Product list">
           <!-- Populated by JS -->
         </ul>
+
+        <!-- No Results State -->
+        <div id="no-results" class="no-results hidden">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            <line x1="11" y1="8" x2="11" y2="14"></line>
+            <line x1="8" y1="11" x2="14" y2="11"></line>
+          </svg>
+          <h3>No products found</h3>
+          <p>Try adjusting your search or filters to find what you're looking for.</p>
+        </div>
 
       </main>
 
@@ -101,9 +118,9 @@
           <span style="color:var(--color-text-muted)">Your order will appear here...</span>
         </div>
         <div class="scratchpad-actions">
-          <button class="btn btn-secondary" onclick="copyOrder()">Copy</button>
-          <button class="btn btn-danger" onclick="clearOrder()">Clear</button>
-          <button class="btn btn-success" onclick="sendOrder()">Send via WhatsApp</button>
+          <button class="btn btn-secondary" onclick="copyOrder()" title="Copy Order to Clipboard (Ctrl+C)">Copy</button>
+          <button class="btn btn-danger" onclick="clearOrder()" title="Clear Entire Order (Ctrl+Delete)">Clear</button>
+          <button class="btn btn-success" onclick="sendOrder()" title="Send Order via WhatsApp (Ctrl+Enter)">Send via WhatsApp</button>
         </div>
       </aside>
 
@@ -112,10 +129,10 @@
 
   <!-- ── Mobile Floating Buttons ───────────────────────────────────────────── -->
   <div class="floating-actions">
-    <button id="floating-order-button" class="floating-btn" onclick="toggleOrderPopup()" title="View Order" aria-label="View Order">
+    <button id="floating-order-button" class="floating-btn" onclick="toggleOrderPopup()" title="View Current Order (Ctrl+O)" aria-label="View Order">
       📜
     </button>
-    <button id="floating-history-button" class="floating-btn" onclick="openOrderHistory()" title="History" aria-label="Order History" style="position:relative">
+    <button id="floating-history-button" class="floating-btn" onclick="openOrderHistory()" title="View Order History (Ctrl+H)" aria-label="Order History" style="position:relative">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
       <span class="history-badge" style="position:absolute;top:-4px;right:-4px;background:var(--color-danger);color:white;padding:1px 5px;border-radius:50%;font-size:0.65rem;display:none">0</span>
     </button>
@@ -132,9 +149,9 @@
         <textarea id="selected-products" class="scratchpad-content" style="width:100%;min-height:180px;border:none;resize:none;outline:none" disabled></textarea>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-secondary" onclick="copyOrder()">Copy</button>
-        <button class="btn btn-danger" onclick="clearOrder()">Clear</button>
-        <button class="btn btn-success" onclick="sendOrder()">Send</button>
+        <button class="btn btn-secondary" onclick="copyOrder()" title="Copy to Clipboard (Ctrl+C)">Copy</button>
+        <button class="btn btn-danger" onclick="clearOrder()" title="Clear Entire Order (Ctrl+Delete)">Clear</button>
+        <button class="btn btn-success" onclick="sendOrder()" title="Send via WhatsApp (Ctrl+Enter)">Send</button>
       </div>
     </div>
   </div>

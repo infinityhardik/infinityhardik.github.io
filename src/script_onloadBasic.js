@@ -37,12 +37,17 @@ function renderAllProducts() {
     if (!container) return;
     container.innerHTML = '';
 
-    productsData.productDirectory.forEach(product => {
+    productsData.productDirectory.forEach((product, index) => {
         const name = product.Product;
         const sel = selectedProducts.find(p => p.productName === name);
+        const itemId = `product-item-${index}`;
 
         const item = document.createElement('li');
         item.className = 'product-item';
+        item.id = itemId;
+        item.setAttribute('role', 'option');
+        item.setAttribute('aria-selected', 'false');
+        item.tabIndex = -1; // Managed via keyboard navigation
         item.dataset.productName = name;
         item.dataset.productType      = product['Product Type']    || '';
         item.dataset.productGroup     = product['Group Name']      || '';
@@ -53,15 +58,31 @@ function renderAllProducts() {
         item.dataset.gradeType        = product['Grade Type']      || '';
         item.dataset.brandMark        = product['Brand Mark']      || '';
 
-        if (sel) item.classList.add('added-to-order');
+        if (sel) {
+            item.classList.add('added-to-order');
+            item.setAttribute('aria-selected', 'true');
+        }
 
         // ── Product info (click → detail modal) ──
         const info = document.createElement('div');
         info.className = 'product-info';
-        info.addEventListener('click', (e) => {
+        info.tabIndex = 0; // Make focusable
+        info.setAttribute('role', 'button');
+        info.setAttribute('aria-label', `View details for ${name}`);
+        
+        const openModal = (e) => {
             e.stopPropagation();
             openOrderModal(item);
+        };
+        
+        info.addEventListener('click', openModal);
+        info.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                openModal(e);
+            }
         });
+
         const nameSpan = document.createElement('span');
         nameSpan.className = 'product-name';
         nameSpan.textContent = name;
@@ -71,12 +92,14 @@ function renderAllProducts() {
         // ── Quantity controls ──
         const controls = document.createElement('div');
         controls.className = 'quantity-controls';
+        controls.setAttribute('role', 'group');
+        controls.setAttribute('aria-label', `Quantity controls for ${name}`);
 
         const decBtn = document.createElement('button');
-        decBtn.type = 'button';
+decBtn.type = 'button';
         decBtn.className = 'qty-btn btn-outline-danger';
         decBtn.textContent = '−';
-        decBtn.setAttribute('aria-label', `Decrease ${name}`);
+        decBtn.setAttribute('aria-label', `Decrease quantity of ${name}`);
         addHoldListeners(decBtn, () => updateProductQuantityInOrder(name, -1));
 
         const qInput = document.createElement('input');
@@ -84,14 +107,14 @@ function renderAllProducts() {
         qInput.className = 'quantity-display';
         qInput.value = sel ? sel.quantity : 0;
         qInput.readOnly = true;
-        qInput.setAttribute('aria-label', `Quantity for ${name}`);
+        qInput.setAttribute('aria-label', `Current quantity of ${name}`);
         qInput.id = `qty-${name.replace(/\s+/g, '-')}`;
 
         const incBtn = document.createElement('button');
         incBtn.type = 'button';
         incBtn.className = 'qty-btn btn-outline-success';
         incBtn.textContent = '+';
-        incBtn.setAttribute('aria-label', `Increase ${name}`);
+        incBtn.setAttribute('aria-label', `Increase quantity of ${name}`);
         addHoldListeners(incBtn, () => updateProductQuantityInOrder(name, 1));
 
         controls.appendChild(decBtn);
@@ -111,33 +134,59 @@ function renderAllProducts() {
  */
 function displayProducts(productList) {
     const container = document.getElementById('product-list');
+    const noResults = document.getElementById('no-results');
     if (!container) return;
 
-    // Create a map for quick access to existing DOM nodes
-    const nodes = {};
-    Array.from(container.children).forEach(li => {
+    // Toggle no-results visibility
+    if (noResults) {
+        noResults.classList.toggle('hidden', productList.length > 0);
+    }
+
+    const visibleSet = new Set(productList.map(p => p.Product));
+    const children = Array.from(container.children);
+    
+    // 1. Update visibility and state
+    children.forEach(li => {
         const name = li.dataset.productName;
-        if (name) {
-            nodes[name] = li;
-            li.style.display = 'none'; // Hide all initially
-        }
-    });
-
-    // Show and reorder based on the provided productList
-    productList.forEach(p => {
-        const li = nodes[p.Product];
-        if (li) {
-            li.style.display = '';
-            // Move node to the end of the container to match productList sequence
-            container.appendChild(li);
-
+        const isVisible = visibleSet.has(name);
+        const wasHidden = li.classList.contains('hidden');
+        
+        if (isVisible) {
+            li.classList.remove('hidden');
+            if (wasHidden) {
+                li.classList.add('appearing');
+                setTimeout(() => li.classList.remove('appearing'), 400);
+            }
             // Sync order state
-            const sel = selectedProducts.find(s => s.productName === p.Product);
+            const sel = selectedProducts.find(s => s.productName === name);
             li.classList.toggle('added-to-order', !!sel);
             const qd = li.querySelector('.quantity-display');
             if (qd) qd.value = sel ? sel.quantity : 0;
+        } else {
+            li.classList.add('hidden');
         }
     });
+
+    // 2. Reorder ONLY if necessary
+    // Check if the current visible order matches the productList order
+    const currentVisibleOrder = children
+        .filter(li => !li.classList.contains('hidden'))
+        .map(li => li.dataset.productName);
+    
+    const desiredOrder = productList.map(p => p.Product);
+    
+    const needsReorder = currentVisibleOrder.length !== desiredOrder.length || 
+                         currentVisibleOrder.some((name, i) => name !== desiredOrder[i]);
+
+    if (needsReorder) {
+        // Use a fragment to Batch the moves and prevent layout thrashing
+        const fragment = document.createDocumentFragment();
+        productList.forEach(p => {
+            const li = children.find(c => c.dataset.productName === p.Product);
+            if (li) fragment.appendChild(li);
+        });
+        container.appendChild(fragment);
+    }
 }
 
 // ─── Hold-to-Repeat ───────────────────────────────────────────────────────────
