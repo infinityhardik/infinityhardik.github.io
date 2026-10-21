@@ -185,6 +185,14 @@ function initProductListEvents() {
         else startHold(btn, action);
     });
 
+    // A touch on −/+ is ours alone (as before the Performance Update): cancelling
+    // touchstart stops the browser treating it as a tap, which on Android, with
+    // the keyboard open, scrolled the page back up to the search box on every
+    // press. Tap / hold / move-away are still told apart by startTouchPress.
+    list.addEventListener('touchstart', (e) => {
+        if (e.cancelable && e.target.closest('.qty-btn')) e.preventDefault();
+    }, { passive: false });
+
     // Long-press on −/+ is a hold-to-repeat, not a context menu
     list.addEventListener('contextmenu', (e) => {
         if (e.target.closest('.qty-btn')) e.preventDefault();
