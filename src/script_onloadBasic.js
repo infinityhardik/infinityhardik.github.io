@@ -419,18 +419,34 @@ function startTouchPress(button, action, downEvent) {
 }
 
 // ─── Product Detail Modal ─────────────────────────────────────────────────────
+// Detail modal rows: element id → products.json column
+const PRODUCT_DETAIL_FIELDS = [
+    ['modal-product-type', 'Product Type'],
+    ['modal-face-type', 'Face Type'],
+    ['modal-core-type', 'Core Type'],
+    ['modal-grade-type', 'Grade Type'],
+    ['modal-brand-mark', 'Brand Mark'],
+];
+
 function openOrderModal(productItem) {
     const product = getProductByName(productItem.dataset.productName);
     const nameEl = document.getElementById('modal-product-name');
     if (!nameEl || !product) return;
     nameEl.textContent = product.Product;
-    document.getElementById('modal-product-type').innerHTML  = `<b>Product Type:</b> ${product['Product Type'] || ''}`;
-    document.getElementById('modal-face-type').innerHTML     = `<b>Face Type:</b> ${product['Face Type'] || ''}`;
-    document.getElementById('modal-core-type').innerHTML     = `<b>Core Type:</b> ${product['Core Type'] || ''}`;
-    document.getElementById('modal-grade-type').innerHTML    = `<b>Grade Type:</b> ${product['Grade Type'] || ''}`;
-    document.getElementById('modal-brand-mark').innerHTML    = `<b>Brand Mark:</b> ${product['Brand Mark'] || ''}`;
+    PRODUCT_DETAIL_FIELDS.forEach(([id, key]) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const label = document.createElement('b');
+        label.textContent = `${key}:`;
+        el.replaceChildren(label, ` ${product[key] || ''}`);
+    });
     Modal.open('order-modal');
+    // The detail lines fade up one after another as the popup opens
+    if (typeof animateCascade === 'function') {
+        animateCascade(document.querySelectorAll('#order-modal .product-meta-list li'), { distance: 8, step: 35, duration: 280 });
+    }
 }
+
 
 // ─── Feedback Toast ───────────────────────────────────────────────────────────
 function displayFeedbackMessage(message, type = 'warning', duration = 3000) {
@@ -440,6 +456,7 @@ function displayFeedbackMessage(message, type = 'warning', duration = 3000) {
     el = document.createElement('div');
     el.id = 'feedback-message';
     el.className = `feedback-message ${type}`;
+    el.setAttribute('role', type === 'error' ? 'alert' : 'status'); // read out by screen readers
     el.textContent = message;
     // On-screen keyboard open: the bottom of the screen is hidden, so show the
     // toast just under the search bar instead
@@ -473,11 +490,12 @@ function toggleOrderPopup() {
 
 // ─── Dark Mode ────────────────────────────────────────────────────────────────
 // The class lives on <html> so the inline script in <head> can set it before first paint.
+// localStorage can throw (private browsing, site data blocked): the theme then
+// just isn't remembered — it must never stop the rest of the page loading.
 function toggleDarkMode() {
     const applyTheme = () => {
-        document.documentElement.classList.toggle('dark-mode');
-        const isDark = document.documentElement.classList.contains('dark-mode');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        const isDark = document.documentElement.classList.toggle('dark-mode');
+        try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch (e) { /* not remembered */ }
         updateDarkModeToggleIcon();
     };
     if (typeof animateThemeSwitch === 'function') animateThemeSwitch(document.getElementById('darkModeToggle'), applyTheme);
@@ -485,7 +503,8 @@ function toggleDarkMode() {
 }
 
 function applySavedTheme() {
-    const saved = localStorage.getItem('theme');
+    let saved = null;
+    try { saved = localStorage.getItem('theme'); } catch (e) { /* use the light theme */ }
     document.documentElement.classList.toggle('dark-mode', saved === 'dark');
     updateDarkModeToggleIcon();
 }

@@ -10,6 +10,21 @@ function openOrderHistory() {
     renderOrderHistory();
     Modal.open('history-modal');
     attachHistoryListeners();
+    // Date headings and cards fade up in turn as the sheet opens
+    const container = document.getElementById('history-container');
+    if (container && typeof animateCascade === 'function') {
+        animateCascade(container.querySelectorAll(HISTORY_FLIP_ITEMS), { distance: 12, step: 30 });
+    }
+}
+
+// History elements that glide to their new place when the list changes (see animateFlip)
+const HISTORY_FLIP_ITEMS = '.history-group-label, .history-card';
+
+/** Re-renders the list, letting cards glide to their new positions. */
+function renderOrderHistoryAnimated() {
+    const container = document.getElementById('history-container');
+    if (typeof animateFlip === 'function') animateFlip(container, HISTORY_FLIP_ITEMS, renderOrderHistory);
+    else renderOrderHistory();
 }
 
 function renderOrderHistory() {
@@ -25,8 +40,8 @@ function renderOrderHistory() {
     if (currentHistorySearch) {
         const q = currentHistorySearch.toLowerCase();
         orders = orders.filter(o =>
-            o.orderText.toLowerCase().includes(q) ||
-            o.products.some(p => p.productName.toLowerCase().includes(q))
+            (o.orderText || '').toLowerCase().includes(q) ||
+            o.products.some(p => String(p.productName).toLowerCase().includes(q))
         );
     }
 
@@ -60,7 +75,7 @@ function renderOrderHistory() {
 
     container.innerHTML = Object.entries(groups).map(([label, grpOrders]) => `
         <section class="history-group">
-            <h3 class="history-group-label">${label}</h3>
+            <h3 class="history-group-label" data-flip-key="${escapeHtml(label)}">${label}</h3>
             ${grpOrders.map(renderHistoryCard).join('')}
         </section>`).join('');
 }
@@ -73,10 +88,6 @@ const HISTORY_ICONS = {
     delete: '<svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /><path d="M10 11v6M14 11v6" /><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" /></svg>',
 };
 
-function escapeHtml(s) {
-    return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-}
-
 /**
  * One order: time, how it left (Sent / Copied) and its size; the product
  * names, which expand into the full order text; then Edit · Copy · Delete.
@@ -87,10 +98,12 @@ function renderHistoryCard(o) {
     const more = o.products.length > 3 ? ` <span class="history-more">+${o.products.length - 3} more</span>` : '';
     const itemCount = `${o.products.length} item${o.products.length === 1 ? '' : 's'}`;
     // Full order with WhatsApp *bold* markers shown as bold, as in the order panel
-    const fullText = escapeHtml(o.orderText || '').replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+    const fullText = orderTextToHtml(o.orderText || '');
+    // Ids are "<timestamp>_<random>"; strip anything else before it goes into onclick JS
+    const id = String(o.id).replace(/[^\w-]/g, '');
 
     return `
-        <article class="history-card">
+        <article class="history-card" data-flip-key="${id}">
             <div class="history-card-head">
                 <span class="history-time">${formatTimeLabel(new Date(o.timestamp))}</span>
                 <span class="history-via${copied ? ' is-copied' : ''}">${copied ? HISTORY_ICONS.copied + 'Copied' : HISTORY_ICONS.sent + 'Sent'}</span>
@@ -101,9 +114,9 @@ function renderHistoryCard(o) {
                 <div class="history-order-text">${fullText}</div>
             </details>
             <div class="history-actions">
-                <button class="btn btn-primary btn-sm" onclick="editOrderFromHistory('${o.id}')">${HISTORY_ICONS.edit}Edit</button>
-                <button class="btn btn-secondary btn-sm" onclick="copyOrderFromHistory('${o.id}')">${HISTORY_ICONS.copy}Copy</button>
-                <button class="btn btn-ghost-danger btn-sm btn-push-end" onclick="confirmDeleteOrder('${o.id}', this)">${HISTORY_ICONS.delete}Delete</button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="editOrderFromHistory('${id}')">${HISTORY_ICONS.edit}Edit</button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="copyOrderFromHistory('${id}')">${HISTORY_ICONS.copy}Copy</button>
+                <button type="button" class="btn btn-ghost-danger btn-sm btn-push-end" onclick="confirmDeleteOrder('${id}', this)">${HISTORY_ICONS.delete}Delete</button>
             </div>
         </article>`;
 }
@@ -128,6 +141,7 @@ function editOrderFromHistory(orderId) {
         if (typeof refreshProductList === 'function') {
             refreshProductList();
         }
+        if (typeof animateRowsSwap === 'function') animateRowsSwap(document.getElementById('product-list'));
     }
 
     displayFeedbackMessage('Order loaded for editing.', 'success');
@@ -136,21 +150,9 @@ function editOrderFromHistory(orderId) {
 function copyOrderFromHistory(orderId) {
     const order = getOrderById(orderId);
     if (!order) return;
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(order.orderText)
-            .then(() => displayFeedbackMessage('Order copied!', 'success'))
-            .catch(() => displayFeedbackMessage('Copy failed.', 'error'));
-    } else {
-        // Fallback
-        const ta = document.createElement('textarea');
-        ta.value = order.orderText;
-        ta.style.cssText = 'position:fixed;opacity:0';
-        document.body.appendChild(ta);
-        ta.select();
-        try { document.execCommand('copy'); displayFeedbackMessage('Order copied!', 'success'); }
-        catch { displayFeedbackMessage('Copy failed.', 'error'); }
-        document.body.removeChild(ta);
-    }
+    copyTextToClipboard(order.orderText)
+        .then(() => displayFeedbackMessage('Order copied!', 'success'))
+        .catch(() => displayFeedbackMessage('Copy failed.', 'error'));
 }
 
 /**
@@ -169,6 +171,7 @@ function confirmByTap(btn, action) {
     btn.dataset.confirming = '1';
     btn.classList.add('is-confirming');
     btn.textContent = 'Tap to confirm';
+    if (typeof animateBump === 'function') animateBump(btn, 1.05, 200);
     btn._resetConfirm = () => {
         clearTimeout(btn._confirmTimer);
         delete btn.dataset.confirming;
@@ -181,7 +184,14 @@ function confirmByTap(btn, action) {
 function confirmDeleteOrder(orderId, btn) {
     const remove = () => {
         deleteOrderFromHistory(orderId);
-        renderOrderHistory();
+        const card = btn && btn.closest('.history-card');
+        if (!card || typeof animateLeave !== 'function') {
+            renderOrderHistory();
+            return;
+        }
+        // The card slides away, then the cards below glide up into its place
+        card.style.pointerEvents = 'none';
+        animateLeave(card, renderOrderHistoryAnimated);
     };
     if (btn) confirmByTap(btn, remove);
     else if (confirm('Delete this order from history?')) remove();
@@ -213,7 +223,7 @@ function attachHistoryListeners() {
     if (sort) {
         sort.addEventListener('change', (e) => {
             currentHistorySort = e.target.value;
-            renderOrderHistory();
+            renderOrderHistoryAnimated(); // cards glide into the new order
         });
     }
 }

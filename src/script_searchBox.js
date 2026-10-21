@@ -213,18 +213,9 @@ function handleSearchInput(raw) {
             addToOrder(first.dataset.productName, quantity);
 
             // Sync keyboard-navigation focus to the first visible item
-            if (typeof currentFocusIndex !== 'undefined' && typeof updateListFocus === 'function') {
-                const productList = document.getElementById('product-list');
-                if (productList) {
-                    // Guard: only consider actual product rows (excludes #no-results and any other sibling elements)
-                    const visibleItems = Array.from(productList.children).filter(
-                        li => li.classList.contains('product-item') && !li.classList.contains('hidden')
-                    );
-                    currentFocusIndex = 0;
-                    // Highlight only — scrolling it into view would jump a scrolled list back to the top
-                    updateListFocus(visibleItems, { scroll: false });
-                }
-            }
+            currentFocusIndex = 0;
+            // Highlight only — scrolling it into view would jump a scrolled list back to the top
+            updateListFocus(getVisibleProductItems(), { scroll: false });
 
             const searchBox = document.getElementById('search-box');
             if (searchBox) {
@@ -322,19 +313,21 @@ function toggleShowSelectedOnly() {
     if (showSelectedOnly) currentSearchTerm = '';
     refreshProductList();
     keepSearchBarPinned();
+    if (typeof animateRowsSwap === 'function') animateRowsSwap(document.getElementById('product-list'));
 }
 
 function updateShowSelectedOnlyButton() {
     const btn = document.getElementById('showSelectedOnly');
     if (!btn) return;
+    btn.setAttribute('aria-pressed', showSelectedOnly ? 'true' : 'false');
     if (showSelectedOnly) {
         btn.style.color = 'var(--color-success)';
-        btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="12" cy="12" r="11" fill="currentColor" stroke="none"/>
             <path d="M7 12l3.5 3.5 6.5-6.5" stroke="white" fill="none"/>
         </svg>`;
     } else {
         btn.style.color = 'var(--color-accent)';
-        btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+        btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
     }
 }

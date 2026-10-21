@@ -9,6 +9,13 @@ const isIOS = () => {
     return /iPad|iPhone|iPod/.test(ua) || (ua.includes("Mac") && navigator.maxTouchPoints > 1);
 };
 
+// The Install button springs in when it becomes available
+function showInstallButton() {
+    if (!installBtn.classList.contains('is-hidden')) return;
+    installBtn.classList.remove('is-hidden');
+    if (typeof animatePopIn === 'function') animatePopIn(installBtn);
+}
+
 function initPWA() {
     installBtn = document.getElementById('pwa-install-btn');
 
@@ -20,12 +27,12 @@ function initPWA() {
         e.preventDefault();
         deferredPrompt = e;
         if (!isInstalled && isMobile) {
-            installBtn.classList.remove('is-hidden');
+            showInstallButton();
         }
     });
 
     if (isIOS() && !isInstalled && isMobile) {
-        installBtn.classList.remove('is-hidden');
+        showInstallButton();
     }
 
     installBtn.addEventListener('click', async () => {
@@ -60,6 +67,6 @@ if ('serviceWorker' in navigator) {
                     reg.active.postMessage('refresh-cache');
                 }
             })
-            .catch(err => console.log('SW failed:', err));
+            .catch(err => console.warn('Service worker registration failed:', err));
     });
 }

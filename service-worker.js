@@ -22,20 +22,18 @@ const isAppFile = (url) => {
     return pathname.endsWith('/') || /\.(html|css|js|json)$/.test(pathname);
 };
 
-// Download every listed asset fresh from the server into the cache
-const precache = () => caches.open(CACHE_NAME).then((cache) => {
-    // Use cache: 'reload' to force a fresh fetch from the network
-    return Promise.all(
-        ASSETS.map(url => {
-            return fetch(new Request(url, { cache: 'reload' }))
-                .then(response => {
-                    if (response.ok) return cache.put(url, response);
-                    throw new Error(`Failed to fetch ${url}`);
-                })
-                .catch(err => console.warn('Caching failed for:', url, err));
+// Download every listed asset fresh from the server into the cache.
+// A missing file is logged but doesn't fail the install, so one bad asset
+// can't keep the whole app from working offline.
+const precache = () => caches.open(CACHE_NAME).then((cache) => Promise.all(
+    // cache: 'reload' skips the browser's HTTP cache
+    ASSETS.map((url) => fetch(new Request(url, { cache: 'reload' }))
+        .then((response) => {
+            if (response.ok) return cache.put(url, response);
+            throw new Error(`HTTP ${response.status}`);
         })
-    );
-});
+        .catch((err) => console.warn('Caching failed for:', url, err)))
+));
 
 self.addEventListener('install', (event) => {
     self.skipWaiting();
@@ -44,15 +42,11 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
     event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames.map((name) => {
-                    if (name !== CACHE_NAME) {
-                        return caches.delete(name);
-                    }
-                })
-            );
-        }).then(() => self.clients.claim())
+        caches.keys()
+            .then((cacheNames) => Promise.all(
+                cacheNames.filter((name) => name !== CACHE_NAME).map((name) => caches.delete(name))
+            ))
+            .then(() => self.clients.claim())
     );
 });
 
@@ -73,31 +67,30 @@ self.addEventListener('message', (event) => {
     }));
 });
 
+// Stale-while-revalidate: answer from the cache at once, and refresh the cached
+// copy in the background for the next load.
 self.addEventListener('fetch', (event) => {
-    // Only handle GET requests
-    if (event.request.method !== 'GET') return;
+    const { request } = event;
+    if (request.method !== 'GET') return;
+    // Only this site's files are cached; anything else goes straight to the network
+    if (new URL(request.url).origin !== self.location.origin) return;
 
-    const url = event.request.url;
+    const networkResponse = fetch(request, {
+        // Bypass the browser cache for app files so the update is the server version
+        cache: isAppFile(request.url) ? 'no-cache' : 'default'
+    });
+    // The copy for the cache is taken first, before the page can start reading the body
+    const responseForCache = networkResponse.then((response) => response.clone());
 
-    event.respondWith(
-        caches.open(CACHE_NAME).then((cache) => {
-            return cache.match(event.request).then((cachedResponse) => {
-                // Background fetch to update the cache (Stale-While-Revalidate)
-                const fetchPromise = fetch(event.request, {
-                    // Bypass the browser cache for app files so the update is the server version
-                    cache: (isAppFile(url) ? 'no-cache' : 'default')
-                }).then((networkResponse) => {
-                    if (networkResponse && networkResponse.status === 200) {
-                        cache.put(event.request, networkResponse.clone());
-                    }
-                    return networkResponse;
-                }).catch(() => {
-                    // Silently fail network errors in background
-                });
-
-                // Return cached version immediately, or wait for network if not in cache
-                return cachedResponse || fetchPromise;
-            });
+    // Keep the worker alive until the refreshed copy is stored
+    event.waitUntil(Promise.all([caches.open(CACHE_NAME), responseForCache])
+        .then(([cache, response]) => {
+            if (response.status === 200) return cache.put(request, response);
         })
-    );
+        .catch(() => { /* offline: keep the cached copy */ }));
+
+    event.respondWith(caches.open(CACHE_NAME)
+        .then((cache) => cache.match(request))
+        // Not cached yet: wait for the network (a network error if offline)
+        .then((cachedResponse) => cachedResponse || networkResponse.catch(() => Response.error())));
 });

@@ -343,9 +343,29 @@ input { font-family: inherit; }
         padding: 10px var(--space-4);
         margin: 0 calc(-1 * var(--space-4)); /* Bleed to edges */
         border-bottom: 1px solid var(--color-border);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
+    /* The bar's shadows live on two layers that only fade in and out: animating
+       box-shadow itself repaints the whole bar on every frame, fading a layer
+       is done by the GPU. ::before = stuck at the top, ::after = typing. */
+    .sticky-controls::before,
+    .sticky-controls::after {
+        content: '';
+        position: absolute;
+        inset: 0 0 -1px 0; /* include the bottom border */
+        z-index: -1;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .sticky-controls::before { box-shadow: var(--shadow-md); }
+    .sticky-controls::after { box-shadow: var(--shadow-lg); }
+
+    .sticky-controls.sticky-scrolled::before,
+    .sticky-controls.search-active::after {
+        opacity: 1;
+    }
 
     .dark-mode .sticky-controls {
         background-color: var(--color-bg);
@@ -353,12 +373,10 @@ input { font-family: inherit; }
 
     /* When search is active on mobile, lift it up and highlight */
     .sticky-controls.search-active {
-        box-shadow: var(--shadow-lg);
         border-bottom-color: var(--color-accent);
     }
 
     .sticky-controls.sticky-scrolled {
-        box-shadow: var(--shadow-md);
         background-color: var(--color-surface);
     }
 

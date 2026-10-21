@@ -1,6 +1,8 @@
-import pandas as pd
 import json
 import os
+import sys
+
+import pandas as pd
 
 # ============================================================
 # 🛠️ SETTINGS (Only change values here)
@@ -30,7 +32,7 @@ MINIFY_JSON = True
 
 if not os.path.exists(EXCEL_FILE):
     print("❌ Excel file not found. Please check the path.")
-    exit()
+    sys.exit(1)
 
 
 # ============================================================
@@ -45,18 +47,20 @@ df = pd.read_excel(EXCEL_FILE, sheet_name=EXCEL_SHEET_NAME)
 # 🧹 STEP 3: Clean the data (VERY IMPORTANT)
 # ============================================================
 
-# 👉 Replace empty Excel cells with empty string ""
-# (instead of null, so JSON will show "" instead of null)
-df = df.where(pd.notnull(df), "")
+# 👉 Remove completely empty rows (like online tools do).
+# Must run before empty cells are filled below, or no row would look empty.
+df = df.dropna(how="all")
 
 # 👉 Convert date columns into text (JSON does not support Excel date format)
 for column in df.columns:
     if pd.api.types.is_datetime64_any_dtype(df[column]):
-        df[column] = df[column].astype(str)
+        # Empty dates stay empty (not the text "NaT")
+        df[column] = df[column].astype(str).where(df[column].notna(), None)
 
-
-# 👉 Optional: Remove completely empty rows (like online tools do)
-df = df.dropna(how="all")
+# 👉 Replace empty Excel cells with empty string ""
+# (instead of null, so JSON will show "" instead of null).
+# astype(object) first: a number column can't hold "" otherwise.
+df = df.astype(object).where(pd.notnull(df), "")
 
 
 # ============================================================
@@ -141,7 +145,7 @@ else:
 # 💡 IMPORTANT NOTES
 # ============================================================
 
-# ✔ Empty Excel cells → null in JSON (correct behavior)
+# ✔ Empty Excel cells → "" in JSON
 # ✔ Dates → converted to readable text
 # ✔ Fully empty rows → automatically removed
 
@@ -149,7 +153,7 @@ else:
 # {
 #   "productDirectory": [
 #       {"Product": "Item1", "Price": 100},
-#       {"Product": "Item2", "Price": null}
+#       {"Product": "Item2", "Price": ""}
 #   ]
 # }
 

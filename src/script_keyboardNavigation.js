@@ -66,11 +66,12 @@ document.addEventListener("keydown", function (event) {
                     if (typeof toggleShowSelectedOnly === 'function') toggleShowSelectedOnly();
                     return;
                 case '/': // Help
-                case '?':
+                case '?': {
                     event.preventDefault();
                     const helpBtn = document.getElementById('helpButton');
                     if (helpBtn) helpBtn.click();
                     return;
+                }
             }
         }
 
@@ -159,19 +160,53 @@ document.addEventListener("keydown", function (event) {
         }
 
         // ─── Enter Key (Select/Detail) ───────────────────────────────────────
-        if (event.key === "Enter") {
-            if (currentFocusIndex >= 0 && visibleItems[currentFocusIndex]) {
-                event.preventDefault();
-                const infoDiv = visibleItems[currentFocusIndex].querySelector('.product-info');
-                if (infoDiv) infoDiv.click();
-            } else if (document.activeElement === searchBox) {
-                // Already handled by input logic usually, but let's ensure Enter 
-                // on search doesn't do anything weird if we're not using it for quantity
-            }
+        if (event.key === "Enter" && focusedItem) {
+            event.preventDefault();
+            const infoDiv = focusedItem.querySelector('.product-info');
+            if (infoDiv) infoDiv.click();
         }
 
     } else {
         // ─── Modal Shortcuts ────────────────────────────────────────────────
+        // The shortcut that opened History (Ctrl+H) or Filters (Ctrl+Shift+F)
+        // closes it again, like its ✕ button
+        if (event.ctrlKey && !event.altKey) {
+            const key = event.key.toLowerCase();
+            const toggles = (activeModal.id === 'history-modal' && key === 'h' && !event.shiftKey) ||
+                (activeModal.id === 'filter-modal' && key === 'f' && event.shiftKey);
+            if (toggles) {
+                event.preventDefault();
+                Modal.close(activeModal.id);
+                return;
+            }
+        }
+
+        // Order popup: Ctrl+O closes it again; Ctrl+C / Ctrl+Delete / Ctrl+Enter
+        // copy, clear and send the order
+        if (activeModal.id === 'order-text-popup' && event.ctrlKey && !event.shiftKey && !event.altKey) {
+            const key = event.key.toLowerCase();
+            if (key === 'enter') {
+                event.preventDefault();
+                sendOrder();
+                return;
+            }
+            if (key === 'o') {
+                event.preventDefault();
+                toggleOrderPopup();
+                return;
+            }
+            if (key === 'c') {
+                event.preventDefault();
+                copyOrder();
+                return;
+            }
+            if (key === 'delete') {
+                event.preventDefault();
+                clearOrder();
+                return;
+            }
+        }
+
         if (event.key === "Escape") {
             event.preventDefault();
             const closeBtn = activeModal.querySelector('.modal-header button, .modal-footer .btn-secondary');

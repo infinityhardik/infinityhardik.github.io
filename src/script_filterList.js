@@ -79,6 +79,7 @@ function populateFilterOptions() {
                     if (selectedFilters[key].length === 0) delete selectedFilters[key];
                 }
                 updateClearFiltersButtonStyle();
+                if (cb.checked && typeof animateBump === 'function') animateBump(chip, 1.06, 180);
             });
 
             const text = document.createElement('span');
@@ -149,6 +150,12 @@ function updateClearFiltersButtonStyle() {
 
     const mobileBadge = document.getElementById('mobile-filter-count');
     if (mobileBadge) {
+        // The badge springs in when the first filter is picked, and pops when the count changes
+        const previous = Number(mobileBadge.textContent) || 0;
+        if (count !== previous && typeof animateBump === 'function') {
+            if (previous === 0) animatePopIn(mobileBadge);
+            else if (count > 0) animateBump(mobileBadge, 1.3, 260);
+        }
         mobileBadge.textContent = count;
         mobileBadge.classList.toggle('is-visible', count > 0);
         mobileBadge.closest('.mobile-nav-btn').classList.toggle('is-active', count > 0);

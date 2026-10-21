@@ -7,6 +7,7 @@ Needs NPM and Node
 Steps for Generating the Website :
 
 - Update the Master Branch with New Changes and Test it thoroughly
+- npm test > Runs the unit tests (search parsing, order text, history) and checks every script parses
 - npm run build > Generates the Minified File in /dist
 - Copy the minified JS file Code and Obfuscate it using <https://codebeautify.org/javascript-obfuscator#>
 - Copy the Obfuscated JS Code into Branch which is deployed for Github Pages
@@ -19,6 +20,7 @@ Steps for Generating/Updating Products.json :
 - Excel Export the File and Clean the Data in Excel
 - Rename the **Sheet1** to **productDirectory**
 - Upload Excel File to convert it into JSON on <https://codebeautify.org/excel-to-json>
+  - Or run `dist/excel-to-json-minified_converter.py` locally (needs `pip install pandas openpyxl`; set the paths at the top of the file)
 - Download JSON File
 - Again Upload it to <https://codebeautify.org/jsonminifier> to Compress the JSON File
 - Rename the JSON File to **products.json**

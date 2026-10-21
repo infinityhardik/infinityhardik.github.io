@@ -10,11 +10,22 @@ const CLEANUP_DAYS = 7;
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 
 /**
- * Initialize order history system on page load
+ * Writes the history list. localStorage can throw (storage full, private
+ * browsing, site data blocked), so every write goes through here.
+ * @param {Array<Object>} history
+ * @returns {boolean} Success status
  */
-function initializeOrderHistory() {
-    // Perform cleanup on initialization
-    cleanupOldOrders();
+function writeOrderHistory(history) {
+    try {
+        localStorage.setItem(ORDER_HISTORY_KEY, JSON.stringify(history));
+        return true;
+    } catch (error) {
+        console.error('Error saving order history:', error);
+        if (error && error.name === 'QuotaExceededError') {
+            displayFeedbackMessage('Storage limit reached. Please clear some history.', 'error');
+        }
+        return false;
+    }
 }
 
 /**
@@ -25,85 +36,49 @@ function initializeOrderHistory() {
  * @returns {boolean} Success status
  */
 function saveOrderToHistory(products, action = 'sent', sentVia = 'whatsapp') {
-    try {
-        if (!products || products.length === 0) {
-            console.warn('Cannot save empty order to history');
-            return false;
-        }
+    if (!products || products.length === 0) return false;
 
-        // Get existing history
-        const history = getOrderHistory();
+    const timestamp = Date.now();
+    const order = {
+        id: `${timestamp}_${Math.random().toString(36).slice(2, 11)}`,
+        timestamp,
+        dateCreated: new Date(timestamp).toISOString(),
+        products: products.map(p => ({ ...p })), // copy: later edits to the order don't change history
+        totalItems: products.reduce((sum, item) => sum + item.quantity, 0),
+        orderText: formatOrderText(sortProducts(products)),
+        action,
+        sentVia
+    };
 
-        // Create order object
-        const timestamp = Date.now();
-        const orderId = `${timestamp}_${Math.random().toString(36).substr(2, 9)}`;
+    // Newest first, capped at MAX_HISTORY_ITEMS
+    const history = getOrderHistory();
+    history.unshift(order);
+    history.length = Math.min(history.length, MAX_HISTORY_ITEMS);
 
-        const orderObject = {
-            id: orderId,
-            timestamp: timestamp,
-            dateCreated: new Date(timestamp).toISOString(),
-            products: [...products], // Deep copy
-            totalItems: products.reduce((sum, item) => sum + item.quantity, 0),
-            orderText: formatOrderText(sortProducts(products)),
-            action: action,
-            sentVia: sentVia
-        };
-
-        // Add to beginning of history (newest first)
-        history.unshift(orderObject);
-
-        // Enforce max limit
-        if (history.length > MAX_HISTORY_ITEMS) {
-            history.splice(MAX_HISTORY_ITEMS);
-        }
-
-        // Save to localStorage
-        localStorage.setItem(ORDER_HISTORY_KEY, JSON.stringify(history));
-
-        console.log(`Order saved to history: ${orderId}`);
-        return true;
-
-    } catch (error) {
-        console.error('Error saving order to history:', error);
-
-        // Check if quota exceeded
-        if (error.name === 'QuotaExceededError') {
-            displayFeedbackMessage('Storage limit reached. Please clear some history.', 'error');
-        }
-
-        return false;
-    }
+    return writeOrderHistory(history);
 }
 
 /**
  * Get all orders from history
- * @returns {Array<Object>} Array of order objects
+ * @returns {Array<Object>} Array of order objects ([] when missing or unreadable)
  */
 function getOrderHistory() {
+    let history;
     try {
-        const historyJson = localStorage.getItem(ORDER_HISTORY_KEY);
-
-        if (!historyJson) {
-            return [];
-        }
-
-        const history = JSON.parse(historyJson);
-
-        // Validate that it's an array
-        if (!Array.isArray(history)) {
-            console.warn('Invalid history format, resetting...');
-            localStorage.setItem(ORDER_HISTORY_KEY, JSON.stringify([]));
-            return [];
-        }
-
-        return history;
-
+        history = JSON.parse(localStorage.getItem(ORDER_HISTORY_KEY) || '[]');
     } catch (error) {
         console.error('Error loading order history:', error);
-        // Reset corrupted data
-        localStorage.setItem(ORDER_HISTORY_KEY, JSON.stringify([]));
+        history = null;
+    }
+
+    if (!Array.isArray(history)) {
+        // Corrupted or unreadable: start over rather than break the page
+        writeOrderHistory([]);
         return [];
     }
+
+    // Drop entries that couldn't be shown or restored (e.g. written by an old version)
+    return history.filter(o => o && typeof o === 'object' && Array.isArray(o.products) && typeof o.timestamp === 'number');
 }
 
 /**
@@ -112,8 +87,7 @@ function getOrderHistory() {
  * @returns {Object|null} The order object or null if not found
  */
 function getOrderById(orderId) {
-    const history = getOrderHistory();
-    return history.find(order => order.id === orderId) || null;
+    return getOrderHistory().find(order => order.id === orderId) || null;
 }
 
 /**
@@ -122,23 +96,10 @@ function getOrderById(orderId) {
  * @returns {boolean} Success status
  */
 function deleteOrderFromHistory(orderId) {
-    try {
-        const history = getOrderHistory();
-        const filteredHistory = history.filter(order => order.id !== orderId);
-
-        if (filteredHistory.length === history.length) {
-            console.warn('Order not found in history:', orderId);
-            return false;
-        }
-
-        localStorage.setItem(ORDER_HISTORY_KEY, JSON.stringify(filteredHistory));
-        console.log(`Order deleted from history: ${orderId}`);
-        return true;
-
-    } catch (error) {
-        console.error('Error deleting order from history:', error);
-        return false;
-    }
+    const history = getOrderHistory();
+    const filteredHistory = history.filter(order => order.id !== orderId);
+    if (filteredHistory.length === history.length) return false;
+    return writeOrderHistory(filteredHistory);
 }
 
 /**
@@ -146,30 +107,16 @@ function deleteOrderFromHistory(orderId) {
  * @returns {number} Number of orders cleaned up
  */
 function cleanupOldOrders() {
-    try {
-        const history = getOrderHistory();
-        const now = Date.now();
-        const cutoffTime = now - (CLEANUP_DAYS * MILLISECONDS_PER_DAY);
+    const history = getOrderHistory();
+    const cutoffTime = Date.now() - (CLEANUP_DAYS * MILLISECONDS_PER_DAY);
+    const filteredHistory = history.filter(order => order.timestamp >= cutoffTime);
+    const cleanedCount = history.length - filteredHistory.length;
 
-        const filteredHistory = history.filter(order => order.timestamp >= cutoffTime);
-        const cleanedCount = history.length - filteredHistory.length;
-
-        if (cleanedCount > 0) {
-            localStorage.setItem(ORDER_HISTORY_KEY, JSON.stringify(filteredHistory));
-            console.log(`Cleaned up ${cleanedCount} old orders`);
-
-            // Show subtle notification
-            if (cleanedCount > 0) {
-                displayFeedbackMessage(`Cleaned up ${cleanedCount} old order${cleanedCount > 1 ? 's' : ''}`, 'success');
-            }
-        }
-
+    if (cleanedCount > 0 && writeOrderHistory(filteredHistory)) {
+        displayFeedbackMessage(`Cleaned up ${cleanedCount} old order${cleanedCount > 1 ? 's' : ''}`, 'success');
         return cleanedCount;
-
-    } catch (error) {
-        console.error('Error during cleanup:', error);
-        return 0;
     }
+    return 0;
 }
 
 /**
@@ -181,18 +128,11 @@ function getOrderHistoryCount() {
 }
 
 /**
- * Clear all order history (with confirmation)
+ * Clear all order history
  * @returns {boolean} Success status
  */
 function clearAllHistory() {
-    try {
-        localStorage.setItem(ORDER_HISTORY_KEY, JSON.stringify([]));
-        console.log('All order history cleared');
-        return true;
-    } catch (error) {
-        console.error('Error clearing history:', error);
-        return false;
-    }
+    return writeOrderHistory([]);
 }
 
 /**
@@ -204,26 +144,19 @@ function formatDateLabel(date) {
     const now = new Date();
     const orderDate = new Date(date);
 
-    // Reset hours for date comparison
+    // Compare calendar days, ignoring the time of day
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const compareDate = new Date(orderDate.getFullYear(), orderDate.getMonth(), orderDate.getDate());
+    // Rounded: a day across a daylight-saving change is 23 or 25 hours long
+    const diffDays = Math.round((today - compareDate) / MILLISECONDS_PER_DAY);
 
-    const diffTime = today - compareDate;
-    const diffDays = Math.floor(diffTime / MILLISECONDS_PER_DAY);
-
-    if (diffDays === 0) {
-        return 'Today';
-    } else if (diffDays === 1) {
-        return 'Yesterday';
-    } else if (diffDays < 7) {
-        // Day name
+    if (diffDays === 0) return 'Today';
+    if (diffDays === 1) return 'Yesterday';
+    if (diffDays < 7) {
         const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         return days[orderDate.getDay()];
-    } else {
-        // Full date
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        return orderDate.toLocaleDateString('en-US', options);
     }
+    return orderDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
 /**
@@ -232,15 +165,12 @@ function formatDateLabel(date) {
  * @returns {string} Formatted time (e.g., "6:31 PM")
  */
 function formatTimeLabel(date) {
-    const orderDate = new Date(date);
-    return orderDate.toLocaleTimeString('en-US', {
+    return new Date(date).toLocaleTimeString('en-US', {
         hour: 'numeric',
         minute: '2-digit',
         hour12: true
     });
 }
 
-// Initialize on DOM ready
-document.addEventListener('DOMContentLoaded', () => {
-    initializeOrderHistory();
-});
+// Remove expired orders once the page is ready
+document.addEventListener('DOMContentLoaded', cleanupOldOrders);

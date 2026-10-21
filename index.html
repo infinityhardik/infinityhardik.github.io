@@ -178,7 +178,7 @@
             </button>
             <span class="search-divider" aria-hidden="true"></span>
             <button id="showSelectedOnly" class="icon-button toggle-selected-button" onclick="toggleShowSelectedOnly()"
-              title="Toggle: Show Only Selected Items (Ctrl+S)" aria-label="Toggle Show Selected Only">
+              title="Toggle: Show Only Selected Items (Ctrl+S)" aria-label="Toggle Show Selected Only" aria-pressed="false">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                 stroke-linecap="round" stroke-linejoin="round">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
@@ -247,7 +247,7 @@
 
 
   <!-- ── Mobile Order Popup ────────────────────────────────────────────────── -->
-  <div id="order-text-popup" class="modal-overlay">
+  <div id="order-text-popup" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Your Order">
     <div class="modal-content">
       <div class="modal-header">
         <h2 class="scratchpad-title">Your Order</h2>
@@ -274,7 +274,7 @@
   </div>
 
   <!-- ── Filter Modal ──────────────────────────────────────────────────────── -->
-  <div id="filter-modal" class="modal-overlay">
+  <div id="filter-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Filters">
     <div class="modal-content modal-content--medium">
       <div class="modal-header">
         <h2 class="scratchpad-title">Filters</h2>
@@ -294,7 +294,7 @@
   </div>
 
   <!-- ── History Modal ─────────────────────────────────────────────────────── -->
-  <div id="history-modal" class="modal-overlay">
+  <div id="history-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Order History">
     <div class="modal-content modal-content--wide">
       <div class="modal-header">
         <h2 class="scratchpad-title">Order History</h2>
@@ -325,7 +325,7 @@
   </div>
 
   <!-- ── Help Modal ────────────────────────────────────────────────────────── -->
-  <div id="help-modal" class="modal-overlay">
+  <div id="help-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Help and Shortcuts">
     <div class="modal-content modal-content--medium">
       <div class="modal-header">
         <h2 class="scratchpad-title">Help & Shortcuts</h2>
@@ -338,7 +338,7 @@
   </div>
 
   <!-- ── Product Detail Modal ──────────────────────────────────────────────── -->
-  <div id="order-modal" class="modal-overlay">
+  <div id="order-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-product-name">
     <div class="modal-content">
       <div class="modal-header">
         <h2 id="modal-product-name" class="scratchpad-title"></h2>
@@ -357,7 +357,7 @@
   </div>
 
   <!-- ── iOS Install Modal ─────────────────────────────────────────────────── -->
-  <div id="ios-install-modal" class="modal-overlay">
+  <div id="ios-install-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Install App">
     <div class="modal-content">
       <div class="modal-header">
         <h2 class="scratchpad-title">Install App</h2>

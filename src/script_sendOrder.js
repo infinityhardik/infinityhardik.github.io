@@ -1,44 +1,87 @@
+const WHATSAPP_RECIPIENT = '+916355360702';
+
 /**
  * Checks if there are any products currently selected in the order.
- * @param {Array<Object>} selectedProducts - The array of currently selected products.
+ * @param {Array<Object>} products - The products currently in the order.
  * @returns {boolean} True if products exist in the order, false otherwise.
  */
-function hasProducts(selectedProducts) {
-    if (selectedProducts.length === 0) {
+function hasProducts(products) {
+    if (products.length === 0) {
         displayFeedbackMessage('No products in the order. Please add products.', 'warning');
         return false;
     }
     return true;
 }
 
-/**
- * Sorts the selected products based on Group Alias, Product Category, and Product Name.
- * @param {Array<Object>} selectedProducts - The array of products to sort.
- * @returns {Array<Object>} A new array containing the sorted products.
- */
 // Same ordering as String#localeCompare, but built once instead of on every comparison
 const _orderCollator = new Intl.Collator();
 
-function sortProducts(selectedProducts) {
+/**
+ * Sorts products by Group Alias, then Product Category, then Product Name.
+ * @param {Array<Object>} products - The products to sort.
+ * @returns {Array<Object>} A new, sorted array (the input is left untouched).
+ */
+function sortProducts(products) {
     const compare = _orderCollator.compare;
-    // Create a shallow copy to avoid modifying the original array directly if it's referenced elsewhere
-    return [...selectedProducts].sort((a, b) => {
-        // Primary sort: by productGroupAlias
-        const groupComparison = compare(a.productGroupAlias, b.productGroupAlias);
+    return [...products].sort((a, b) =>
+        compare(a.productGroupAlias, b.productGroupAlias) ||
+        compare(a.productCategory, b.productCategory) ||
+        compare(a.productName, b.productName)
+    );
+}
 
-        if (groupComparison === 0) {
-            // Secondary sort: if group aliases are same, sort by productCategory
-            const categoryComparison = compare(a.productCategory, b.productCategory);
+/**
+ * Formats products into the order text shown in the order panels, copied, and
+ * sent: a *bold* heading per group, one "name - qty" line per product, then
+ * the total.
+ * @param {Array<Object>} products - The products to format, already sorted.
+ * @returns {string} The formatted order text ('' for an empty order).
+ */
+function formatOrderText(products) {
+    if (products.length === 0) return '';
 
-            if (categoryComparison === 0) {
-                // Tertiary sort: if categories are same, sort by productName
-                return compare(a.productName, b.productName);
-            }
+    let text = '';
+    let currentGroupAlias = null;
+    let totalQuantity = 0;
 
-            return categoryComparison;
+    products.forEach(({ productGroupAlias, productName, productGroup, quantity }) => {
+        if (currentGroupAlias !== productGroupAlias) {
+            text += `\n*${productGroup}* :\n`;
+            currentGroupAlias = productGroupAlias;
         }
+        text += `${productName} - ${quantity}\n`;
+        totalQuantity += quantity;
+    });
 
-        return groupComparison;
+    text += `\nTotal : *${totalQuantity}* Pcs.\n`;
+    return text.trim();
+}
+
+/**
+ * Puts text on the clipboard: the Clipboard API where available, otherwise
+ * the older execCommand('copy') route (e.g. pages not served over HTTPS).
+ * @param {string} text
+ * @returns {Promise<void>} Rejects when the copy failed.
+ */
+function copyTextToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text);
+    }
+    return new Promise((resolve, reject) => {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.setAttribute('readonly', '');
+        textarea.style.cssText = 'position:fixed;top:0;left:0;opacity:0'; // no scroll to the bottom
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            if (document.execCommand('copy')) resolve();
+            else reject(new Error('execCommand copy failed'));
+        } catch (err) {
+            reject(err);
+        } finally {
+            textarea.remove();
+        }
     });
 }
 
@@ -46,103 +89,41 @@ function sortProducts(selectedProducts) {
  * Copies the current order text to the clipboard.
  */
 function copyOrder() {
-    if (!hasProducts(selectedProducts)) {
-        return;
-    }
+    if (!hasProducts(selectedProducts)) return;
 
-    const sortedProducts = sortProducts(selectedProducts);
-    const orderText = formatOrderText(sortedProducts);
-
-    // Use the modern Clipboard API if available, fallback to execCommand for older browsers/environments
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(orderText)
-            .then(() => {
-                displayFeedbackMessage('Order copied to clipboard!', 'success');
-                if (typeof flashSuccess === 'function') { flashSuccess('copyOrder'); haptic(); }
-                // Save to history (passing raw selectedProducts to preserve insertion order)
-                saveOrderToHistory(selectedProducts, 'copied', 'clipboard');
-            })
-            .catch(err => {
-                console.error('Failed to copy order text: ', err);
-                displayFeedbackMessage('Failed to copy order. Please try again.', 'error');
-            });
-    } else {
-        // Fallback for older browsers
-        const textarea = document.createElement('textarea');
-        textarea.value = orderText;
-        textarea.style.position = 'fixed'; // Avoid scrolling to bottom
-        textarea.style.opacity = '0'; // Hide it
-        document.body.appendChild(textarea);
-        textarea.select();
-        try {
-            const successful = document.execCommand('copy');
-            if (successful) {
-                displayFeedbackMessage('Order copied to clipboard (fallback)!', 'success');
-                if (typeof flashSuccess === 'function') { flashSuccess('copyOrder'); haptic(); }
-                // Save to history (passing raw selectedProducts to preserve insertion order)
-                saveOrderToHistory(selectedProducts, 'copied', 'clipboard');
-            } else {
-                throw new Error('execCommand failed');
-            }
-        } catch (err) {
-            console.error('Fallback: Failed to copy order text: ', err);
-            displayFeedbackMessage('Failed to copy order. Please try manually.', 'error');
-        } finally {
-            document.body.removeChild(textarea);
-        }
-    }
+    // Snapshot now: the order can change before the clipboard write finishes
+    const products = [...selectedProducts];
+    copyTextToClipboard(formatOrderText(sortProducts(products)))
+        .then(() => {
+            displayFeedbackMessage('Order copied to clipboard!', 'success');
+            flashSuccess('copyOrder');
+            haptic();
+            // Raw (unsorted) products keep the insertion order for "Edit" from history
+            saveOrderToHistory(products, 'copied', 'clipboard');
+        })
+        .catch(err => {
+            console.error('Failed to copy order text:', err);
+            displayFeedbackMessage('Failed to copy order. Please try again.', 'error');
+        });
 }
 
 /**
  * Sends the current order via WhatsApp.
  */
 function sendOrder() {
-    if (!hasProducts(selectedProducts)) {
-        return;
-    }
+    if (!hasProducts(selectedProducts)) return;
 
-    const sortedProducts = sortProducts(selectedProducts);
-    const orderText = encodeURIComponent(formatOrderText(sortedProducts)); // Encode for URL
-
-    const recipientNumber = '+916355360702'; // Replace with your target WhatsApp number
-
-    // WhatsApp API URL for sending messages
-    const whatsappUrl = `https://wa.me/${recipientNumber}?text=${orderText}`;
+    const orderText = formatOrderText(sortProducts(selectedProducts));
+    const whatsappUrl = `https://wa.me/${WHATSAPP_RECIPIENT}?text=${encodeURIComponent(orderText)}`;
 
     // Vibrate before WhatsApp opens: once the phone switches apps this page is
     // in the background, and browsers don't let a background page vibrate
-    if (typeof haptic === 'function') haptic();
+    haptic();
 
-    // Open WhatsApp in a new tab/window
     window.open(whatsappUrl, '_blank');
     displayFeedbackMessage('Order sent via WhatsApp!', 'success');
-    if (typeof flashSuccess === 'function') flashSuccess('sendOrder');
+    flashSuccess('sendOrder');
 
-    // Save to history (passing raw selectedProducts to preserve insertion order)
+    // Raw (unsorted) products keep the insertion order for "Edit" from history
     saveOrderToHistory(selectedProducts, 'sent', 'whatsapp');
-}
-
-/**
- * Formats the selected products into a readable string for display/sharing.
- * This is a helper function used by both copyOrder and sendOrder.
- * @param {Array<Object>} products - The array of products to format.
- * @returns {string} The formatted order text.
- */
-function formatOrderText(products) {
-    let text = '';
-    let currentGroupAlias = null;
-
-    products.forEach(item => {
-        const { productGroupAlias, productName, productGroup, quantity } = item;
-        if (currentGroupAlias !== productGroupAlias) {
-            text += `\n*${productGroup}* :\n`;
-            currentGroupAlias = productGroupAlias;
-        }
-        text += `${productName} - ${quantity}\n`;
-    });
-
-    let totalQuantity = calculateTotalQuantity(); // Assuming calculateTotalQuantity is accessible globally
-    text += `\nTotal : *${totalQuantity}* Pcs.\n`;
-
-    return text.trim();
 }

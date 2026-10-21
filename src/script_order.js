@@ -87,24 +87,6 @@ function clearOrder(event) {
  * Rebuilds the order text and syncs both the mobile order sheet and desktop scratchpad.
  */
 function updateOrderList() {
-    const sorted = (typeof sortProducts === 'function') ? sortProducts(selectedProducts) : selectedProducts;
-    let text = '';
-    let currentGroup = null;
-
-    sorted.forEach(({ productGroupAlias, productName, productGroup, quantity }) => {
-        if (currentGroup !== productGroupAlias) {
-            text += `\n*${productGroup}* :\n`;
-            currentGroup = productGroupAlias;
-        }
-        text += `${productName} - ${quantity}\n`;
-    });
-
-    if (selectedProducts.length > 0) {
-        text += `\nTotal : *${calculateTotalQuantity()}* Pcs.\n`;
-    }
-
-    const finalText = text.trim();
-
     // Keep "Show Selected Only" view in sync when items are added/removed
     if (typeof showSelectedOnly !== 'undefined' && showSelectedOnly &&
         typeof refreshProductList === 'function') {
@@ -120,16 +102,18 @@ function updateOrderList() {
     }
 
     // A new product in the order: pulse the count badge once (phones/tablets) —
-    // quantity changes on existing items don't pulse
+    // quantity changes on existing items don't pulse. The first item makes the
+    // badge appear, so it springs in instead.
     if (selectedProducts.length > _lastOrderItemCount && typeof animateBump === 'function') {
-        animateBump(orderBadge, 1.35, 300);
+        if (_lastOrderItemCount === 0) animatePopIn(orderBadge);
+        else animateBump(orderBadge, 1.35, 300);
     }
     _lastOrderItemCount = selectedProducts.length;
 
     // Desktop scratchpad and mobile order sheet show the same formatted text
     // (WhatsApp *bold* markers rendered as bold)
     const orderHtml = selectedProducts.length > 0
-        ? finalText.replace(/\*(.*?)\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>')
+        ? orderTextToHtml(formatOrderText(sortProducts(selectedProducts))).replace(/\n/g, '<br>')
         : '<span class="scratchpad-placeholder">Your order will appear here...</span>';
     // Rebuilding the HTML re-lays out both panels — skip it when nothing changed
     // (e.g. a hold on − at 0, or the same quantity typed again)
@@ -141,6 +125,13 @@ function updateOrderList() {
     });
 }
 
-function calculateTotalQuantity() {
-    return selectedProducts.reduce((sum, item) => sum + item.quantity, 0);
+// ─── HTML Helpers ─────────────────────────────────────────────────────────────
+
+function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+/** Order text as HTML: escaped, with WhatsApp *bold* markers shown as bold. */
+function orderTextToHtml(text) {
+    return escapeHtml(text).replace(/\*(.*?)\*/g, '<strong>$1</strong>');
 }
