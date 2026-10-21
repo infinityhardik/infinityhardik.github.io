@@ -1,6 +1,7 @@
 // ─── Order State ──────────────────────────────────────────────────────────────
 let selectedProducts = [];
 let _lastOrderItemCount = 0; // for the "item added" pulse
+let _lastOrderHtml = null;   // order panels' current HTML
 
 // ─── Core Order Logic ─────────────────────────────────────────────────────────
 
@@ -18,7 +19,7 @@ function updateProductQuantityInOrder(productName, change) {
     let next = Math.max(0, current + change);
 
     const li = productRowsByName.get(productName);
-    const qd = li ? li.querySelector('.quantity-display') : null;
+    const qd = li ? li._qtyDisplay : null;
 
     if (next > 0) {
         const obj = {
@@ -130,6 +131,10 @@ function updateOrderList() {
     const orderHtml = selectedProducts.length > 0
         ? finalText.replace(/\*(.*?)\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>')
         : '<span class="scratchpad-placeholder">Your order will appear here...</span>';
+    // Rebuilding the HTML re-lays out both panels — skip it when nothing changed
+    // (e.g. a hold on − at 0, or the same quantity typed again)
+    if (orderHtml === _lastOrderHtml) return;
+    _lastOrderHtml = orderHtml;
     ['scratchpad-content', 'selected-products'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.innerHTML = orderHtml;

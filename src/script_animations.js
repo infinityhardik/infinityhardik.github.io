@@ -21,16 +21,86 @@ function animateBump(el, scale = 1.25, duration = 220) {
     );
 }
 
-/** Toast entrance: slide up and fade in (keeps the toast's centring transform). */
+// Toasts slide in from the edge they sit at: the bottom, or the top while the
+// on-screen keyboard is open (see displayFeedbackMessage)
+function toastOffset() {
+    return document.documentElement.classList.contains('keyboard-open') ? -16 : 16;
+}
+
+/** Toast entrance: rises and settles with a slight spring (keeps the toast's centring transform). */
 function animateToastIn(el) {
     if (!canAnimate(el)) return;
+    const dy = toastOffset();
     el.animate(
         [
-            { opacity: 0, transform: 'translateX(-50%) translateY(12px)' },
-            { opacity: 1, transform: 'translateX(-50%) translateY(0)' }
+            { opacity: 0, transform: `translateX(-50%) translateY(${dy}px) scale(0.92)` },
+            { opacity: 1, transform: 'translateX(-50%) translateY(0) scale(1)' }
         ],
-        { duration: 220, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' }
+        { duration: 320, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)' }
     );
+}
+
+/**
+ * Toast exit: sinks back and fades, then removes the toast.
+ * Returns false when not animating (the caller removes it itself).
+ */
+function animateToastOut(el) {
+    if (!canAnimate(el)) return false;
+    const dy = toastOffset();
+    el.animate(
+        [
+            { opacity: 1, transform: 'translateX(-50%) translateY(0) scale(1)' },
+            { opacity: 0, transform: `translateX(-50%) translateY(${dy / 2}px) scale(0.96)` }
+        ],
+        { duration: 200, easing: 'ease-in', fill: 'forwards' }
+    ).onfinish = () => el.remove();
+    return true;
+}
+
+/** First paint of the list: the top rows fade up in a short cascade. */
+function animateListIntro(container) {
+    if (!canAnimate(container)) return;
+    const rows = container.children;
+    for (let i = 0; i < Math.min(rows.length, 14); i++) {
+        rows[i].animate(
+            [{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }],
+            { duration: 320, delay: i * 22, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)', fill: 'backwards' }
+        );
+    }
+}
+
+/**
+ * Theme switch: the new theme spreads from the toggle button in a circle.
+ * The View Transitions API swaps two snapshots of the page on the GPU, so
+ * nothing on the page is re-painted while it plays. Browsers without it (or
+ * set to reduced motion) switch instantly.
+ */
+function animateThemeSwitch(button, applyTheme) {
+    const root = document.documentElement;
+    if (!document.startViewTransition || !button || !canAnimate(root)) {
+        applyTheme();
+        return;
+    }
+    const r = button.getBoundingClientRect();
+    const x = r.left + r.width / 2;
+    const y = r.top + r.height / 2;
+    const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+
+    const transition = document.startViewTransition(applyTheme);
+    transition.ready.then(() => {
+        root.animate(
+            { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
+            { duration: 520, easing: 'cubic-bezier(0.4, 0, 0.2, 1)', pseudoElement: '::view-transition-new(root)' }
+        );
+        // The sun/moon that just appeared spins into place
+        const icon = button.querySelector(root.classList.contains('dark-mode') ? '.theme-icon-sun' : '.theme-icon-moon');
+        if (icon) {
+            icon.animate(
+                [{ transform: 'rotate(-120deg) scale(0.4)', opacity: 0 }, { transform: 'none', opacity: 1 }],
+                { duration: 520, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)' }
+            );
+        }
+    }).catch(() => { });
 }
 
 /**
@@ -61,6 +131,13 @@ function haptic(ms = 15) {
     _lastHaptic = now;
     navigator.vibrate(ms);
 }
+
+// Filters, History and Clear Order buttons (quick-action bar, desktop bar,
+// order panel and order sheet) vibrate when tapped, like Copy and Send
+const HAPTIC_BUTTONS = '[onclick^="openFilterModal("], [onclick^="openOrderHistory("], [onclick^="clearOrder("]';
+document.addEventListener('click', (e) => {
+    if (e.target.closest && e.target.closest(HAPTIC_BUTTONS)) haptic();
+});
 
 const animations = {
     // Optimize for reduced motion

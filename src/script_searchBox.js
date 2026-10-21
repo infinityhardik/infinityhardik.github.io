@@ -316,6 +316,7 @@ function getFirstVisibleProductElement() {
 function toggleShowSelectedOnly() {
     showSelectedOnly = !showSelectedOnly;
     updateShowSelectedOnlyButton();
+    if (typeof animateBump === 'function') animateBump(document.getElementById('showSelectedOnly'), 1.18, 260);
     const searchBox = document.getElementById('search-box');
     if (showSelectedOnly && searchBox) searchBox.value = '';
     if (showSelectedOnly) currentSearchTerm = '';

@@ -4,6 +4,9 @@ const productsByName = new Map();     // Product name → product record
 const productRowsByName = new Map();  // Product name → <li> row
 const HOLD_DELAY = 300;
 const REPEAT_INTERVAL = 100;
+// The first visible rows are always fully rendered (.row-eager in style.css),
+// so a search never shows on-screen rows at a placeholder height
+const EAGER_ROWS = 40;
 
 function getProductByName(name) {
     return productsByName.get(name);
@@ -87,6 +90,7 @@ function renderAllProducts() {
         // on-screen keyboard, which made phones scroll back to the search bar)
         item.dataset.productName = name;
         if (sel) item.classList.add('added-to-order');
+        if (index < EAGER_ROWS) item.classList.add('row-eager');
 
         // ── Product info (click → detail modal) ──
         const info = document.createElement('div');
@@ -130,12 +134,14 @@ function renderAllProducts() {
 
         controls.append(decBtn, qInput, incBtn);
         item.append(info, controls);
+        item._qtyDisplay = qInput; // saves a querySelector on every update
         fragment.appendChild(item);
         productRowsByName.set(name, item);
     });
 
     container.textContent = '';
     container.appendChild(fragment);
+    if (typeof animateListIntro === 'function') animateListIntro(container);
 }
 
 // ─── Delegated Row Events ─────────────────────────────────────────────────────
@@ -185,12 +191,16 @@ function initProductListEvents() {
         else startHold(btn, action);
     });
 
-    // A touch on −/+ is ours alone (as before the Performance Update): cancelling
-    // touchstart stops the browser treating it as a tap, which on Android, with
-    // the keyboard open, scrolled the page back up to the search box on every
-    // press. Tap / hold / move-away are still told apart by startTouchPress.
+    // While typing a search (keyboard open), a touch on −/+ is ours alone:
+    // cancelling touchstart stops the browser treating it as a tap, which on
+    // Android, with the keyboard open, scrolled the page back up to the search
+    // box on every press. With the keyboard closed there's no such jump, so the
+    // touch is left to the browser — a swipe that starts on −/+ (where a right
+    // thumb lands) scrolls the list like anywhere else. Tap / hold / swipe are
+    // told apart by startTouchPress either way.
+    const searchBox = document.getElementById('search-box');
     list.addEventListener('touchstart', (e) => {
-        if (e.cancelable && e.target.closest('.qty-btn')) e.preventDefault();
+        if (e.cancelable && document.activeElement === searchBox && e.target.closest('.qty-btn')) e.preventDefault();
     }, { passive: false });
 
     // Long-press on −/+ is a hold-to-repeat, not a context menu
@@ -232,19 +242,23 @@ function displayProducts(productList) {
         }
     }
 
+    container.classList.toggle('is-empty', productList.length === 0);
+
     const visibleSet = new Set(productList.map(p => p.Product));
     const quantities = new Map(selectedProducts.map(s => [s.productName, s.quantity]));
     const currentVisibleOrder = [];
 
+    // Only touch what changed: unchanged writes still cost style work on 300 rows
     for (const li of container.children) {
         const name = li.dataset.productName;
         const qty = quantities.get(name) || 0;
         const visible = visibleSet.has(name);
         li.classList.toggle('hidden', !visible);
         li.classList.toggle('added-to-order', qty > 0);
-        li.setAttribute('aria-selected', qty > 0 ? 'true' : 'false');
+        const selected = qty > 0 ? 'true' : 'false';
+        if (li.getAttribute('aria-selected') !== selected) li.setAttribute('aria-selected', selected);
 
-        const qd = li.querySelector('.quantity-display');
+        const qd = li._qtyDisplay;
         if (qd && qd.value !== String(qty)) qd.value = qty;
 
         if (visible) currentVisibleOrder.push(name);
@@ -260,6 +274,14 @@ function displayProducts(productList) {
             if (item) fragment.appendChild(item);
         });
         container.appendChild(fragment);
+    }
+
+    // The first EAGER_ROWS visible rows (in display order) are fully rendered
+    let shown = 0;
+    for (const li of container.children) {
+        const visible = !li.classList.contains('hidden');
+        li.classList.toggle('row-eager', visible && shown < EAGER_ROWS);
+        if (visible) shown++;
     }
 
     if (typeof syncVisibleProductState === 'function') {
@@ -430,6 +452,8 @@ function displayFeedbackMessage(message, type = 'warning', duration = 3000) {
     if (typeof animateToastIn === 'function') animateToastIn(el); // slide up + fade in, no forced reflow
 
     setTimeout(() => {
+        if (!el.parentNode) return; // already replaced by a newer toast
+        if (typeof animateToastOut === 'function' && animateToastOut(el)) return;
         el.style.opacity = '0';
         setTimeout(() => { if (el.parentNode) el.remove(); }, 400);
     }, duration);
@@ -450,10 +474,14 @@ function toggleOrderPopup() {
 // ─── Dark Mode ────────────────────────────────────────────────────────────────
 // The class lives on <html> so the inline script in <head> can set it before first paint.
 function toggleDarkMode() {
-    document.documentElement.classList.toggle('dark-mode');
-    const isDark = document.documentElement.classList.contains('dark-mode');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    updateDarkModeToggleIcon();
+    const applyTheme = () => {
+        document.documentElement.classList.toggle('dark-mode');
+        const isDark = document.documentElement.classList.contains('dark-mode');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        updateDarkModeToggleIcon();
+    };
+    if (typeof animateThemeSwitch === 'function') animateThemeSwitch(document.getElementById('darkModeToggle'), applyTheme);
+    else applyTheme();
 }
 
 function applySavedTheme() {

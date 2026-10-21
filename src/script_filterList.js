@@ -42,21 +42,26 @@ function populateFilterOptions() {
         const values = getUniqueValues(productsData.productDirectory, key);
         if (values.length === 0) return;
 
-        // Tab button
+        // Tab button: category name + how many of its values are picked
         const btn = document.createElement('button');
+        btn.type = 'button';
         btn.className = 'filter-tab-btn';
-        btn.textContent = label;
         btn.dataset.key = key;
+        const btnLabel = document.createElement('span');
+        btnLabel.textContent = label;
+        const btnCount = document.createElement('span');
+        btnCount.className = 'filter-tab-count';
+        btn.append(btnLabel, btnCount);
 
-        // Pane
+        // Pane: one tap-to-toggle chip per value
         const pane = document.createElement('div');
         pane.className = 'filter-tab-pane';
         pane.dataset.key = key;
         pane.style.display = 'none';
 
         values.forEach(val => {
-            const row = document.createElement('label');
-            row.className = 'filter-check-row';
+            const chip = document.createElement('label');
+            chip.className = 'filter-chip';
 
             const cb = document.createElement('input');
             cb.type = 'checkbox';
@@ -76,9 +81,10 @@ function populateFilterOptions() {
                 updateClearFiltersButtonStyle();
             });
 
-            row.appendChild(cb);
-            row.appendChild(document.createTextNode(' ' + val));
-            pane.appendChild(row);
+            const text = document.createElement('span');
+            text.textContent = val;
+            chip.append(cb, text);
+            pane.appendChild(chip);
         });
 
         btn.addEventListener('click', () => {
@@ -87,7 +93,7 @@ function populateFilterOptions() {
             tabContent.querySelectorAll('.filter-tab-pane').forEach(p => p.style.display = 'none');
             // Activate this
             btn.classList.add('active');
-            pane.style.display = 'block';
+            pane.style.display = 'flex'; // chips flow in wrapping rows
         });
 
         listTab.appendChild(btn);
@@ -97,6 +103,15 @@ function populateFilterOptions() {
 
     if (firstBtn) firstBtn.click();
     updateClearFiltersButtonStyle();
+}
+
+/** Inside the Filters popup: each tab shows how many of its values are picked. */
+function updateFilterModalSummary() {
+    document.querySelectorAll('#list-tab .filter-tab-btn').forEach(btn => {
+        const n = (selectedFilters[btn.dataset.key] || []).length;
+        const badge = btn.querySelector('.filter-tab-count');
+        if (badge) badge.textContent = n > 0 ? n : '';
+    });
 }
 
 // ─── Apply / Clear ────────────────────────────────────────────────────────────
@@ -129,6 +144,8 @@ function updateClearFiltersButtonStyle() {
     }
 
     if (clearBtn) clearBtn.classList.toggle('is-hidden', count === 0);
+
+    updateFilterModalSummary();
 
     const mobileBadge = document.getElementById('mobile-filter-count');
     if (mobileBadge) {

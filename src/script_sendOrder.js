@@ -16,19 +16,23 @@ function hasProducts(selectedProducts) {
  * @param {Array<Object>} selectedProducts - The array of products to sort.
  * @returns {Array<Object>} A new array containing the sorted products.
  */
+// Same ordering as String#localeCompare, but built once instead of on every comparison
+const _orderCollator = new Intl.Collator();
+
 function sortProducts(selectedProducts) {
+    const compare = _orderCollator.compare;
     // Create a shallow copy to avoid modifying the original array directly if it's referenced elsewhere
     return [...selectedProducts].sort((a, b) => {
         // Primary sort: by productGroupAlias
-        const groupComparison = a.productGroupAlias.localeCompare(b.productGroupAlias);
+        const groupComparison = compare(a.productGroupAlias, b.productGroupAlias);
 
         if (groupComparison === 0) {
             // Secondary sort: if group aliases are same, sort by productCategory
-            const categoryComparison = a.productCategory.localeCompare(b.productCategory);
+            const categoryComparison = compare(a.productCategory, b.productCategory);
 
             if (categoryComparison === 0) {
                 // Tertiary sort: if categories are same, sort by productName
-                return a.productName.localeCompare(b.productName);
+                return compare(a.productName, b.productName);
             }
 
             return categoryComparison;
@@ -105,10 +109,14 @@ function sendOrder() {
     // WhatsApp API URL for sending messages
     const whatsappUrl = `https://wa.me/${recipientNumber}?text=${orderText}`;
 
+    // Vibrate before WhatsApp opens: once the phone switches apps this page is
+    // in the background, and browsers don't let a background page vibrate
+    if (typeof haptic === 'function') haptic();
+
     // Open WhatsApp in a new tab/window
     window.open(whatsappUrl, '_blank');
     displayFeedbackMessage('Order sent via WhatsApp!', 'success');
-    if (typeof flashSuccess === 'function') { flashSuccess('sendOrder'); haptic(); }
+    if (typeof flashSuccess === 'function') flashSuccess('sendOrder');
 
     // Save to history (passing raw selectedProducts to preserve insertion order)
     saveOrderToHistory(selectedProducts, 'sent', 'whatsapp');

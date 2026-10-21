@@ -92,7 +92,9 @@ body {
     background-color: var(--color-bg);
     color: var(--color-text);
     line-height: 1.5;
-    transition: background-color var(--transition-base), color var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base);
+    /* No colour transition here: an inherited `color` transition re-styled and
+       re-painted every element for 0.25s on each theme switch. The switch is
+       a View Transition instead (see animateThemeSwitch). */
     min-height: 100vh;
     /* No text selection, long-press callout or drag anywhere — on touch screens
        they hijacked taps, holds and scrolls on rows and buttons */
@@ -103,6 +105,14 @@ body {
 
 img {
     -webkit-user-drag: none;
+}
+
+/* Theme switch: the new theme's snapshot is revealed in a growing circle by
+   animateThemeSwitch — turn off the default cross-fade underneath it */
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
 }
 
 /* Text fields stay editable: with user-select: none, iOS Safari won't let you type */
@@ -352,9 +362,10 @@ input { font-family: inherit; }
         background-color: var(--color-surface);
     }
 
+    /* Solid surface instead of a 95%-opaque blur: the blur was invisible but
+       re-blurred the list under the bar on every scroll frame */
     .dark-mode .sticky-controls.sticky-scrolled {
-        background-color: rgba(22, 29, 47, 0.95);
-        backdrop-filter: blur(8px);
+        background-color: var(--color-surface);
         border-bottom-color: var(--color-accent);
     }
 
@@ -505,8 +516,9 @@ input { font-family: inherit; }
         gap: var(--space-1);
     }
 
+    /* 40px buttons: rows are 65px (content 41px + padding) */
     #product-list .product-item {
-        contain-intrinsic-size: auto 65px;
+        contain-intrinsic-size: auto 41px;
     }
 
     /* Tap anywhere in the name area (full row height) to open details */
@@ -516,10 +528,9 @@ input { font-family: inherit; }
         align-items: center;
     }
 
-    .filter-check-row {
+    .filter-chip,
+    .filter-tab-btn {
         min-height: 44px;
-        gap: 12px;
-        padding: 8px;
     }
 }
 
@@ -780,10 +791,27 @@ input { font-family: inherit; }
     overflow-anchor: none;
 }
 
-/* Skip layout/paint work for rows that are off-screen (300+ rows) */
+/* Rows far down the list skip layout/paint until scrolled near (300+ rows).
+   The browser draws such a row a frame or two late, at its placeholder
+   height — so the first 40 visible rows (more than any screen shows) are
+   always fully rendered (.row-eager, set by displayProducts). A search pins
+   the list to its first row, so what's on screen never jumps or flickers.
+   The placeholder is the content height (padding is added on top). */
 #product-list .product-item {
     content-visibility: auto;
-    contain-intrinsic-size: auto 57px;
+    contain-intrinsic-size: auto 33px;
+}
+
+#product-list .product-item.row-eager {
+    content-visibility: visible;
+}
+
+/* No rows to show: hide the list's empty frame (its border/background
+   otherwise flashes as a thin line above "No products found"). The box itself
+   stays, because getSearchPinTop() measures from it. */
+.product-list.is-empty {
+    border-color: transparent;
+    background-color: transparent;
 }
 
 .product-item.keyboard-focus {
@@ -819,6 +847,29 @@ input { font-family: inherit; }
 
 .product-item.added-to-order {
     background-color: var(--color-primary-light);
+}
+
+/* Accent bar on rows in the order: grows from the centre when the first unit
+   is added, shrinks away at 0 (transform only — no layout) */
+#product-list .product-item {
+    position: relative;
+}
+
+#product-list .product-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background-color: var(--color-accent);
+    transform: scaleY(0);
+    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+    pointer-events: none;
+}
+
+#product-list .product-item.added-to-order::before {
+    transform: scaleY(1);
 }
 
 /* Quantity Controls */
@@ -972,10 +1023,24 @@ input { font-family: inherit; }
     animation: btn-flash-check 0.9s ease forwards;
 }
 
+/* The ✓ fades in while growing to full size (never past the button's edges) */
 @keyframes btn-flash-check {
-    0% { opacity: 0; }
-    15%, 70% { opacity: 1; }
-    100% { opacity: 0; }
+    0% { opacity: 0; transform: scale(0.8); }
+    20%, 70% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(1); }
+}
+
+/* Content that appears by switching display (no results, filter and help
+   tabs) rises in softly — a CSS animation restarts on every display change */
+@keyframes rise-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+}
+
+.no-results,
+.filter-tab-pane,
+.help-section {
+    animation: rise-in 0.26s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 /* Order actions — identical in the desktop panel and the phone order sheet */
@@ -1025,9 +1090,10 @@ input { font-family: inherit; }
     max-width: 500px;
     max-height: 90vh;
     overflow-y: auto;
-    /* Desktop: rises and scales in; phones override with a bottom-sheet slide */
-    transform: translateY(16px) scale(0.98);
-    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+    /* Desktop: rises and scales in with a soft spring, leaves quickly;
+       phones override with a bottom-sheet slide */
+    transform: translateY(20px) scale(0.96);
+    transition: transform 0.2s cubic-bezier(0.4, 0, 1, 1);
     box-shadow: var(--shadow-lg);
     display: flex;
     flex-direction: column;
@@ -1043,6 +1109,7 @@ input { font-family: inherit; }
 
 .modal-overlay.active .modal-content {
     transform: none;
+    transition: transform 0.38s cubic-bezier(0.34, 1.36, 0.64, 1);
 }
 
 .modal-header {
@@ -1053,9 +1120,14 @@ input { font-family: inherit; }
     justify-content: space-between;
 }
 
+/* The body scrolls between a fixed header and footer, so Apply / Clear and
+   the History search stay in reach however long the content is */
 .modal-body {
     padding: var(--space-4);
     flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
 }
 
 .modal-footer {
@@ -1156,12 +1228,14 @@ html.keyboard-open body > .feedback-message {
 .feedback-message.warning { background-color: var(--color-warning); color: #1f2937; }
 .feedback-message.info { background-color: var(--color-info); }
 
-/* Filter Tabs */
+/* ── Filters popup ──────────────────────────────────────────────────────────
+   Categories on the left (a wrapping row of pills on phones), each with a
+   count of picked values; the values are big tap-to-toggle chips. */
 .filter-options-layout {
     display: grid;
-    grid-template-columns: 110px minmax(0, 1fr);
-    gap: 16px;
-    min-height: 200px;
+    grid-template-columns: 128px minmax(0, 1fr);
+    gap: var(--space-4);
+    min-height: 240px;
 }
 
 .filter-tab-list {
@@ -1169,64 +1243,338 @@ html.keyboard-open body > .feedback-message {
     flex-direction: column;
     gap: 4px;
     border-right: 1px solid var(--color-border);
-    padding-right: 12px;
+    padding-right: var(--space-3);
 }
 
 .filter-tab-btn {
-    text-align: left;
-    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    min-height: 40px;
+    padding: 0 var(--space-3);
     border-radius: var(--radius-md);
-    font-size: 0.82rem;
-    font-weight: 500;
+    font-size: 0.875rem;
+    font-weight: 600;
     color: var(--color-text-muted);
-    background: none;
-    border: none;
-    cursor: pointer;
+    text-align: left;
     width: 100%;
     transition: background-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
 }
 
-.filter-tab-btn:hover { background: var(--color-bg); color: var(--color-text); }
+@media (hover: hover) {
+    .filter-tab-btn:hover { background: var(--color-bg); color: var(--color-text); }
+}
 .filter-tab-btn:active { transform: scale(0.96); }
-.filter-tab-btn.active { background: var(--color-primary-light); color: var(--color-accent); font-weight: 700; }
+.filter-tab-btn.active { background: var(--color-primary-light); color: var(--color-accent); }
 
-.filter-check-row {
+/* "2" next to a category with two values picked; empty → hidden */
+.filter-tab-count {
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: var(--radius-full);
+    background-color: var(--color-primary);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    line-height: 20px;
+    text-align: center;
+}
+
+.filter-tab-count:empty {
+    display: none;
+}
+
+.filter-tab-pane {
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    align-content: flex-start;
+}
+
+.filter-chip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 40px;
+    padding: 0 var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
+}
+
+@media (hover: hover) {
+    .filter-chip:hover { border-color: var(--color-accent); }
+}
+.filter-chip:active { transform: scale(0.95); }
+
+/* The real checkbox stays (keyboard, screen readers, clearFilters) but the
+   whole chip is what you see and tap */
+.filter-chip .filter-checkbox {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    pointer-events: none;
+}
+
+.filter-chip:has(.filter-checkbox:focus-visible) {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
+/* Picked: solid brand colour with a ✓ */
+.filter-chip:has(.filter-checkbox:checked) {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+    font-weight: 600;
+}
+
+.filter-chip:has(.filter-checkbox:checked)::before {
+    content: '✓';
+    font-weight: 700;
+}
+
+/* Fixed height, so switching category doesn't resize (and jump) the popup */
+#filter-modal .modal-content {
+    height: min(560px, 90vh);
+}
+
+@media (max-width: 767px) {
+    #filter-modal .modal-content {
+        height: min(620px, 80vh);
+        height: min(620px, 80dvh);
+    }
+}
+
+/* Clear All small, Apply Filters gets the room (also on phones) */
+.modal-footer.filter-footer .btn-secondary {
+    flex: 0 0 auto;
+}
+
+.modal-footer.filter-footer .btn-primary {
+    flex: 1 1 auto;
+}
+
+/* ── History popup ───────────────────────────────────────────────────────── */
+.history-toolbar {
+    position: sticky;
+    top: calc(-1 * var(--space-4)); /* sits flush with the top of the scrolling body */
+    z-index: 1;
+    display: flex;
+    gap: var(--space-2);
+    margin: calc(-1 * var(--space-4)) calc(-1 * var(--space-4)) var(--space-4);
+    padding: var(--space-4);
+    background-color: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.history-search {
+    flex: 1;
+    min-width: 0;
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 6px 4px;
-    cursor: pointer;
-    font-size: 0.875rem;
-    border-radius: var(--radius-md);
-    transition: background var(--transition-fast);
+    gap: var(--space-2);
+    min-height: 44px;
+    padding: 0 var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    background-color: var(--color-bg);
+    color: var(--color-text-muted);
+    cursor: text;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.filter-check-row:hover { background: var(--color-bg); }
-.filter-check-row:active { background: var(--color-primary-light); }
+.history-search:focus-within {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 4px var(--color-primary-light);
+}
 
-.filter-checkbox {
-    width: 20px;
-    height: 20px;
+.history-search svg {
     flex-shrink: 0;
-    accent-color: var(--color-primary);
-}
-
-
-.history-toolbar {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
 }
 
 .history-search-input {
     flex: 1;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: 8px 12px;
+    min-width: 0;
+    height: 40px;
+    border: none;
+    background: transparent;
+    color: var(--color-text);
+    font-size: 1rem; /* 16px: stops iPhones zooming in */
+    outline: none;
+}
+
+.history-search-input::-webkit-search-decoration {
+    -webkit-appearance: none;
 }
 
 .history-sort-select {
-    padding: 8px 12px;
+    min-height: 44px;
+    padding: 0 var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font: inherit;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.history-group + .history-group {
+    margin-top: var(--space-6);
+}
+
+.history-group-label {
+    margin-bottom: var(--space-2);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.history-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-surface);
+}
+
+.history-card + .history-card {
+    margin-top: var(--space-2);
+}
+
+.history-card-head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.8125rem;
+}
+
+.history-time {
+    font-weight: 700;
+    font-size: 0.9375rem;
+    color: var(--color-text);
+}
+
+/* Sent (green) / Copied (muted) */
+.history-via {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    background-color: rgba(16, 185, 129, 0.14);
+    color: var(--color-success);
+    font-weight: 600;
+}
+
+.history-via.is-copied {
+    background-color: var(--color-bg);
+    color: var(--color-text-muted);
+}
+
+.history-size {
+    margin-left: auto;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* Product names; tap to see the whole order */
+.history-names {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    list-style: none;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    cursor: pointer;
+}
+
+.history-names::-webkit-details-marker {
+    display: none;
+}
+
+.history-names::after {
+    content: '';
+    flex-shrink: 0;
+    width: 8px;
+    height: 8px;
+    margin: 5px 2px 0 auto;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform var(--transition-fast);
+}
+
+.history-details[open] .history-names::after {
+    transform: rotate(-135deg) translate(-2px, -2px);
+}
+
+.history-more {
+    color: var(--color-accent);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.history-order-text {
+    margin-top: var(--space-2);
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    animation: rise-in 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.history-actions {
+    display: flex;
+    gap: var(--space-2);
+}
+
+/* Delete: quiet until it asks "Tap to confirm" — less likely to be hit by mistake */
+.btn-ghost-danger {
+    background: transparent;
+    color: var(--color-danger);
+}
+
+.btn-ghost-danger.is-confirming {
+    background-color: var(--color-danger);
+    color: white;
+}
+
+.history-empty {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+}
+
+.history-empty-icon {
+    font-size: 2.5rem;
+    margin-bottom: var(--space-3);
+}
+
+.history-empty-title {
+    margin-bottom: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text);
 }
 
 .mobile-order-text {
@@ -1296,29 +1644,17 @@ html.keyboard-open body > .feedback-message {
         transform: translateY(100%);  /* slide in from bottom */
     }
 
+    /* Sheet curve: fast start, long gentle settle — no overshoot, which would
+       lift the sheet off the bottom edge */
     .modal-overlay.active .modal-content {
         transform: translateY(0);
-    }
-
-    /* Modal body must scroll, not the entire card */
-    .modal-body {
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
+        transition: transform 0.36s cubic-bezier(0.32, 0.72, 0, 1);
     }
 
     /* ── History modal: use most of the screen ── */
     #history-modal .modal-content {
         max-height: 90dvh;
         max-height: 90vh;
-    }
-
-    /* History search + sort: stack vertically on narrow screens */
-    #history-modal .modal-body > div:first-child {
-        flex-direction: column;
-    }
-
-    #history-modal .modal-body > div:first-child select {
-        width: 100%;
     }
 
     /* Pull handle hint at top of sheet */
@@ -1353,8 +1689,8 @@ html.keyboard-open body > .feedback-message {
         width: auto;
         flex: 0 0 auto;
         white-space: nowrap;
-        min-height: 36px;
-        padding: 6px 12px;
+        min-height: 40px;
+        padding: 0 14px;
         border: 1px solid var(--color-border);
         border-radius: var(--radius-full);
     }
@@ -1363,15 +1699,10 @@ html.keyboard-open body > .feedback-message {
         border-color: var(--color-accent);
     }
 
-    .filter-check-row {
-        font-size: 1rem;
-    }
-
-    /* 16px+ inputs stop iPhones zooming in on focus */
-    .history-search-input,
-    .history-sort-select {
-        font-size: 1rem;
+    /* Finger-sized chips; 16px text */
+    .filter-chip {
         min-height: 44px;
+        font-size: 1rem;
     }
 
     /* Keyboard shortcuts don't apply on touch screens */
@@ -1400,7 +1731,6 @@ html.keyboard-open body > .feedback-message {
     
     /* Filter Modal Desktop Scale */
     .filter-tab-btn     { font-size: 0.9375rem; }
-    .filter-check-row   { font-size: 1rem; }
 }
 
 @media (min-width: 1440px) {
@@ -1413,7 +1743,7 @@ html.keyboard-open body > .feedback-message {
 
     /* Filter Modal Desktop Ultra-Scale */
     .filter-tab-btn     { font-size: 1rem; }
-    .filter-check-row   { font-size: 1.0625rem; }
+    .filter-chip        { font-size: 1rem; }
 }
 
 /* Devices set to reduce motion: no animations (JS animations check this too) */
