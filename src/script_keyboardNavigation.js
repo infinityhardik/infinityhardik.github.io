@@ -183,8 +183,9 @@ document.addEventListener("keydown", function (event) {
 
 /**
  * Updates the visual and ARIA focus states for the list.
+ * @param {{scroll?: boolean}} [options] scroll: bring the focused row into view (default)
  */
-function updateListFocus(visibleItems) {
+function updateListFocus(visibleItems, { scroll = true } = {}) {
     const searchBox = document.getElementById("search-box");
     
     // Update aria-expanded based on results
@@ -201,7 +202,7 @@ function updateListFocus(visibleItems) {
     if (currentFocusIndex >= 0 && visibleItems[currentFocusIndex]) {
         const item = visibleItems[currentFocusIndex];
         item.classList.add('keyboard-focus');
-        item.scrollIntoView({ block: "nearest", behavior: "smooth" });
+        if (scroll) item.scrollIntoView({ block: "nearest", behavior: "smooth" });
         
         // Update ARIA
         if (searchBox) {

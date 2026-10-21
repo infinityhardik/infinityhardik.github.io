@@ -317,18 +317,13 @@ function startTouchPress(button, action, downEvent) {
     };
     if (keepFocus) searchBox.addEventListener('blur', refocus);
 
-    // With the on-screen keyboard open, a phone may scroll the page by itself
-    // in reaction to the press (back to the sticky search bar). Hold the page
-    // where it was until shortly after the finger lifts — unless the finger
-    // itself scrolls (then this is a swipe and the lock lets go).
-    const lockY = keepFocus ? window.scrollY : null;
-    let userScrolling = false;
-    const holdScroll = () => {
-        if (lockY !== null && !userScrolling && Math.abs(window.scrollY - lockY) > 1) {
-            window.scrollTo(0, lockY);
-        }
-    };
-    if (keepFocus) window.addEventListener('scroll', holdScroll, { passive: true });
+    // With the on-screen keyboard open, a phone scrolls the page by itself in
+    // reaction to the press (an animated scroll back to the sticky search bar).
+    // Hold the page where it was until shortly after the finger lifts — unless
+    // the finger itself scrolls (then this is a swipe and the hold lets go).
+    // Held on every press: whether the box still has focus at touch-down can't
+    // be relied on to tell if the phone is about to do this.
+    const hold = holdScrollPosition({ duration: null, releaseOnTouch: false });
 
     // Once it's a hold (not a scroll), the page must not scroll under the finger
     const noScroll = (e) => { if (holding && e.cancelable) e.preventDefault(); };
@@ -346,10 +341,8 @@ function startTouchPress(button, action, downEvent) {
         window.removeEventListener('pointercancel', onCancel);
         window.removeEventListener('touchmove', noScroll);
         // Let the browser finish the touch before we stop guarding focus and scroll
-        if (keepFocus) {
-            setTimeout(() => searchBox.removeEventListener('blur', refocus), 300);
-            setTimeout(() => window.removeEventListener('scroll', holdScroll), 600);
-        }
+        if (keepFocus) setTimeout(() => searchBox.removeEventListener('blur', refocus), 300);
+        hold.releaseAfter(600);
     };
 
     const end = () => {
@@ -362,7 +355,7 @@ function startTouchPress(button, action, downEvent) {
     function onMove(e) {
         if (e.pointerId !== pointerId) return;
         if (Math.hypot(e.clientX - startX, e.clientY - startY) > TOUCH_SLOP) {
-            userScrolling = true; // the finger is scrolling: let the page move
+            hold.release(); // the finger is scrolling: let the page move
             end();
         }
     }
@@ -379,7 +372,7 @@ function startTouchPress(button, action, downEvent) {
     }
     function onCancel(e) {
         if (e.pointerId !== pointerId) return;
-        userScrolling = true; // the browser took the touch to scroll
+        hold.release(); // the browser took the touch to scroll
         end();
     }
 

@@ -121,6 +121,62 @@ function keepSearchBarPinned() {
     if (window.scrollY > pinTop) window.scrollTo(0, pinTop);
 }
 
+/**
+ * With the on-screen keyboard open, phones scroll the page by themselves when a
+ * −/+ is tapped or the search box text is changed from code: an animated scroll
+ * back to where the sticky search bar sits in the page (the top of the list).
+ * Hold the page where it is — checked every frame, not only on 'scroll' events,
+ * which can arrive too late or not at all while the phone animates its scroll.
+ * Lets go at once when the user wheels the page, presses a scroll key or (with
+ * releaseOnTouch) touches it: that scroll is theirs.
+ *
+ * @param {{duration?: number|null, releaseOnTouch?: boolean}} [options]
+ *   duration: let go after this many ms (null: only when told to).
+ *   releaseOnTouch: false while the hold belongs to a touch that's in progress.
+ * @returns {{release: () => void, releaseAfter: (ms: number) => void}}
+ */
+function holdScrollPosition({ duration = 600, releaseOnTouch = true } = {}) {
+    const lockY = window.scrollY;
+    let done = false, frame = 0, timer = 0, safety = 0;
+
+    const restore = () => {
+        if (!done && Math.abs(window.scrollY - lockY) > 1) window.scrollTo(0, lockY);
+    };
+    const tick = () => {
+        restore();
+        if (!done) frame = requestAnimationFrame(tick);
+    };
+    const onKey = (e) => {
+        if (/^(Arrow|Page)|^(Home|End)$/.test(e.key)) release();
+    };
+    const release = () => {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        clearTimeout(safety);
+        cancelAnimationFrame(frame);
+        window.removeEventListener('scroll', restore);
+        window.removeEventListener('wheel', release);
+        window.removeEventListener('touchstart', release);
+        window.removeEventListener('keydown', onKey);
+    };
+    const releaseAfter = (ms) => {
+        if (done) return;
+        clearTimeout(timer);
+        timer = setTimeout(release, ms);
+    };
+
+    window.addEventListener('scroll', restore, { passive: true });
+    window.addEventListener('wheel', release, { passive: true });
+    if (releaseOnTouch) window.addEventListener('touchstart', release, { passive: true });
+    window.addEventListener('keydown', onKey);
+    frame = requestAnimationFrame(tick);
+    if (duration !== null) releaseAfter(duration);
+    safety = setTimeout(release, 10000); // never hold on for long
+
+    return { release, releaseAfter };
+}
+
 // ─── Search Logic ─────────────────────────────────────────────────────────────
 // Both arguments must already be upper-cased
 function containsInOrder(s, q) {
@@ -143,9 +199,12 @@ function parseSearchInput(raw) {
 
 function handleSearchInput(raw) {
     const { searchTerm, quantity, isValid } = parseSearchInput(raw);
+    // Typing the "-qty" part (or a bare "-") leaves the results as they are, so
+    // the list must stay where the user scrolled it — only re-pin when they change
+    const termChanged = searchTerm !== currentSearchTerm;
     currentSearchTerm = searchTerm;
     refreshProductList();
-    keepSearchBarPinned();
+    if (termChanged) keepSearchBarPinned();
 
     if (isValid && quantity !== null) {
         // Find first visible item using the .hidden class (matches how displayProducts works)
@@ -162,12 +221,14 @@ function handleSearchInput(raw) {
                         li => li.classList.contains('product-item') && !li.classList.contains('hidden')
                     );
                     currentFocusIndex = 0;
-                    updateListFocus(visibleItems);
+                    // Highlight only — scrolling it into view would jump a scrolled list back to the top
+                    updateListFocus(visibleItems, { scroll: false });
                 }
             }
 
             const searchBox = document.getElementById('search-box');
             if (searchBox) {
+                holdScrollPosition(); // the phone must not jump back up when "-qty" is cleared
                 searchBox.value = searchTerm;
                 currentSearchTerm = searchTerm;
             }
