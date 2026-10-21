@@ -50,6 +50,16 @@ document.addEventListener('DOMContentLoaded', initPWA);
 // Register Service Worker
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./service-worker.js').catch(err => console.log('SW failed:', err));
+        navigator.serviceWorker.register('./service-worker.js')
+            .then(reg => {
+                // A hard refresh (Ctrl+Shift+R / Ctrl+F5) loads the page without the
+                // service worker, so its cache isn't updated. When an installed worker
+                // isn't controlling this page, ask it to re-download the cached files,
+                // so the next normal load shows this same fresh version.
+                if (!navigator.serviceWorker.controller && reg.active) {
+                    reg.active.postMessage('refresh-cache');
+                }
+            })
+            .catch(err => console.log('SW failed:', err));
     });
 }

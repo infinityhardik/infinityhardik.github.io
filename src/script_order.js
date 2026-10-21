@@ -1,10 +1,6 @@
 // ─── Order State ──────────────────────────────────────────────────────────────
 let selectedProducts = [];
-let selectedProductsTextarea;
-
-document.addEventListener('DOMContentLoaded', () => {
-    selectedProductsTextarea = document.getElementById('selected-products');
-});
+let _lastOrderItemCount = 0; // for the "item added" pulse
 
 // ─── Core Order Logic ─────────────────────────────────────────────────────────
 
@@ -14,14 +10,14 @@ document.addEventListener('DOMContentLoaded', () => {
  * @param {number} change - delta (+1, -1, or absolute diff)
  */
 function updateProductQuantityInOrder(productName, change) {
-    const product = productsData.productDirectory.find(p => p.Product === productName);
+    const product = getProductByName(productName);
     if (!product) { console.error('Product not found:', productName); return; }
 
     const idx = selectedProducts.findIndex(p => p.productName === productName);
     const current = idx > -1 ? selectedProducts[idx].quantity : 0;
     let next = Math.max(0, current + change);
 
-    const li = document.querySelector(`li[data-product-name="${productName}"]`);
+    const li = productRowsByName.get(productName);
     const qd = li ? li.querySelector('.quantity-display') : null;
 
     if (next > 0) {
@@ -42,7 +38,11 @@ function updateProductQuantityInOrder(productName, change) {
         }
     }
 
-    if (qd) qd.value = next;
+    if (qd) {
+        qd.value = next;
+        // Pop the number so each tap is confirmed, even mid-scroll
+        if (next !== current && typeof animateBump === 'function') animateBump(qd);
+    }
     updateOrderList();
 }
 
@@ -76,20 +76,16 @@ function clearOrder(event) {
     }
 
     updateOrderList();
-    if (typeof clearSearch === 'function') clearSearch();
+    if (typeof clearSearch === 'function') clearSearch({ focus: false });
     displayFeedbackMessage('Order cleared.', 'success');
 }
 
 // ─── Order Display ────────────────────────────────────────────────────────────
 
 /**
- * Rebuilds the order text and syncs both the mobile textarea and desktop scratchpad.
+ * Rebuilds the order text and syncs both the mobile order sheet and desktop scratchpad.
  */
 function updateOrderList() {
-    if (!selectedProductsTextarea) {
-        selectedProductsTextarea = document.getElementById('selected-products');
-    }
-
     const sorted = (typeof sortProducts === 'function') ? sortProducts(selectedProducts) : selectedProducts;
     let text = '';
     let currentGroup = null;
@@ -114,23 +110,30 @@ function updateOrderList() {
         refreshProductList();
     }
 
-    // Mobile textarea
-    if (selectedProductsTextarea) {
-        selectedProductsTextarea.value = finalText || 'Your order will appear here...';
-        selectedProductsTextarea.scrollTop = selectedProductsTextarea.scrollHeight;
+    // Mobile bottom-nav item count
+    const orderBadge = document.getElementById('mobile-order-count');
+    if (orderBadge) {
+        orderBadge.textContent = selectedProducts.length;
+        orderBadge.classList.toggle('is-visible', selectedProducts.length > 0);
+        orderBadge.closest('.mobile-nav-btn').classList.toggle('has-items', selectedProducts.length > 0);
     }
 
-    // Desktop scratchpad
-    const scratchpad = document.getElementById('scratchpad-content');
-    if (scratchpad) {
-        if (selectedProducts.length > 0) {
-            scratchpad.innerHTML = finalText
-                .replace(/\*(.*?)\*/g, '<strong>$1</strong>')
-                .replace(/\n/g, '<br>');
-        } else {
-            scratchpad.innerHTML = '<span class="scratchpad-placeholder">Your order will appear here...</span>';
-        }
+    // A new product in the order: pulse the count badge once (phones/tablets) —
+    // quantity changes on existing items don't pulse
+    if (selectedProducts.length > _lastOrderItemCount && typeof animateBump === 'function') {
+        animateBump(orderBadge, 1.35, 300);
     }
+    _lastOrderItemCount = selectedProducts.length;
+
+    // Desktop scratchpad and mobile order sheet show the same formatted text
+    // (WhatsApp *bold* markers rendered as bold)
+    const orderHtml = selectedProducts.length > 0
+        ? finalText.replace(/\*(.*?)\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>')
+        : '<span class="scratchpad-placeholder">Your order will appear here...</span>';
+    ['scratchpad-content', 'selected-products'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = orderHtml;
+    });
 }
 
 function calculateTotalQuantity() {

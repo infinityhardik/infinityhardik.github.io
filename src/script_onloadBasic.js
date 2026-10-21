@@ -1,91 +1,36 @@
 // ─── Global State ────────────────────────────────────────────────────────────
 let productsData = { productDirectory: [] };
+const productsByName = new Map();     // Product name → product record
+const productRowsByName = new Map();  // Product name → <li> row
 const HOLD_DELAY = 300;
 const REPEAT_INTERVAL = 100;
 
+function getProductByName(name) {
+    return productsByName.get(name);
+}
+
 // ─── Bootstrap ───────────────────────────────────────────────────────────────
-window.addEventListener('load', () => {
-    applySavedTheme();
-    loadProducts();
+// Start downloading products.json the moment this script runs, instead of
+// waiting for window 'load' (which waits for every image). Rendering waits for
+// DOMContentLoaded so every other script is guaranteed to be loaded.
+const productsRequest = fetch('products.json').then(res => {
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
 });
-
-let productNameLayoutFrame = null;
-
-function getProductNameParts(productName) {
-    const match = productName.match(/^(.*?\bmm)\s+(\d.*)$/i);
-    return match ? { firstLine: match[1], secondLine: match[2] } : null;
-}
-
-function setProductNameContent(nameElement, productName, splitAfterMm) {
-    nameElement.textContent = '';
-    nameElement.classList.toggle('product-name-split', splitAfterMm);
-
-    if (!splitAfterMm) {
-        nameElement.textContent = productName;
-        return;
-    }
-
-    const parts = getProductNameParts(productName);
-    if (!parts) {
-        nameElement.textContent = productName;
-        nameElement.classList.remove('product-name-split');
-        return;
-    }
-
-    const primaryLine = document.createElement('span');
-    primaryLine.className = 'product-name-line';
-    primaryLine.textContent = parts.firstLine;
-
-    const secondaryLine = document.createElement('span');
-    secondaryLine.className = 'product-name-line product-name-line-secondary';
-    secondaryLine.textContent = parts.secondLine;
-
-    nameElement.appendChild(primaryLine);
-    nameElement.appendChild(secondaryLine);
-}
-
-function updateVisibleProductNameLayouts() {
-    document.querySelectorAll('#product-list .product-item:not(.hidden) .product-name').forEach(nameElement => {
-        const productName = nameElement.dataset.productName || '';
-        const parts = getProductNameParts(productName);
-
-        setProductNameContent(nameElement, productName, false);
-        if (!parts) {
-            return;
-        }
-
-        const computedStyle = window.getComputedStyle(nameElement);
-        const lineHeight = parseFloat(computedStyle.lineHeight) || parseFloat(computedStyle.fontSize) * 1.2;
-        const wrapsNaturally = nameElement.getBoundingClientRect().height > (lineHeight * 1.5);
-
-        if (wrapsNaturally) {
-            setProductNameContent(nameElement, productName, true);
-        }
-    });
-}
-
-function queueProductNameLayoutUpdate() {
-    if (productNameLayoutFrame) {
-        cancelAnimationFrame(productNameLayoutFrame);
-    }
-
-    productNameLayoutFrame = requestAnimationFrame(() => {
-        productNameLayoutFrame = null;
-        updateVisibleProductNameLayouts();
-    });
-}
+applySavedTheme();
+document.addEventListener('DOMContentLoaded', loadProducts);
 
 // ─── Data Loading ─────────────────────────────────────────────────────────────
 async function loadProducts() {
     try {
-        const res = await fetch('products.json');
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        productsData = await res.json();
+        productsData = await productsRequest;
+
+        productsByName.clear();
+        productsData.productDirectory.forEach(p => productsByName.set(p.Product, p));
 
         // Render all items ONCE into the DOM — this is the only time nodes are created
         renderAllProducts();
         updateOrderList();
-        updateHistoryBadge();
     } catch (err) {
         console.error('Failed to load products:', err);
         displayFeedbackMessage('Error loading products. Please refresh.', 'error');
@@ -93,40 +38,55 @@ async function loadProducts() {
 }
 
 // ─── One-Time Full Render ─────────────────────────────────────────────────────
+
+/**
+ * Fills a product name element. Names like "B/B 25 mm 6 x 3" are split into two
+ * inline-block parts, so if the name has to wrap it wraps right after "mm".
+ * This is pure CSS — no measuring/re-rendering on every search or resize.
+ */
+function setProductNameContent(nameElement, productName) {
+    const match = productName.match(/^(.*?\bmm)\s+(\d.*)$/i);
+    if (!match) {
+        nameElement.textContent = productName;
+        return;
+    }
+    const primaryLine = document.createElement('span');
+    primaryLine.className = 'product-name-line';
+    primaryLine.textContent = match[1];
+
+    const secondaryLine = document.createElement('span');
+    secondaryLine.className = 'product-name-line product-name-line-secondary';
+    secondaryLine.textContent = match[2];
+
+    nameElement.append(primaryLine, ' ', secondaryLine);
+}
+
 /**
  * Creates DOM nodes for every product exactly once.
  * After this, filtering is done by toggling display — no DOM mutations.
+ * Row interaction uses delegated listeners on the list (see initProductListEvents).
  */
 function renderAllProducts() {
     const container = document.getElementById('product-list');
     if (!container) return;
-    container.innerHTML = '';
+
+    const fragment = document.createDocumentFragment();
+    productRowsByName.clear();
 
     productsData.productDirectory.forEach((product, index) => {
         const name = product.Product;
         const sel = selectedProducts.find(p => p.productName === name);
-        const itemId = `product-item-${index}`;
 
         const item = document.createElement('li');
         item.className = 'product-item';
-        item.id = itemId;
+        item.id = `product-item-${index}`;
         item.setAttribute('role', 'option');
-        item.setAttribute('aria-selected', 'false');
-        item.tabIndex = -1; // Managed via keyboard navigation
+        item.setAttribute('aria-selected', sel ? 'true' : 'false');
+        // Not focusable: keyboard navigation highlights rows with a class, and a
+        // focusable row stole focus from the search box when tapped (closing the
+        // on-screen keyboard, which made phones scroll back to the search bar)
         item.dataset.productName = name;
-        item.dataset.productType      = product['Product Type']    || '';
-        item.dataset.productGroup     = product['Group Name']      || '';
-        item.dataset.productGroupAlias= product['Group Alias']     || '';
-        item.dataset.productCategory  = product['Prod. Category']  || '';
-        item.dataset.faceType         = product['Face Type']       || '';
-        item.dataset.coreType         = product['Core Type']       || '';
-        item.dataset.gradeType        = product['Grade Type']      || '';
-        item.dataset.brandMark        = product['Brand Mark']      || '';
-
-        if (sel) {
-            item.classList.add('added-to-order');
-            item.setAttribute('aria-selected', 'true');
-        }
+        if (sel) item.classList.add('added-to-order');
 
         // ── Product info (click → detail modal) ──
         const info = document.createElement('div');
@@ -134,26 +94,11 @@ function renderAllProducts() {
         info.tabIndex = 0; // Make focusable
         info.setAttribute('role', 'button');
         info.setAttribute('aria-label', `View details for ${name}`);
-        
-        const openModal = (e) => {
-            e.stopPropagation();
-            openOrderModal(item);
-        };
-        
-        info.addEventListener('click', openModal);
-        info.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                openModal(e);
-            }
-        });
 
         const nameSpan = document.createElement('span');
         nameSpan.className = 'product-name';
-        nameSpan.dataset.productName = name;
-        setProductNameContent(nameSpan, name, false);
+        setProductNameContent(nameSpan, name);
         info.appendChild(nameSpan);
-        item.appendChild(info);
 
         // ── Quantity controls ──
         const controls = document.createElement('div');
@@ -165,34 +110,96 @@ function renderAllProducts() {
         decBtn.type = 'button';
         decBtn.className = 'qty-btn btn-outline-danger';
         decBtn.textContent = '−';
+        decBtn.dataset.delta = '-1';
         decBtn.setAttribute('aria-label', `Decrease quantity of ${name}`);
-        addHoldListeners(decBtn, () => updateProductQuantityInOrder(name, -1));
 
         const qInput = document.createElement('input');
         qInput.type = 'number';
         qInput.className = 'quantity-display';
         qInput.value = sel ? sel.quantity : 0;
         qInput.readOnly = true;
+        qInput.tabIndex = -1; // display only — the −/+ buttons change it
         qInput.setAttribute('aria-label', `Current quantity of ${name}`);
-        qInput.id = `qty-${name.replace(/\s+/g, '-')}`;
 
         const incBtn = document.createElement('button');
         incBtn.type = 'button';
         incBtn.className = 'qty-btn btn-outline-success';
         incBtn.textContent = '+';
+        incBtn.dataset.delta = '1';
         incBtn.setAttribute('aria-label', `Increase quantity of ${name}`);
-        addHoldListeners(incBtn, () => updateProductQuantityInOrder(name, 1));
 
-        controls.appendChild(decBtn);
-        controls.appendChild(qInput);
-        controls.appendChild(incBtn);
-        item.appendChild(controls);
-
-        container.appendChild(item);
+        controls.append(decBtn, qInput, incBtn);
+        item.append(info, controls);
+        fragment.appendChild(item);
+        productRowsByName.set(name, item);
     });
 
-    queueProductNameLayoutUpdate();
+    container.textContent = '';
+    container.appendChild(fragment);
 }
+
+// ─── Delegated Row Events ─────────────────────────────────────────────────────
+// One set of listeners on the list instead of ~8 listeners on each of 300+ rows.
+function initProductListEvents() {
+    const list = document.getElementById('product-list');
+    if (!list) return;
+
+    const rowName = (el) => el.closest('.product-item').dataset.productName;
+
+    list.addEventListener('click', (e) => {
+        const info = e.target.closest('.product-info');
+        if (info) {
+            e.stopPropagation();
+            openOrderModal(info.closest('.product-item'));
+            return;
+        }
+        // Keyboard activation of +/− (mouse/touch presses are handled on pointerdown)
+        const btn = e.target.closest('.qty-btn');
+        if (btn && e.detail === 0) {
+            updateProductQuantityInOrder(rowName(btn), Number(btn.dataset.delta));
+        }
+    });
+
+    list.addEventListener('keydown', (e) => {
+        if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('product-info')) {
+            e.preventDefault();
+            e.stopPropagation();
+            openOrderModal(e.target.closest('.product-item'));
+        }
+    });
+
+    // Pressing anywhere on a row except the product name (which opens its
+    // details) must not move focus away from the search box
+    list.addEventListener('mousedown', (e) => {
+        if (e.target.closest('.product-item') && !e.target.closest('.product-info')) e.preventDefault();
+    });
+
+    list.addEventListener('pointerdown', (e) => {
+        const btn = e.target.closest('.qty-btn');
+        if (!btn || e.button !== 0) return;
+        const name = rowName(btn);
+        const delta = Number(btn.dataset.delta);
+        const action = () => updateProductQuantityInOrder(name, delta);
+        // Touch waits to see if it's a tap, a hold or a scroll; a mouse acts at once
+        if (e.pointerType === 'touch' || e.pointerType === 'pen') startTouchPress(btn, action, e);
+        else startHold(btn, action);
+    });
+
+    // Long-press on −/+ is a hold-to-repeat, not a context menu
+    list.addEventListener('contextmenu', (e) => {
+        if (e.target.closest('.qty-btn')) e.preventDefault();
+    });
+
+    // Tapping/holding −/+ must keep the search box focused, so the on-screen
+    // keyboard stays open (as the original touchstart handler did). Cancelling
+    // touchend stops the browser's follow-up mouse events that would move focus;
+    // a scroll is already the browser's (not cancelable), so scrolling still works.
+    list.addEventListener('touchend', (e) => {
+        if (e.cancelable && e.target.closest('.product-item') && !e.target.closest('.product-info')) e.preventDefault();
+    }, { passive: false });
+}
+
+initProductListEvents();
 
 // ─── Filter-Only Display (no DOM mutations) ───────────────────────────────────
 /**
@@ -208,84 +215,197 @@ function displayProducts(productList) {
     // Toggle no-results visibility
     if (noResults) {
         noResults.classList.toggle('hidden', productList.length > 0);
+        if (productList.length === 0) {
+            const emptyOrder = typeof showSelectedOnly !== 'undefined' && showSelectedOnly && selectedProducts.length === 0;
+            noResults.querySelector('h3').textContent = emptyOrder ? 'Your order is empty' : 'No products found';
+            noResults.querySelector('p').textContent = emptyOrder
+                ? 'Add products with the + buttons, then tap the eye icon to see only your order.'
+                : "Try adjusting your search or filters to find what you're looking for.";
+        }
     }
 
-    const allItems = Array.from(container.children);
     const visibleSet = new Set(productList.map(p => p.Product));
+    const quantities = new Map(selectedProducts.map(s => [s.productName, s.quantity]));
+    const currentVisibleOrder = [];
 
-    allItems.forEach(li => {
+    for (const li of container.children) {
         const name = li.dataset.productName;
-        const sel = selectedProducts.find(s => s.productName === name);
-        li.classList.toggle('hidden', !visibleSet.has(name));
-        li.classList.toggle('added-to-order', !!sel);
-        li.setAttribute('aria-selected', sel ? 'true' : 'false');
+        const qty = quantities.get(name) || 0;
+        const visible = visibleSet.has(name);
+        li.classList.toggle('hidden', !visible);
+        li.classList.toggle('added-to-order', qty > 0);
+        li.setAttribute('aria-selected', qty > 0 ? 'true' : 'false');
 
         const qd = li.querySelector('.quantity-display');
-        if (qd) qd.value = sel ? sel.quantity : 0;
-    });
+        if (qd && qd.value !== String(qty)) qd.value = qty;
 
-    const currentVisibleOrder = allItems
-        .filter(li => !li.classList.contains('hidden'))
-        .map(li => li.dataset.productName);
-    const desiredOrder = productList.map(product => product.Product);
-    const needsReorder = currentVisibleOrder.length !== desiredOrder.length ||
-        currentVisibleOrder.some((name, index) => name !== desiredOrder[index]);
+        if (visible) currentVisibleOrder.push(name);
+    }
+
+    const needsReorder = currentVisibleOrder.length !== productList.length ||
+        productList.some((product, index) => product.Product !== currentVisibleOrder[index]);
 
     if (needsReorder) {
         const fragment = document.createDocumentFragment();
         productList.forEach(product => {
-            const item = allItems.find(li => li.dataset.productName === product.Product);
-            if (item) {
-                fragment.appendChild(item);
-            }
+            const item = productRowsByName.get(product.Product);
+            if (item) fragment.appendChild(item);
         });
         container.appendChild(fragment);
     }
-
-    queueProductNameLayoutUpdate();
 
     if (typeof syncVisibleProductState === 'function') {
         syncVisibleProductState();
     }
 }
 
-window.addEventListener('resize', queueProductNameLayoutUpdate);
-
 // ─── Hold-to-Repeat ───────────────────────────────────────────────────────────
-function addHoldListeners(button, action) {
-    let timer, interval;
+function startHold(button, action) {
+    let interval;
 
-    const start = () => {
-        clearTimeout(timer);
-        clearInterval(interval);
-        button.classList.add('holding');
-        action();
-        timer = setTimeout(() => { interval = setInterval(action, REPEAT_INTERVAL); }, HOLD_DELAY);
-    };
     const stop = () => {
         clearTimeout(timer);
         clearInterval(interval);
         button.classList.remove('holding');
+        button.removeEventListener('pointerup', stop);
+        button.removeEventListener('pointercancel', stop);
+        button.removeEventListener('pointerleave', stop);
     };
 
-    button.addEventListener('mousedown', (e) => { if (e.button === 0) { e.preventDefault(); start(); } });
-    button.addEventListener('mouseup', stop);
-    button.addEventListener('mouseleave', stop);
-    button.addEventListener('touchstart', (e) => { e.preventDefault(); start(); }, { passive: false });
-    button.addEventListener('touchend', stop);
-    button.addEventListener('touchcancel', stop);
+    button.classList.add('holding');
+    action();
+    const timer = setTimeout(() => { interval = setInterval(action, REPEAT_INTERVAL); }, HOLD_DELAY);
+
+    button.addEventListener('pointerup', stop);
+    button.addEventListener('pointercancel', stop);
+    button.addEventListener('pointerleave', stop);
+}
+
+/**
+ * Touch press on −/+. Nothing happens on touch-down, because the finger may be
+ * starting a scroll:
+ *  - lifted without moving          → tap: change the quantity once
+ *  - held still for TOUCH_HOLD_DELAY → hold: change it, then repeat until lifted
+ *  - moved > TOUCH_SLOP px, or the browser takes over to scroll (pointercancel)
+ *                                    → scroll: no change
+ */
+const TOUCH_HOLD_DELAY = 350;
+const TOUCH_SLOP = 10;
+
+function startTouchPress(button, action, downEvent) {
+    const { pointerId, clientX: startX, clientY: startY } = downEvent;
+    let holdTimer = null;
+    let repeat = null;
+    let fired = false;
+    let holding = false;
+
+    // While typing a search, the press must not close the on-screen keyboard:
+    // a long press can make the phone take focus from the search box, and the
+    // keyboard closing/reopening makes the page jump back to the search bar.
+    // If the box loses focus during the press, put it straight back (no scroll).
+    const searchBox = document.getElementById('search-box');
+    const keepFocus = searchBox && document.activeElement === searchBox;
+    const refocus = () => {
+        // Browsers ignore focus() inside the blur itself, so do it right after
+        const restore = () => {
+            if (document.activeElement === searchBox) return;
+            searchBox._silentFocus = true; // skip the "bring search bar to top" scroll
+            searchBox.focus({ preventScroll: true });
+        };
+        queueMicrotask(restore);
+        requestAnimationFrame(restore);
+    };
+    if (keepFocus) searchBox.addEventListener('blur', refocus);
+
+    // With the on-screen keyboard open, a phone may scroll the page by itself
+    // in reaction to the press (back to the sticky search bar). Hold the page
+    // where it was until shortly after the finger lifts — unless the finger
+    // itself scrolls (then this is a swipe and the lock lets go).
+    const lockY = keepFocus ? window.scrollY : null;
+    let userScrolling = false;
+    const holdScroll = () => {
+        if (lockY !== null && !userScrolling && Math.abs(window.scrollY - lockY) > 1) {
+            window.scrollTo(0, lockY);
+        }
+    };
+    if (keepFocus) window.addEventListener('scroll', holdScroll, { passive: true });
+
+    // Once it's a hold (not a scroll), the page must not scroll under the finger
+    const noScroll = (e) => { if (holding && e.cancelable) e.preventDefault(); };
+    window.addEventListener('touchmove', noScroll, { passive: false });
+
+    const fire = () => {
+        fired = true;
+        action();
+    };
+
+    const cleanup = () => {
+        clearTimeout(holdTimer);
+        window.removeEventListener('pointermove', onMove);
+        window.removeEventListener('pointerup', onUp);
+        window.removeEventListener('pointercancel', onCancel);
+        window.removeEventListener('touchmove', noScroll);
+        // Let the browser finish the touch before we stop guarding focus and scroll
+        if (keepFocus) {
+            setTimeout(() => searchBox.removeEventListener('blur', refocus), 300);
+            setTimeout(() => window.removeEventListener('scroll', holdScroll), 600);
+        }
+    };
+
+    const end = () => {
+        holding = false;
+        clearInterval(repeat);
+        button.classList.remove('holding');
+        cleanup();
+    };
+
+    function onMove(e) {
+        if (e.pointerId !== pointerId) return;
+        if (Math.hypot(e.clientX - startX, e.clientY - startY) > TOUCH_SLOP) {
+            userScrolling = true; // the finger is scrolling: let the page move
+            end();
+        }
+    }
+    function onUp(e) {
+        if (e.pointerId !== pointerId) return;
+        if (!fired) {
+            fire(); // a tap
+            button.classList.add('holding');
+            setTimeout(() => button.classList.remove('holding'), 120);
+            cleanup();
+            return;
+        }
+        end();
+    }
+    function onCancel(e) {
+        if (e.pointerId !== pointerId) return;
+        userScrolling = true; // the browser took the touch to scroll
+        end();
+    }
+
+    holdTimer = setTimeout(() => {
+        holding = true;
+        button.classList.add('holding');
+        fire();
+        repeat = setInterval(action, REPEAT_INTERVAL);
+    }, TOUCH_HOLD_DELAY);
+
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+    window.addEventListener('pointercancel', onCancel);
 }
 
 // ─── Product Detail Modal ─────────────────────────────────────────────────────
 function openOrderModal(productItem) {
+    const product = getProductByName(productItem.dataset.productName);
     const nameEl = document.getElementById('modal-product-name');
-    if (!nameEl) return;
-    nameEl.textContent = productItem.dataset.productName;
-    document.getElementById('modal-product-type').innerHTML  = `<b>Product Type:</b> ${productItem.dataset.productType}`;
-    document.getElementById('modal-face-type').innerHTML     = `<b>Face Type:</b> ${productItem.dataset.faceType}`;
-    document.getElementById('modal-core-type').innerHTML     = `<b>Core Type:</b> ${productItem.dataset.coreType}`;
-    document.getElementById('modal-grade-type').innerHTML    = `<b>Grade Type:</b> ${productItem.dataset.gradeType}`;
-    document.getElementById('modal-brand-mark').innerHTML    = `<b>Brand Mark:</b> ${productItem.dataset.brandMark}`;
+    if (!nameEl || !product) return;
+    nameEl.textContent = product.Product;
+    document.getElementById('modal-product-type').innerHTML  = `<b>Product Type:</b> ${product['Product Type'] || ''}`;
+    document.getElementById('modal-face-type').innerHTML     = `<b>Face Type:</b> ${product['Face Type'] || ''}`;
+    document.getElementById('modal-core-type').innerHTML     = `<b>Core Type:</b> ${product['Core Type'] || ''}`;
+    document.getElementById('modal-grade-type').innerHTML    = `<b>Grade Type:</b> ${product['Grade Type'] || ''}`;
+    document.getElementById('modal-brand-mark').innerHTML    = `<b>Brand Mark:</b> ${product['Brand Mark'] || ''}`;
     Modal.open('order-modal');
 }
 
@@ -298,10 +418,15 @@ function displayFeedbackMessage(message, type = 'warning', duration = 3000) {
     el.id = 'feedback-message';
     el.className = `feedback-message ${type}`;
     el.textContent = message;
-    document.body.appendChild(el);
-
-    el.getBoundingClientRect(); // force reflow
+    // On-screen keyboard open: the bottom of the screen is hidden, so show the
+    // toast just under the search bar instead
+    if (document.documentElement.classList.contains('keyboard-open')) {
+        const bar = document.querySelector('.search-container');
+        if (bar) el.style.top = `${Math.max(8, Math.round(bar.getBoundingClientRect().bottom + 8))}px`;
+    }
     el.style.display = 'block';
+    document.body.appendChild(el);
+    if (typeof animateToastIn === 'function') animateToastIn(el); // slide up + fade in, no forced reflow
 
     setTimeout(() => {
         el.style.opacity = '0';
@@ -322,24 +447,25 @@ function toggleOrderPopup() {
 }
 
 // ─── Dark Mode ────────────────────────────────────────────────────────────────
+// The class lives on <html> so the inline script in <head> can set it before first paint.
 function toggleDarkMode() {
-    document.body.classList.toggle('dark-mode');
-    const isDark = document.body.classList.contains('dark-mode');
+    document.documentElement.classList.toggle('dark-mode');
+    const isDark = document.documentElement.classList.contains('dark-mode');
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
     updateDarkModeToggleIcon();
 }
 
 function applySavedTheme() {
     const saved = localStorage.getItem('theme');
-    if (saved === 'dark') document.body.classList.add('dark-mode');
-    else document.body.classList.remove('dark-mode');
+    document.documentElement.classList.toggle('dark-mode', saved === 'dark');
     updateDarkModeToggleIcon();
 }
 
 function updateDarkModeToggleIcon() {
     const btn = document.getElementById('darkModeToggle');
     if (!btn) return;
-    const isDark = document.body.classList.contains('dark-mode');
-    btn.innerHTML = isDark ? '🌞' : '🌙';
+    // The moon/sun icons are both in the markup; CSS shows the right one
+    const isDark = document.documentElement.classList.contains('dark-mode');
     btn.title = isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+    btn.setAttribute('aria-label', btn.title);
 }

@@ -15,19 +15,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ── Mobile: Highlight sticky header when focused ──
     searchBox.addEventListener('focus', () => {
+        // Focus put back by a −/+ press (not a new tap on the box): leave the page where it is
+        if (searchBox._silentFocus) {
+            searchBox._silentFocus = false;
+            return;
+        }
         if (window.innerWidth > 1023) return;
 
         if (stickyControls) {
             stickyControls.classList.add('search-active');
 
-            // Bring the sticky action/search controls to the top on mobile
-            // so the focused search field stays visible above the keyboard.
+            // Bring the search bar to the top on mobile so the focused field
+            // stays visible above the keyboard (only if it isn't there already).
             window.clearTimeout(searchBox._mobileFocusScrollTimer);
             searchBox._mobileFocusScrollTimer = window.setTimeout(() => {
-                const rect = stickyControls.getBoundingClientRect();
-                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                const targetTop = Math.max(0, scrollTop + rect.top);
-                window.scrollTo({ top: targetTop, behavior: 'smooth' });
+                const pinTop = getSearchPinTop();
+                if (window.scrollY < pinTop) window.scrollTo({ top: pinTop, behavior: 'smooth' });
             }, 300);
         }
     });
@@ -58,17 +61,69 @@ document.addEventListener('DOMContentLoaded', () => {
         _timer = setTimeout(() => handleSearchInput(searchBox.value), delay);
     });
 
-    // ── Sticky Header Shadow on Scroll ──
+    // Tapping ✕ must not take focus from the input — that would close the
+    // keyboard and clearSearch() would reopen it straight away (a flicker)
+    const clearBtn = document.getElementById('clear-search-btn');
+    if (clearBtn) clearBtn.addEventListener('mousedown', (e) => e.preventDefault());
+
+    initVirtualKeyboard(searchBox);
+
+    // ── Sticky bar style — only once the bar is actually stuck at the top,
+    //    so it doesn't switch back and forth while results change ──
+    let _scrollFrame = 0;
     window.addEventListener('scroll', () => {
-        if (stickyControls) {
-            stickyControls.classList.toggle('sticky-scrolled', window.scrollY > 10);
-        }
+        if (!stickyControls || _scrollFrame) return;
+        _scrollFrame = requestAnimationFrame(() => {
+            _scrollFrame = 0;
+            stickyControls.classList.toggle('sticky-scrolled', window.scrollY >= getSearchPinTop() - 1);
+        });
     }, { passive: true });
 });
 
+// ─── On-Screen Keyboard (phones and tablets) ──────────────────────────────────
+function isTouchDevice() {
+    return window.matchMedia('(pointer: coarse)').matches;
+}
+
+/**
+ * While the search box is being typed in on a touch screen, html.keyboard-open
+ * moves toasts under the search bar (the bottom of the screen is behind the
+ * on-screen keyboard). Only follows focus — it never opens or closes the keyboard.
+ */
+function initVirtualKeyboard(searchBox) {
+    const root = document.documentElement;
+    searchBox.addEventListener('focus', () => root.classList.toggle('keyboard-open', isTouchDevice()));
+    searchBox.addEventListener('blur', () => root.classList.remove('keyboard-open'));
+}
+
+// ─── Keep the Search Bar Still While Results Change ───────────────────────────
+/**
+ * Scroll position at which the search bar sits stuck at the top of the screen
+ * (below the header on desktop, at the very top on mobile).
+ */
+function getSearchPinTop() {
+    const list = document.getElementById('product-list');
+    const controls = document.querySelector('.sticky-controls');
+    if (!list || !controls) return 0;
+    const stickyTop = parseFloat(getComputedStyle(controls).top) || 0;
+    const listGap = parseFloat(getComputedStyle(list).marginTop) || 0; // space between the bar and the list
+    return Math.max(0, list.getBoundingClientRect().top - listGap + window.scrollY - controls.offsetHeight - stickyTop);
+}
+
+/**
+ * Call right after the list changes. If the user had scrolled the search bar to
+ * the top, keep it exactly there and show results from the first one — instead
+ * of letting the shorter page snap the scroll position (the "jumping" layout).
+ * Runs before the browser paints, so nothing visibly moves.
+ */
+function keepSearchBarPinned() {
+    const pinTop = getSearchPinTop();
+    if (window.scrollY > pinTop) window.scrollTo(0, pinTop);
+}
+
 // ─── Search Logic ─────────────────────────────────────────────────────────────
-function containsInOrder(str, query) {
-    const s = str.toLowerCase(), q = query.toLowerCase();
+// Both arguments must already be upper-cased
+function containsInOrder(s, q) {
     let si = 0, qi = 0;
     while (si < s.length && qi < q.length) { if (s[si] === q[qi]) qi++; si++; }
     return qi === q.length;
@@ -90,6 +145,7 @@ function handleSearchInput(raw) {
     const { searchTerm, quantity, isValid } = parseSearchInput(raw);
     currentSearchTerm = searchTerm;
     refreshProductList();
+    keepSearchBarPinned();
 
     if (isValid && quantity !== null) {
         // Find first visible item using the .hidden class (matches how displayProducts works)
@@ -119,16 +175,27 @@ function handleSearchInput(raw) {
     }
 }
 
+// Upper-cased search text per product, computed once per product record
+const _searchCache = new WeakMap();
+function getSearchFields(product) {
+    let fields = _searchCache.get(product);
+    if (!fields) {
+        fields = {
+            name: product.Product.toUpperCase(),
+            other: ['Brand Mark', 'Core Type', 'Grade Type', 'Product Type', 'Group Name']
+                .map(key => (product[key] || '').toUpperCase()),
+        };
+        _searchCache.set(product, fields);
+    }
+    return fields;
+}
+
 function getFilteredProducts(filterTerm = currentSearchTerm) {
     const normalized = filterTerm.trim().toUpperCase();
     let list = productsData.productDirectory;
 
     if (showSelectedOnly) {
-        list = selectedProducts
-            .map(selectedProduct =>
-                productsData.productDirectory.find(product => product.Product === selectedProduct.productName)
-            )
-            .filter(Boolean);
+        list = selectedProducts.map(p => getProductByName(p.productName)).filter(Boolean);
     }
 
     if (typeof selectedFilters !== 'undefined' && Object.keys(selectedFilters).length > 0) {
@@ -143,20 +210,14 @@ function getFilteredProducts(filterTerm = currentSearchTerm) {
         return list;
     }
 
-    const byName = list.filter(product =>
-        containsInOrder(product.Product.toUpperCase(), normalized)
-    );
+    const byName = list.filter(product => containsInOrder(getSearchFields(product).name, normalized));
 
     if (byName.length > 0) {
         return byName;
     }
 
     return list.filter(product =>
-        containsInOrder((product['Brand Mark'] || '').toUpperCase(), normalized) ||
-        containsInOrder((product['Core Type'] || '').toUpperCase(), normalized) ||
-        containsInOrder((product['Grade Type'] || '').toUpperCase(), normalized) ||
-        containsInOrder((product['Product Type'] || '').toUpperCase(), normalized) ||
-        containsInOrder((product['Group Name'] || '').toUpperCase(), normalized)
+        getSearchFields(product).other.some(field => containsInOrder(field, normalized))
     );
 }
 
@@ -167,16 +228,22 @@ function refreshProductList() {
     }
 }
 
-function clearSearch() {
+/**
+ * @param {{focus?: boolean}} [options] focus: put the cursor back in the box
+ *   (default — the ✕ button, Esc). Clear Order passes false, so it doesn't
+ *   pop up the on-screen keyboard.
+ */
+function clearSearch({ focus = true } = {}) {
     const searchBox = document.getElementById('search-box');
     if (searchBox) {
         searchBox.value = '';
-        searchBox.focus();
+        if (focus) searchBox.focus({ preventScroll: true });
         const clearBtn = document.getElementById('clear-search-btn');
         if (clearBtn) clearBtn.classList.remove('is-visible');
     }
     currentSearchTerm = '';
     refreshProductList();
+    keepSearchBarPinned();
     if (typeof resetFocus === 'function') resetFocus();
 }
 
@@ -192,6 +259,7 @@ function toggleShowSelectedOnly() {
     if (showSelectedOnly && searchBox) searchBox.value = '';
     if (showSelectedOnly) currentSearchTerm = '';
     refreshProductList();
+    keepSearchBarPinned();
 }
 
 function updateShowSelectedOnlyButton() {
@@ -204,7 +272,7 @@ function updateShowSelectedOnlyButton() {
             <path d="M7 12l3.5 3.5 6.5-6.5" stroke="white" fill="none"/>
         </svg>`;
     } else {
-        btn.style.color = 'var(--color-primary)';
+        btn.style.color = 'var(--color-accent)';
         btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
     }
 }

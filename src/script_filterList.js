@@ -7,7 +7,8 @@ let selectedFilters = {};
 function getUniqueValues(data, key) {
     const values = new Set();
     data.forEach(item => { if (item[key]) values.add(String(item[key]).trim()); });
-    return Array.from(values).sort();
+    // numeric: true sorts "6 mm, 9 mm, 12 mm" instead of "12 mm, 6 mm, 9 mm"
+    return Array.from(values).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
 }
 
 // ─── Open Filter Modal ────────────────────────────────────────────────────────
@@ -101,6 +102,7 @@ function populateFilterOptions() {
 // ─── Apply / Clear ────────────────────────────────────────────────────────────
 function applyFilters() {
     if (typeof refreshProductList === 'function') refreshProductList();
+    if (typeof keepSearchBarPinned === 'function') keepSearchBarPinned();
     Modal.close('filter-modal');
 
     const count = Object.values(selectedFilters).filter(v => v.length > 0).length;
@@ -111,6 +113,7 @@ function clearFilters() {
     selectedFilters = {};
     document.querySelectorAll('.filter-checkbox').forEach(cb => cb.checked = false);
     if (typeof refreshProductList === 'function') refreshProductList();
+    if (typeof keepSearchBarPinned === 'function') keepSearchBarPinned();
     updateClearFiltersButtonStyle();
     displayFeedbackMessage('Filters cleared.', 'success');
 }
@@ -121,10 +124,16 @@ function updateClearFiltersButtonStyle() {
     const count = Object.values(selectedFilters).reduce((n, v) => n + v.length, 0);
 
     if (filterBtn) {
-        filterBtn.innerHTML = count > 0
-            ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg> Filters (${count})`
-            : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg> Filters`;
+        const label = filterBtn.querySelector('.btn-label');
+        if (label) label.textContent = count > 0 ? `Filters (${count})` : 'Filters';
     }
 
     if (clearBtn) clearBtn.classList.toggle('is-hidden', count === 0);
+
+    const mobileBadge = document.getElementById('mobile-filter-count');
+    if (mobileBadge) {
+        mobileBadge.textContent = count;
+        mobileBadge.classList.toggle('is-visible', count > 0);
+        mobileBadge.closest('.mobile-nav-btn').classList.toggle('is-active', count > 0);
+    }
 }

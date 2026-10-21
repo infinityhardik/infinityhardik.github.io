@@ -9,7 +9,6 @@ function openOrderHistory() {
     cleanupOldOrders();
     renderOrderHistory();
     Modal.open('history-modal');
-    updateHistoryBadge();
     attachHistoryListeners();
 }
 
@@ -18,6 +17,10 @@ function renderOrderHistory() {
     if (!container) return;
 
     let orders = getOrderHistory();
+
+    // The footer only holds "Clear History" — hide it when there is nothing to clear
+    const clearAllBtn = document.getElementById('clear-history-btn');
+    if (clearAllBtn) clearAllBtn.closest('.modal-footer').classList.toggle('is-hidden', orders.length === 0);
 
     if (currentHistorySearch) {
         const q = currentHistorySearch.toLowerCase();
@@ -57,16 +60,16 @@ function renderOrderHistory() {
             ${grpOrders.map(o => `
                 <div class="product-item" style="flex-direction:column;align-items:stretch;gap:8px;margin-bottom:8px;border-radius:var(--radius-md);border:1px solid var(--color-border)">
                     <div style="display:flex;justify-content:space-between;align-items:center">
-                        <span style="font-weight:700;font-size:0.8rem;color:var(--color-primary)">${formatTimeLabel(new Date(o.timestamp))}</span>
+                        <span style="font-weight:700;font-size:0.8rem;color:var(--color-accent)">${formatTimeLabel(new Date(o.timestamp))}</span>
                         <span style="font-size:0.75rem;background:var(--color-bg);padding:2px 8px;border-radius:4px">${o.totalItems} pcs</span>
                     </div>
                     <div style="font-size:0.85rem;color:var(--color-text-muted)">
                         ${o.products.slice(0, 3).map(p => p.productName).join(', ')}${o.products.length > 3 ? ` +${o.products.length - 3} more` : ''}
                     </div>
                     <div style="display:flex;gap:6px;flex-wrap:wrap">
-                        <button class="btn btn-secondary" style="padding:4px 10px;font-size:0.78rem" onclick="editOrderFromHistory('${o.id}')">Edit</button>
-                        <button class="btn btn-secondary" style="padding:4px 10px;font-size:0.78rem" onclick="copyOrderFromHistory('${o.id}')">Copy</button>
-                        <button class="btn btn-danger" style="padding:4px 10px;font-size:0.78rem;margin-left:auto" onclick="confirmDeleteOrder('${o.id}')">Delete</button>
+                        <button class="btn btn-secondary btn-sm" onclick="editOrderFromHistory('${o.id}')">Edit</button>
+                        <button class="btn btn-secondary btn-sm" onclick="copyOrderFromHistory('${o.id}')"><svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg>Copy</button>
+                        <button class="btn btn-danger btn-sm btn-push-end" onclick="confirmDeleteOrder('${o.id}', this)"><svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /><path d="M10 11v6M14 11v6" /><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" /></svg>Delete</button>
                     </div>
                 </div>`).join('')}
         </div>`).join('');
@@ -117,29 +120,48 @@ function copyOrderFromHistory(orderId) {
     }
 }
 
-function confirmDeleteOrder(orderId) {
-    if (confirm('Delete this order from history?')) {
+/**
+ * Two-tap confirmation inside the page. The browser's confirm() dialog is
+ * blocked in in-app browsers (e.g. links opened from WhatsApp) and in some
+ * webviews, where it returns "Cancel" instantly — so Delete did nothing there.
+ * First tap: the button asks "Tap to confirm" for 3 s. Second tap: runs action.
+ */
+function confirmByTap(btn, action) {
+    if (btn.dataset.confirming) {
+        btn._resetConfirm();
+        action();
+        return;
+    }
+    const original = btn.innerHTML;
+    btn.dataset.confirming = '1';
+    btn.classList.add('is-confirming');
+    btn.textContent = 'Tap to confirm';
+    btn._resetConfirm = () => {
+        clearTimeout(btn._confirmTimer);
+        delete btn.dataset.confirming;
+        btn.classList.remove('is-confirming');
+        btn.innerHTML = original;
+    };
+    btn._confirmTimer = setTimeout(btn._resetConfirm, 3000);
+}
+
+function confirmDeleteOrder(orderId, btn) {
+    const remove = () => {
         deleteOrderFromHistory(orderId);
         renderOrderHistory();
-        updateHistoryBadge();
-    }
+    };
+    if (btn) confirmByTap(btn, remove);
+    else if (confirm('Delete this order from history?')) remove();
 }
 
-function confirmClearAllHistory() {
-    if (confirm('Clear ALL order history? This cannot be undone.')) {
+function confirmClearAllHistory(btn) {
+    const clear = () => {
         clearAllHistory();
         renderOrderHistory();
-        updateHistoryBadge();
         displayFeedbackMessage('History cleared.', 'success');
-    }
-}
-
-function updateHistoryBadge() {
-    const count = getOrderHistoryCount();
-    document.querySelectorAll('.history-badge').forEach(badge => {
-        badge.textContent = count;
-        badge.style.display = count > 0 ? '' : 'none';
-    });
+    };
+    if (btn) confirmByTap(btn, clear);
+    else if (confirm('Clear ALL order history? This cannot be undone.')) clear();
 }
 
 let _historyListenersAttached = false;
@@ -162,5 +184,3 @@ function attachHistoryListeners() {
         });
     }
 }
-
-document.addEventListener('DOMContentLoaded', updateHistoryBadge);

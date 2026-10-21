@@ -54,9 +54,9 @@ function copyOrder() {
         navigator.clipboard.writeText(orderText)
             .then(() => {
                 displayFeedbackMessage('Order copied to clipboard!', 'success');
+                if (typeof flashSuccess === 'function') { flashSuccess('copyOrder'); haptic(); }
                 // Save to history (passing raw selectedProducts to preserve insertion order)
                 saveOrderToHistory(selectedProducts, 'copied', 'clipboard');
-                updateHistoryBadge();
             })
             .catch(err => {
                 console.error('Failed to copy order text: ', err);
@@ -74,9 +74,9 @@ function copyOrder() {
             const successful = document.execCommand('copy');
             if (successful) {
                 displayFeedbackMessage('Order copied to clipboard (fallback)!', 'success');
+                if (typeof flashSuccess === 'function') { flashSuccess('copyOrder'); haptic(); }
                 // Save to history (passing raw selectedProducts to preserve insertion order)
                 saveOrderToHistory(selectedProducts, 'copied', 'clipboard');
-                updateHistoryBadge();
             } else {
                 throw new Error('execCommand failed');
             }
@@ -108,10 +108,10 @@ function sendOrder() {
     // Open WhatsApp in a new tab/window
     window.open(whatsappUrl, '_blank');
     displayFeedbackMessage('Order sent via WhatsApp!', 'success');
+    if (typeof flashSuccess === 'function') { flashSuccess('sendOrder'); haptic(); }
 
     // Save to history (passing raw selectedProducts to preserve insertion order)
     saveOrderToHistory(selectedProducts, 'sent', 'whatsapp');
-    updateHistoryBadge();
 }
 
 /**

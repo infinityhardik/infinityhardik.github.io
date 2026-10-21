@@ -91,14 +91,29 @@ document.addEventListener("keydown", function (event) {
             const active = document.activeElement;
             const isInput = active.tagName === 'INPUT' || active.tagName === 'TEXTAREA';
             if (active !== searchBox && !isInput) {
-                searchBox.focus();
+                searchBox.focus({ preventScroll: true });
                 // Cursor to end
                 searchBox.setSelectionRange(searchBox.value.length, searchBox.value.length);
             }
         }
 
         // ─── List Navigation (Arrows) ───────────────────────────────────────
+        // Only these keys need the visible rows — skip the 300-row scan while typing
+        if (!event.key.startsWith('Arrow') && event.key !== 'Enter' && event.key !== 'Delete') return;
         const visibleItems = getVisibleProductItems();
+        const focusedItem = currentFocusIndex >= 0 ? visibleItems[currentFocusIndex] : null;
+
+        // ─── Ctrl+↑/↓ change quantity, Delete sets it to zero (as the Help text says) ──
+        if (focusedItem && event.ctrlKey && (event.key === "ArrowUp" || event.key === "ArrowDown")) {
+            event.preventDefault();
+            updateProductQuantityInOrder(focusedItem.dataset.productName, event.key === "ArrowUp" ? 1 : -1);
+            return;
+        }
+        if (focusedItem && event.key === "Delete") {
+            event.preventDefault();
+            addToOrder(focusedItem.dataset.productName, 0);
+            return;
+        }
 
         if (event.key === "ArrowDown" || event.key === "ArrowUp") {
             event.preventDefault();
@@ -118,7 +133,7 @@ document.addEventListener("keydown", function (event) {
                     // ↑ On first item (or already at search) → return to search box
                     currentFocusIndex = -1;
                     updateListFocus(visibleItems);
-                    searchBox.focus();
+                    searchBox.focus({ preventScroll: true });
                     return;
                 } else {
                     currentFocusIndex--;
