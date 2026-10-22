@@ -377,30 +377,9 @@
   </div>
 
   <!-- ── Scripts ───────────────────────────────────────────────────────────── -->
-  <!-- modal.js is synchronous so Modal object is available before deferred scripts run -->
-  <script src="src/modal.js"></script>
-
-  <!-- Core order state must load first (defines selectedProducts, updateOrderList, etc.) -->
-  <script src="src/script_order.js" defer></script>
-  <script src="src/script_sendOrder.js" defer></script>
-
-  <!-- UI & Interaction -->
-  <script src="src/script_onloadBasic.js" defer></script>
-  <script src="src/script_searchBox.js" defer></script>
-  <script src="src/script_filterList.js" defer></script>
-  <script src="src/script_keyboardNavigation.js" defer></script>
-
-  <!-- History (data layer then UI layer) -->
-  <script src="src/script_history.js" defer></script>
-  <script src="src/script_historyUI.js" defer></script>
-
-  <!-- Supplementary -->
-  <script src="src/script_helpModal.js" defer></script>
-  <script src="src/script_pwa.js" defer></script>
-  <script src="src/script_animations.js" defer></script>
 
   <!-- Build Scripts -->
-  <!-- <script src="dist/main.min.js"></script> -->
+  <script src="dist/main.min.js"></script>
 </body>
 
 </html>
