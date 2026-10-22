@@ -12,9 +12,7 @@ function openOrderHistory() {
     attachHistoryListeners();
     // Date headings and cards fade up in turn as the sheet opens
     const container = document.getElementById('history-container');
-    if (container && typeof animateCascade === 'function') {
-        animateCascade(container.querySelectorAll(HISTORY_FLIP_ITEMS), { distance: 12, step: 30 });
-    }
+    if (container) animateCascade(container.querySelectorAll(HISTORY_FLIP_ITEMS), { distance: 12, step: 30 });
 }
 
 // History elements that glide to their new place when the list changes (see animateFlip)
@@ -22,9 +20,7 @@ const HISTORY_FLIP_ITEMS = '.history-group-label, .history-card';
 
 /** Re-renders the list, letting cards glide to their new positions. */
 function renderOrderHistoryAnimated() {
-    const container = document.getElementById('history-container');
-    if (typeof animateFlip === 'function') animateFlip(container, HISTORY_FLIP_ITEMS, renderOrderHistory);
-    else renderOrderHistory();
+    animateFlip(document.getElementById('history-container'), HISTORY_FLIP_ITEMS, renderOrderHistory);
 }
 
 function renderOrderHistory() {
@@ -135,14 +131,10 @@ function editOrderFromHistory(orderId) {
     Modal.close('history-modal');
 
     // 4. Automatically enable "Show Selected Only" so the user sees the restored order immediately
-    if (typeof showSelectedOnly !== 'undefined') {
-        showSelectedOnly = true;
-        if (typeof updateShowSelectedOnlyButton === 'function') updateShowSelectedOnlyButton();
-        if (typeof refreshProductList === 'function') {
-            refreshProductList();
-        }
-        if (typeof animateRowsSwap === 'function') animateRowsSwap(document.getElementById('product-list'));
-    }
+    showSelectedOnly = true;
+    updateShowSelectedOnlyButton();
+    refreshProductList();
+    animateRowsSwap(document.getElementById('product-list'));
 
     displayFeedbackMessage('Order loaded for editing.', 'success');
 }
@@ -171,7 +163,7 @@ function confirmByTap(btn, action) {
     btn.dataset.confirming = '1';
     btn.classList.add('is-confirming');
     btn.textContent = 'Tap to confirm';
-    if (typeof animateBump === 'function') animateBump(btn, 1.05, 200);
+    animateBump(btn, 1.05, 200);
     btn._resetConfirm = () => {
         clearTimeout(btn._confirmTimer);
         delete btn.dataset.confirming;
@@ -184,8 +176,8 @@ function confirmByTap(btn, action) {
 function confirmDeleteOrder(orderId, btn) {
     const remove = () => {
         deleteOrderFromHistory(orderId);
-        const card = btn && btn.closest('.history-card');
-        if (!card || typeof animateLeave !== 'function') {
+        const card = btn.closest('.history-card');
+        if (!card) {
             renderOrderHistory();
             return;
         }
@@ -193,18 +185,15 @@ function confirmDeleteOrder(orderId, btn) {
         card.style.pointerEvents = 'none';
         animateLeave(card, renderOrderHistoryAnimated);
     };
-    if (btn) confirmByTap(btn, remove);
-    else if (confirm('Delete this order from history?')) remove();
+    confirmByTap(btn, remove);
 }
 
 function confirmClearAllHistory(btn) {
-    const clear = () => {
+    confirmByTap(btn, () => {
         clearAllHistory();
         renderOrderHistory();
         displayFeedbackMessage('History cleared.', 'success');
-    };
-    if (btn) confirmByTap(btn, clear);
-    else if (confirm('Clear ALL order history? This cannot be undone.')) clear();
+    });
 }
 
 let _historyListenersAttached = false;

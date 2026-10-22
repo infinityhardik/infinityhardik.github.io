@@ -13,7 +13,7 @@ const isIOS = () => {
 function showInstallButton() {
     if (!installBtn.classList.contains('is-hidden')) return;
     installBtn.classList.remove('is-hidden');
-    if (typeof animatePopIn === 'function') animatePopIn(installBtn);
+    animatePopIn(installBtn);
 }
 
 function initPWA() {

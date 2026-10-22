@@ -120,14 +120,6 @@ function cleanupOldOrders() {
 }
 
 /**
- * Get the count of orders in history
- * @returns {number} Number of orders
- */
-function getOrderHistoryCount() {
-    return getOrderHistory().length;
-}
-
-/**
  * Clear all order history
  * @returns {boolean} Success status
  */

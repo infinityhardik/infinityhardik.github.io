@@ -34,15 +34,13 @@ function updateProductQuantityInOrder(productName, change) {
         if (li) li.classList.add('added-to-order');
     } else {
         selectedProducts = selectedProducts.filter(p => p.productName !== productName);
-        if (li) {
-            li.classList.remove('added-to-order');
-        }
+        if (li) li.classList.remove('added-to-order');
     }
 
     if (qd) {
         qd.value = next;
         // Pop the number so each tap is confirmed, even mid-scroll
-        if (next !== current && typeof animateBump === 'function') animateBump(qd);
+        if (next !== current) animateBump(qd);
     }
     updateOrderList();
 }
@@ -71,13 +69,13 @@ function clearOrder(event) {
     });
 
     // Reset show-selected-only if active
-    if (typeof showSelectedOnly !== 'undefined' && showSelectedOnly) {
+    if (showSelectedOnly) {
         showSelectedOnly = false;
-        if (typeof updateShowSelectedOnlyButton === 'function') updateShowSelectedOnlyButton();
+        updateShowSelectedOnlyButton();
     }
 
     updateOrderList();
-    if (typeof clearSearch === 'function') clearSearch({ focus: false });
+    clearSearch({ focus: false });
     displayFeedbackMessage('Order cleared.', 'success');
 }
 
@@ -88,10 +86,7 @@ function clearOrder(event) {
  */
 function updateOrderList() {
     // Keep "Show Selected Only" view in sync when items are added/removed
-    if (typeof showSelectedOnly !== 'undefined' && showSelectedOnly &&
-        typeof refreshProductList === 'function') {
-        refreshProductList();
-    }
+    if (showSelectedOnly) refreshProductList();
 
     // Mobile bottom-nav item count
     const orderBadge = document.getElementById('mobile-order-count');
@@ -104,7 +99,7 @@ function updateOrderList() {
     // A new product in the order: pulse the count badge once (phones/tablets) —
     // quantity changes on existing items don't pulse. The first item makes the
     // badge appear, so it springs in instead.
-    if (selectedProducts.length > _lastOrderItemCount && typeof animateBump === 'function') {
+    if (selectedProducts.length > _lastOrderItemCount) {
         if (_lastOrderItemCount === 0) animatePopIn(orderBadge);
         else animateBump(orderBadge, 1.35, 300);
     }

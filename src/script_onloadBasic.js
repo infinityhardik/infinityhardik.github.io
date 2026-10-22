@@ -141,7 +141,7 @@ function renderAllProducts() {
 
     container.textContent = '';
     container.appendChild(fragment);
-    if (typeof animateListIntro === 'function') animateListIntro(container);
+    animateListIntro(container);
 }
 
 // ─── Delegated Row Events ─────────────────────────────────────────────────────
@@ -234,7 +234,7 @@ function displayProducts(productList) {
     if (noResults) {
         noResults.classList.toggle('hidden', productList.length > 0);
         if (productList.length === 0) {
-            const emptyOrder = typeof showSelectedOnly !== 'undefined' && showSelectedOnly && selectedProducts.length === 0;
+            const emptyOrder = showSelectedOnly && selectedProducts.length === 0;
             noResults.querySelector('h3').textContent = emptyOrder ? 'Your order is empty' : 'No products found';
             noResults.querySelector('p').textContent = emptyOrder
                 ? 'Add products with the + buttons, then tap the eye icon to see only your order.'
@@ -284,9 +284,8 @@ function displayProducts(productList) {
         if (visible) shown++;
     }
 
-    if (typeof syncVisibleProductState === 'function') {
-        syncVisibleProductState();
-    }
+    const searchBox = document.getElementById('search-box');
+    if (searchBox) searchBox.setAttribute('aria-expanded', productList.length > 0 ? 'true' : 'false');
 }
 
 // ─── Hold-to-Repeat ───────────────────────────────────────────────────────────
@@ -442,11 +441,8 @@ function openOrderModal(productItem) {
     });
     Modal.open('order-modal');
     // The detail lines fade up one after another as the popup opens
-    if (typeof animateCascade === 'function') {
-        animateCascade(document.querySelectorAll('#order-modal .product-meta-list li'), { distance: 8, step: 35, duration: 280 });
-    }
+    animateCascade(document.querySelectorAll('#order-modal .product-meta-list li'), { distance: 8, step: 35, duration: 280 });
 }
-
 
 // ─── Feedback Toast ───────────────────────────────────────────────────────────
 function displayFeedbackMessage(message, type = 'warning', duration = 3000) {
@@ -466,11 +462,11 @@ function displayFeedbackMessage(message, type = 'warning', duration = 3000) {
     }
     el.style.display = 'block';
     document.body.appendChild(el);
-    if (typeof animateToastIn === 'function') animateToastIn(el); // slide up + fade in, no forced reflow
+    animateToastIn(el); // slide up + fade in, no forced reflow
 
     setTimeout(() => {
         if (!el.parentNode) return; // already replaced by a newer toast
-        if (typeof animateToastOut === 'function' && animateToastOut(el)) return;
+        if (animateToastOut(el)) return;
         el.style.opacity = '0';
         setTimeout(() => { if (el.parentNode) el.remove(); }, 400);
     }, duration);
@@ -483,7 +479,7 @@ function toggleOrderPopup() {
     if (popup.classList.contains('active')) {
         Modal.close('order-text-popup');
     } else {
-        if (typeof updateOrderList === 'function') updateOrderList();
+        updateOrderList();
         Modal.open('order-text-popup');
     }
 }
@@ -493,13 +489,11 @@ function toggleOrderPopup() {
 // localStorage can throw (private browsing, site data blocked): the theme then
 // just isn't remembered — it must never stop the rest of the page loading.
 function toggleDarkMode() {
-    const applyTheme = () => {
+    animateThemeSwitch(document.getElementById('darkModeToggle'), () => {
         const isDark = document.documentElement.classList.toggle('dark-mode');
         try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch (e) { /* not remembered */ }
         updateDarkModeToggleIcon();
-    };
-    if (typeof animateThemeSwitch === 'function') animateThemeSwitch(document.getElementById('darkModeToggle'), applyTheme);
-    else applyTheme();
+    });
 }
 
 function applySavedTheme() {

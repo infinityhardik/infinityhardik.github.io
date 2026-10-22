@@ -79,7 +79,7 @@ function populateFilterOptions() {
                     if (selectedFilters[key].length === 0) delete selectedFilters[key];
                 }
                 updateClearFiltersButtonStyle();
-                if (cb.checked && typeof animateBump === 'function') animateBump(chip, 1.06, 180);
+                if (cb.checked) animateBump(chip, 1.06, 180);
             });
 
             const text = document.createElement('span');
@@ -117,8 +117,8 @@ function updateFilterModalSummary() {
 
 // ─── Apply / Clear ────────────────────────────────────────────────────────────
 function applyFilters() {
-    if (typeof refreshProductList === 'function') refreshProductList();
-    if (typeof keepSearchBarPinned === 'function') keepSearchBarPinned();
+    refreshProductList();
+    keepSearchBarPinned();
     Modal.close('filter-modal');
 
     const count = Object.values(selectedFilters).filter(v => v.length > 0).length;
@@ -128,8 +128,8 @@ function applyFilters() {
 function clearFilters() {
     selectedFilters = {};
     document.querySelectorAll('.filter-checkbox').forEach(cb => cb.checked = false);
-    if (typeof refreshProductList === 'function') refreshProductList();
-    if (typeof keepSearchBarPinned === 'function') keepSearchBarPinned();
+    refreshProductList();
+    keepSearchBarPinned();
     updateClearFiltersButtonStyle();
     displayFeedbackMessage('Filters cleared.', 'success');
 }
@@ -152,7 +152,7 @@ function updateClearFiltersButtonStyle() {
     if (mobileBadge) {
         // The badge springs in when the first filter is picked, and pops when the count changes
         const previous = Number(mobileBadge.textContent) || 0;
-        if (count !== previous && typeof animateBump === 'function') {
+        if (count !== previous) {
             if (previous === 0) animatePopIn(mobileBadge);
             else if (count > 0) animateBump(mobileBadge, 1.3, 260);
         }

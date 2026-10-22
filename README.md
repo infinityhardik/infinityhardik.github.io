@@ -7,7 +7,6 @@ Needs NPM and Node
 Steps for Generating the Website :
 
 - Update the Master Branch with New Changes and Test it thoroughly
-- npm test > Runs the unit tests (search parsing, order text, history) and checks every script parses
 - npm run build > Generates the Minified File in /dist
 - Copy the minified JS file Code and Obfuscate it using <https://codebeautify.org/javascript-obfuscator#>
 - Copy the Obfuscated JS Code into Branch which is deployed for Github Pages

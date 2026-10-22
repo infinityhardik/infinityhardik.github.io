@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mt-order-v5'; // Bump when the asset list changes
+const CACHE_NAME = 'mt-order-v6'; // Bump when the asset list changes
 const ASSETS = [
     './',            // start_url — lets the installed app open offline
     'index.html',
@@ -11,8 +11,7 @@ const ASSETS = [
     'assets/icon-192.png',
     'assets/fonts/inter-latin-var.woff2',
     'assets/help-modal-content.html',
-    'src/script_pwa.js',
-    'dist/main.min.js'
+    'dist/main.min.js' // includes every src/ script (see npm run build)
 ];
 
 // Files that change with each deploy (page, styles, scripts, product data).

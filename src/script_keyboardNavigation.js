@@ -38,32 +38,32 @@ document.addEventListener("keydown", function (event) {
                         const clearFiltersBtn = document.getElementById('clearFilters');
                         if (clearFiltersBtn) clearFiltersBtn.click();
                     } else {
-                        if (typeof toggleOrderPopup === 'function') toggleOrderPopup();
+                        toggleOrderPopup();
                     }
                     return;
                 case 'delete': // Clear Order
                     event.preventDefault();
-                    if (typeof clearOrder === 'function') clearOrder();
+                    clearOrder();
                     return;
                 case 'backspace': // Clear Search
                     event.preventDefault();
-                    if (typeof clearSearch === 'function') clearSearch();
+                    clearSearch();
                     return;
                 case 'enter': // Send Order
                     event.preventDefault();
-                    if (typeof sendOrder === 'function') sendOrder();
+                    sendOrder();
                     return;
                 case 'c': // Copy Order
                     event.preventDefault();
-                    if (typeof copyOrder === 'function') copyOrder();
+                    copyOrder();
                     return;
                 case 'h': // History
                     event.preventDefault();
-                    if (typeof openOrderHistory === 'function') openOrderHistory();
+                    openOrderHistory();
                     return;
                 case 's': // Toggle Show Selected
                     event.preventDefault();
-                    if (typeof toggleShowSelectedOnly === 'function') toggleShowSelectedOnly();
+                    toggleShowSelectedOnly();
                     return;
                 case '/': // Help
                 case '?': {
@@ -79,7 +79,7 @@ document.addEventListener("keydown", function (event) {
         if (event.key === "Escape") {
             if (searchBox.value !== "") {
                 event.preventDefault();
-                if (typeof clearSearch === 'function') clearSearch();
+                clearSearch();
             } else if (document.activeElement === searchBox) {
                 searchBox.blur();
             }
@@ -147,14 +147,9 @@ document.addEventListener("keydown", function (event) {
 
         // ─── Quantity Shortcuts (Left/Right) ─────────────────────────────────
         if ((event.key === "ArrowLeft" || event.key === "ArrowRight") && currentFocusIndex >= 0) {
-            const item = visibleItems[currentFocusIndex];
-            if (item) {
+            if (focusedItem) {
                 event.preventDefault();
-                const productName = item.dataset.productName;
-                const change = event.key === "ArrowRight" ? 1 : -1;
-                if (typeof updateProductQuantityInOrder === 'function') {
-                    updateProductQuantityInOrder(productName, change);
-                }
+                updateProductQuantityInOrder(focusedItem.dataset.productName, event.key === "ArrowRight" ? 1 : -1);
             }
             return;
         }
@@ -211,7 +206,7 @@ document.addEventListener("keydown", function (event) {
             event.preventDefault();
             const closeBtn = activeModal.querySelector('.modal-header button, .modal-footer .btn-secondary');
             if (closeBtn) closeBtn.click();
-            else if (typeof Modal !== 'undefined') Modal.close(activeModal.id);
+            else Modal.close(activeModal.id);
         }
     }
 });
@@ -261,30 +256,6 @@ function resetFocus() {
     document.querySelectorAll('.product-item.keyboard-focus').forEach(el => {
         el.classList.remove('keyboard-focus');
     });
-}
-
-function syncVisibleProductState() {
-    const visibleItems = getVisibleProductItems();
-
-    const searchBox = document.getElementById("search-box");
-    if (searchBox) {
-        searchBox.setAttribute('aria-expanded', visibleItems.length > 0 ? 'true' : 'false');
-    }
-
-    const focusedItem = document.querySelector('.product-item.keyboard-focus');
-
-    if (focusedItem && !visibleItems.includes(focusedItem)) {
-        resetFocus();
-        return;
-    }
-
-    if (focusedItem) {
-        currentFocusIndex = visibleItems.indexOf(focusedItem);
-    }
-
-    if (currentFocusIndex < 0 || currentFocusIndex >= visibleItems.length) {
-        resetFocus();
-    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {

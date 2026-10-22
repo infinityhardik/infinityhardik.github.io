@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     searchBox.addEventListener('blur', () => {
         if (window.innerWidth > 1023) return;
-        
+
         // Small delay to allow clicks on results
         setTimeout(() => {
             if (stickyControls) stickyControls.classList.remove('search-active');
@@ -250,7 +250,7 @@ function getFilteredProducts(filterTerm = currentSearchTerm) {
         list = selectedProducts.map(p => getProductByName(p.productName)).filter(Boolean);
     }
 
-    if (typeof selectedFilters !== 'undefined' && Object.keys(selectedFilters).length > 0) {
+    if (Object.keys(selectedFilters).length > 0) {
         list = list.filter(product =>
             Object.entries(selectedFilters).every(([key, values]) =>
                 values.length === 0 || values.includes(String(product[key] || '').trim())
@@ -275,9 +275,7 @@ function getFilteredProducts(filterTerm = currentSearchTerm) {
 
 function refreshProductList() {
     displayProducts(getFilteredProducts());
-    if (typeof resetFocus === 'function') {
-        resetFocus();
-    }
+    resetFocus();
 }
 
 /**
@@ -294,26 +292,25 @@ function clearSearch({ focus = true } = {}) {
         if (clearBtn) clearBtn.classList.remove('is-visible');
     }
     currentSearchTerm = '';
-    refreshProductList();
+    refreshProductList(); // also resets the keyboard focus
     keepSearchBarPinned();
-    if (typeof resetFocus === 'function') resetFocus();
 }
 
 function getFirstVisibleProductElement() {
-    return document.querySelector('#product-list .product-item:not(.hidden)') || null;
+    return document.querySelector('#product-list .product-item:not(.hidden)');
 }
 
 // ─── Show Selected Only ───────────────────────────────────────────────────────
 function toggleShowSelectedOnly() {
     showSelectedOnly = !showSelectedOnly;
     updateShowSelectedOnlyButton();
-    if (typeof animateBump === 'function') animateBump(document.getElementById('showSelectedOnly'), 1.18, 260);
+    animateBump(document.getElementById('showSelectedOnly'), 1.18, 260);
     const searchBox = document.getElementById('search-box');
     if (showSelectedOnly && searchBox) searchBox.value = '';
     if (showSelectedOnly) currentSearchTerm = '';
     refreshProductList();
     keepSearchBarPinned();
-    if (typeof animateRowsSwap === 'function') animateRowsSwap(document.getElementById('product-list'));
+    animateRowsSwap(document.getElementById('product-list'));
 }
 
 function updateShowSelectedOnlyButton() {
